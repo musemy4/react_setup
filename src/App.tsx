@@ -1,26 +1,19 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route, Switch } from 'react-router';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Login from './_views/login/login';
+import PrivateRoute from './_routes/private_route';
+import SetupSettingWrap from './_views/setupSettings/setup_setting_wrap';
+
+const App = () => {
+    return (
+      <>
+        <Switch>
+            <Route exact path="/" render={(props) => <Login {...props} />} />
+            <PrivateRoute exact path="/setup" isAuthenticated={ sessionStorage.getItem('authorization') } component={ SetupSettingWrap } />
+        </Switch>
+      </>
+    )
 }
 
 export default App;
