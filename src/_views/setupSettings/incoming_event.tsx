@@ -23,6 +23,25 @@ export class IncomingEvent extends React.Component<IProps, IState> {
         props.addData(props.propsEventInfo, 'EVENT');
     }
 
+    onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const check = e.target.checked;
+        const { stateEventInfo } = this.state;
+
+        const newStateEventInfo = stateEventInfo.map((eventInfo: IEvent) => {
+            return {
+                event_code: eventInfo.event_code,
+                event_name: eventInfo.event_name,
+                setup_flag: check
+            }
+        });
+        this.setState({ 
+            allChecked: check,
+            stateEventInfo: newStateEventInfo
+        });
+        const { addData } = this.props;
+        addData(newStateEventInfo, 'EVENT');
+    }
+
     onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id } = e.target;
         const check = e.target.checked;
@@ -42,25 +61,6 @@ export class IncomingEvent extends React.Component<IProps, IState> {
         const isAllChecked = newStateEventInfo.some(eventInfo => !eventInfo.setup_flag );
         this.setState({ 
             allChecked: !isAllChecked,
-            stateEventInfo: newStateEventInfo
-        });
-        const { addData } = this.props;
-        addData(newStateEventInfo, 'EVENT');
-    }
-
-    onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const check = e.target.checked;
-        const { stateEventInfo } = this.state;
-
-        const newStateEventInfo = stateEventInfo.map((eventInfo: IEvent) => {
-            return {
-                event_code: eventInfo.event_code,
-                event_name: eventInfo.event_name,
-                setup_flag: check
-            }
-        });
-        this.setState({ 
-            allChecked: check,
             stateEventInfo: newStateEventInfo
         });
         const { addData } = this.props;
