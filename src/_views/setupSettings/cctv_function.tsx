@@ -20,30 +20,14 @@ interface IState {
 
 export class CctvFunction extends React.Component<IProps, IState> {
 
-    public cctvFuncAllChecked = false;
-
     constructor(props: IProps) {
         super(props);
-       
-        const newStateCctvFuncInfo = props.propsCctvFunctionInfo.map((funcGroup: IFunc) => {
-            const findChildren = _.find(props.propsCctvFunctionInfo, { func_code: 'CCTV_FUNCTION' } );
-            if (findChildren) {
-                const cctvCtrlObj = findChildren.children[0];
-                this.cctvFuncAllChecked = _.some(cctvCtrlObj.children, { setup_flag: true }); 
-                cctvCtrlObj.setup_flag = _.some(cctvCtrlObj.children, { setup_flag: true });
-            }
-            return funcGroup;
-        });
-
-        console.log(this.cctvFuncAllChecked);
-
         this.state = { 
-            stateCctvFunctionInfo: newStateCctvFuncInfo,
+            stateCctvFunctionInfo: props.propsCctvFunctionInfo,
             stateLayerInfo: props.propLayerInfo
         };
-        props.addData(newStateCctvFuncInfo, 'FUNCTION');
+        props.addData(props.propsCctvFunctionInfo, 'FUNCTION');
         props.addData(props.propLayerInfo, 'LAYER');
-
     }
 
     onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +52,6 @@ export class CctvFunction extends React.Component<IProps, IState> {
             }
             return funcGroup;
         });
-
         this.setState({ stateCctvFunctionInfo: newStateCctvFuncInfo });
         const { addData } = this.props;
         addData(newStateCctvFuncInfo, 'FUNCTION');
@@ -97,14 +80,12 @@ export class CctvFunction extends React.Component<IProps, IState> {
                     }
                     return children;
                 })
-                findChildren.setup_flag = _.some(findChildren.children, { setup_flag: true });
-                this.cctvFuncAllChecked = _.some(findChildren.children, { setup_flag: true });
+                findChildren.setup_flag = !_.some(findChildren.children, { setup_flag: false });
             }   
             
             return funcGroup;
         });
         this.setState({ stateCctvFunctionInfo: newStateCctvFuncInfo });
-
         const { addData } = this.props;
         addData(newStateCctvFuncInfo, 'FUNCTION');
     }
@@ -192,11 +173,7 @@ export class CctvFunction extends React.Component<IProps, IState> {
                                     <div className="menu_head">
                                         <span className="menu_title">
                                             <span className="checkbox_wrap">
-                                                <input className="form-check-input" onChange={ this.onCheckboxAllChangeHandler } type="checkbox" id={ funcChildInfo.func_code } checked={ 
-                                                    funcChildInfo.func_code === 'CCTV_CONTROL' 
-                                                        ? funcChildInfo.setup_flag && this.cctvFuncAllChecked
-                                                        : funcChildInfo.setup_flag
-                                                }/>
+                                                <input className="form-check-input" onChange={ this.onCheckboxAllChangeHandler } type="checkbox" id={ funcChildInfo.func_code } checked={ funcChildInfo.setup_flag }/>
                                                 <label className="form-check-label" htmlFor={ funcChildInfo.func_code }>{ funcChildInfo.func_name }</label>
                                             </span>
                                         </span>
