@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { postSetupLogin } from '../../_actions/login';
 
-const Login = (props: any) => {
+const Login:React.FC = (props: any) => {
 
     const [ id, setStateId ] = useState('');
     const [ pw, setStatePw ] = useState('');

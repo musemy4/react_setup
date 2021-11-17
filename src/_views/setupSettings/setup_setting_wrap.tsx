@@ -1,6 +1,7 @@
 // React
 import _ from 'lodash';
-import React, { RefObject } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useForm } from 'react-hook-form';
 // confirm, toast
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -61,12 +62,6 @@ interface IProps {
     resetSetupLogin: () => void;
 }
 
-interface IState {
-    refresh?: string;
-    loading: boolean;
-    setupPropsList: IGetSetupHttpBody;
-}
-
 const override = css`
   display: block;
   position: absolute;
@@ -75,90 +70,97 @@ const override = css`
   border-width: 6px;
   z-index: 999999`;
 
-class SetupSettingWrap extends React.Component<IProps, IState> {
-    private refInputFIle: RefObject<HTMLInputElement>;
 
-    constructor(props: IProps) {
-        super(props);
-        this.state = { 
-            refresh: String(new Date()),
-            loading: false,
-            setupPropsList: props.getSetupState 
-        };
-        this.refInputFIle = React.createRef<HTMLInputElement>();
-    }
+const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupState,
+                                    setupCreateID, setupResetRole, setupResetPw, resetAdminStatus,resetSetupLogin,
+                                    getSetupProps, getSetupPropsJson, resetGetSetupStatus, putSetupProps, resetPutSetupStatus, addSetupData}: IProps) => {
+    const inputFile = useRef<HTMLInputElement | null>(null); // ***
+    const [refresh, setRefresh] = useState(String(new Date()));
+    const [loading, setLoading] = useState(false);
+    const [setupPropsList, setSetupPropsList] = useState(getSetupState);
 
-    componentDidMount() {
-        const { getSetupProps, resetSetupLogin } = this.props;
+    // componentDidMount(with React hooks) : ,[]
+    useEffect(() => {
+        // 아래는 클래스 방식일때 처리
+        // refInputFIle = React.createRef<HTMLInputElement>();
         resetSetupLogin();
         getSetupProps();
-    }
-
-    componentDidUpdate() {
-        const { getSetupState, putSetupState, adminState, resetAdminStatus, resetGetSetupStatus, resetPutSetupStatus } = this.props;
-
-        if (getSetupState && getSetupState.code) {
-            if (getSetupState.code === 200) {
-                this.updateState();
-            }
-            resetGetSetupStatus();
+        return () => {
+            console.log('componentWillUnmount:::');
         }
 
-        if (putSetupState && putSetupState.code) {
-            this.hideLoading();
-            if (putSetupState.code === 200) {
-                this.showAlert('셋업 설정 수정에 성공하였습니다.', 'success');
-            } else {
-                this.showAlert('셋업 설정 수정에 실패하였습니다.', 'failure');
-            }
-            resetPutSetupStatus();
-        }
+    }, []);
 
-        if (adminState.admin && adminState.admin.type === 'create') {
-            this.hideLoading();
-            if (adminState.admin.status === 'SUCCESS') {
-                this.showAlert('관리자 계정 생성에 성공하였습니다.', 'success');
-            } else if (adminState.admin.status === 'DUPLICATE') {
-                this.showAlert('관리자 계정 [이노뎁]이 이미 생성되었습니다.', 'failure');
-            } else {
-                this.showAlert('관리자 계정 생성에 실패하였습니다.', 'failure');
+    const mounted = useRef(false); // componentDidmount는 넘어가도록 처리(지역변수 너낌)
+    // componentDidUpdate(with React hooks) : 
+    useEffect(() => {
+        if(!mounted.current) {
+            mounted.current = true;
+        } else {
+            if (getSetupState && getSetupState.code) {
+                if (getSetupState.code === 200) {
+                    updateState();
+                }
+                resetGetSetupStatus();
             }
-            resetAdminStatus();
-        }
-        if (adminState.admin && adminState.admin.type === 'auth') {
-            this.hideLoading();
-            if (adminState.admin.status === 'SUCCESS') {
-                this.showAlert('관리자 권한 초기화에 성공하였습니다.', 'success');
-            } else {
-                this.showAlert('관리자 권한 초기화에 실패하였습니다.', 'failure');
+
+            if (putSetupState && putSetupState.code) {
+                hideLoading();
+                if (putSetupState.code === 200) {
+                    showAlert('셋업 설정 수정에 성공하였습니다.', 'success');
+                } else {
+                    showAlert('셋업 설정 수정에 실패하였습니다.', 'failure');
+                }
+                resetPutSetupStatus();
             }
-            resetAdminStatus();
-        }
-        if (adminState.admin && adminState.admin.type === 'pw') {
-            this.hideLoading();
-            if (adminState.admin.status === 'SUCCESS') {
-                this.showAlert('관리자 비밀번호 초기화에 성공하였습니다.', 'success');
-            } else {
-                this.showAlert('관리자 비밀번호 초기화에 실패하였습니다.', 'failure');
+
+            if (adminState.admin && adminState.admin.type === 'create') {
+                hideLoading();
+                if (adminState.admin.status === 'SUCCESS') {
+                    showAlert('관리자 계정 생성에 성공하였습니다.', 'success');
+                } else if (adminState.admin.status === 'DUPLICATE') {
+                    showAlert('관리자 계정 [이노뎁]이 이미 생성되었습니다.', 'failure');
+                } else {
+                    showAlert('관리자 계정 생성에 실패하였습니다.', 'failure');
+                }
+                resetAdminStatus();
             }
-            resetAdminStatus();
+            if (adminState.admin && adminState.admin.type === 'auth') {
+                hideLoading();
+                if (adminState.admin.status === 'SUCCESS') {
+                    showAlert('관리자 권한 초기화에 성공하였습니다.', 'success');
+                } else {
+                    showAlert('관리자 권한 초기화에 실패하였습니다.', 'failure');
+                }
+                resetAdminStatus();
+            }
+            if (adminState.admin && adminState.admin.type === 'pw') {
+                hideLoading();
+                if (adminState.admin.status === 'SUCCESS') {
+                    showAlert('관리자 비밀번호 초기화에 성공하였습니다.', 'success');
+                } else {
+                    showAlert('관리자 비밀번호 초기화에 실패하였습니다.', 'failure');
+                }
+                resetAdminStatus();
+            }
         }
+    });
+
+
+
+    const showLoading = () => {
+        setLoading(true);
     }
 
-    showLoading = () => {
-        this.setState({ loading: true });
+    const hideLoading = () => {
+        setLoading(false);
     }
 
-    hideLoading = () => {
-        this.setState({ loading: false });
+    const updateState = () => {
+        setSetupPropsList(getSetupState);
     }
 
-    updateState = () => {
-        const { getSetupState } = this.props;
-        this.setState({ setupPropsList: getSetupState });
-    }
-
-    showAlert = (message: string, status?: string) => {
+    const showAlert = (message: string, status?: string) => {
         confirmAlert({
             title: '[알림]',
             message,
@@ -172,8 +174,7 @@ class SetupSettingWrap extends React.Component<IProps, IState> {
         });
     }
 
-    onClickAdminAction = (type: string) => {
-        const { setupCreateID, setupResetRole, setupResetPw } = this.props;
+    const onClickAdminAction = (type: string) => {
         switch(type) {
             case 'admin' :
                 confirmAlert({
@@ -184,7 +185,7 @@ class SetupSettingWrap extends React.Component<IProps, IState> {
                     buttons: [
                         { label: '취소', onClick: () => null },
                         { label: '생성', onClick: (() => {
-                            this.showLoading();
+                            showLoading();
                             setupCreateID() 
                         })}
                     ],
@@ -197,7 +198,7 @@ class SetupSettingWrap extends React.Component<IProps, IState> {
                     buttons: [
                         { label: '취소', onClick: () => null },
                         { label: '초기화', onClick: (() => {
-                            this.showLoading();
+                            showLoading();
                             setupResetRole() 
                         })}
                     ],
@@ -210,7 +211,7 @@ class SetupSettingWrap extends React.Component<IProps, IState> {
                     buttons: [
                         { label: '취소', onClick: () => null },
                         { label: '초기화', onClick: (() => {
-                            this.showLoading();
+                            showLoading();
                             setupResetPw() 
                         })}
                     ],
@@ -221,8 +222,7 @@ class SetupSettingWrap extends React.Component<IProps, IState> {
         }
     }
 
-    onDownloadSetupFile = () => {
-        const { setupPropsList } = this.state;
+    const onDownloadSetupFile = () => {
         const fileName = `vurix-dms-platform_셋업 정보_${dateFormat(new Date())}`;
         const json = JSON.stringify(setupPropsList.response, null, 4);
         const blob = new Blob([json],{type:'application/json'});
@@ -235,23 +235,23 @@ class SetupSettingWrap extends React.Component<IProps, IState> {
         document.body.removeChild(link);
     }
 
-    onClickFileUpload = () => {
-        this.refInputFIle.current?.click()
+    const showOpenFileDialog = () => {
+        console.log('onClickFileUpload!');
+        if(inputFile.current) inputFile.current.click();
     }
 
-    onChangeFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    const onChangeFile = (event: React.ChangeEvent<HTMLInputElement>) => {
         const fileReader = new FileReader();
         if (event.target && event.target.files) {
             fileReader.readAsText(event.target.files[0], 'UTF-8"');
             fileReader.onload = e => {
                 if (e.target && e.target.result !== 'undefined' && !e.target.result) {
                     const response = { response: {...JSON.parse(String(e.target.result))} };
-                    this.setState({ 
-                        refresh: String(new Date()),
-                        setupPropsList: response
-                        });
+                    setRefresh(String(new Date()));
+                    setSetupPropsList(response);
                 } else {
-                    this.showAlert(
+                    showAlert(
                         `업로드에 실패하였습니다.
                         .json 파일 데이터를 확인해 주세요.`,
                          'failure'
@@ -261,7 +261,7 @@ class SetupSettingWrap extends React.Component<IProps, IState> {
         }
     }   
 
-    onResetSetup = () => {
+    const onResetSetup = () => {
         confirmAlert({
             title: '[셋업 설정 초기화]',
             message: '셋업 설정 정보를 초기화 하시겠습니까?',
@@ -272,19 +272,18 @@ class SetupSettingWrap extends React.Component<IProps, IState> {
         });
     };
 
-    onModifySetup = () => {
+    const onModifySetup = () => {
         confirmAlert({
             title: '[셋업 설정 정보 수정]',
             message: '셋업 설정 정보를 수정하시겠습니까?',
             buttons: [
                 { label: '취소', onClick: () => null },
-                { label: '수정', onClick: () => this.onPutSetupProps() }
+                { label: '수정', onClick: () => onPutSetupProps() }
             ],
         });
     };
 
-    onPutSetupProps = () => {
-        const { addSetupState } = this.props;
+    const onPutSetupProps = () => {
         const httpParam: IPutSetupGroup = {
             menu_info: [],
             event_info: [],
@@ -320,25 +319,19 @@ class SetupSettingWrap extends React.Component<IProps, IState> {
             setConvertPropsParam(setupGroup.data, setupTypes[setupGroup.type], setupGroup.type);
         })
 
-        const { putSetupProps } = this.props;
         putSetupProps(httpParam);
     }
 
-    render() {
-        const { addSetupData } = this.props;
-        const { setupPropsList, refresh, loading } = this.state;
-        if (!setupPropsList) {
-            return null;
-        }
-        
-        return (
-            <div key={ refresh }>
-                <ClipLoader color="#0d6efd" loading={loading} css={override} size={50} />
-                {
-                    loading 
-                        ? <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} />
-                        : null
-                }
+    return (
+        <div key={ refresh }>
+            <ClipLoader color="#0d6efd" loading={loading} css={override} size={50} />
+            {
+                loading 
+                    ? <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} />
+                    : null
+            }
+            { 
+                setupPropsList ? 
                 <div className="row h-95">
                     <div className="apply-menu box">
                         <h2>적용메뉴</h2>
@@ -394,23 +387,27 @@ class SetupSettingWrap extends React.Component<IProps, IState> {
                         }
                     </div>
                 </div>
-                <div className="bottom h-5">
-                    <div className="btn-left">
-                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => this.onClickAdminAction('admin') } >관리자 계정 생성</button>
-                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => this.onClickAdminAction('auth') } >관리자 권한 초기화</button>
-                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => this.onClickAdminAction('pw') } >관리자 비밀번호 초기화</button>
-                    </div>
-                    <div className="btn-right">
-                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ this.onDownloadSetupFile } >백업(JSON)</button>
-                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ this.onClickFileUpload } >복원(JSON)</button>
-                        <input type="file" ref={ this.refInputFIle } onChange={ event => this.onChangeFile(event) } accept=".json" hidden/>
-                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ this.onModifySetup } >수정</button>
-                        <button type="button" className="btn btn-primary btn-sm" onClick={ this.onResetSetup } >초기화</button>
-                    </div>
+                : <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} />
+            }
+
+            <div className="bottom h-5">
+                <div className="btn-left">
+                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('admin') } >관리자 계정 생성</button>
+                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('auth') } >관리자 권한 초기화</button>
+                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('pw') } >관리자 비밀번호 초기화</button>
+                </div>
+                <div className="btn-right">
+                    <form>
+                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ onDownloadSetupFile } >백업(JSON)</button>
+                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ showOpenFileDialog } >복원(JSON)</button>
+                        <input type="file" ref={inputFile} onChange={onChangeFile} accept=".json" style={{ display: 'none' }} />
+                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ onModifySetup } >수정</button>
+                        <button type="button" className="btn btn-primary btn-sm" onClick={ onResetSetup } >초기화</button>
+                    </form>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 interface IStateToProps {
@@ -425,10 +422,12 @@ interface IStateToProps {
     addSetupState: Array<IAddSetupData>;
 }
 
+// get
 const mapStateToProps = ({ adminState, getSetupState, putSetupState, addSetupState }: IStateToProps) => {
     return { adminState, getSetupState, putSetupState, addSetupState };
 }
 
+// set
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return bindActionCreators({ 
         setupCreateID, 

@@ -1,5 +1,5 @@
 // React
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 // External Lib
 import _ from 'lodash';
 import { confirmAlert } from 'react-confirm-alert';
@@ -13,40 +13,32 @@ interface IProps {
     addData: (data: Array<IFunc | ILayer>, type: string) => void;
 }
 
-interface IState {
-    stateCctvFunctionInfo: Array<IFunc>;
-    stateLayerInfo: Array<ILayer>;
-}
+export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo, addData}: IProps) => {
+    
+    const [cctvFuncAllChecked, setCctvFuncAllChecked] = useState(false);
+    const [stateCctvFunctionInfo, setStateCctvFunctionInfo] = useState(propsCctvFunctionInfo);
+    const [stateLayerInfo, setStateLayerInfo] = useState(propLayerInfo);
 
-export class CctvFunction extends React.Component<IProps, IState> {
-
-    public cctvFuncAllChecked = false;
-
-    constructor(props: IProps) {
-        super(props);
-       
-        const newStateCctvFuncInfo = props.propsCctvFunctionInfo.map((funcGroup: IFunc) => {
-            const findChildren = _.find(props.propsCctvFunctionInfo, { func_code: 'CCTV_FUNCTION' } );
+    
+    useEffect(() => {
+        const newStateCctvFuncInfo = propsCctvFunctionInfo.map((funcGroup: IFunc) => {
+            const findChildren = _.find(propsCctvFunctionInfo, { func_code: 'CCTV_FUNCTION' } );
             if (findChildren) {
                 const cctvCtrlObj = findChildren.children[0];
-                this.cctvFuncAllChecked = !_.some(cctvCtrlObj.children, { setup_flag: false }); 
+                setCctvFuncAllChecked(!_.some(cctvCtrlObj.children, { setup_flag: false })); 
                 cctvCtrlObj.setup_flag = _.some(cctvCtrlObj.children, { setup_flag: true });
             }
             return funcGroup;
         });
-        this.state = { 
-            stateCctvFunctionInfo: newStateCctvFuncInfo,
-            stateLayerInfo: props.propLayerInfo
-        };
-        props.addData(newStateCctvFuncInfo, 'FUNCTION');
-        props.addData(props.propLayerInfo, 'LAYER');
+        setStateCctvFunctionInfo(newStateCctvFuncInfo);
+        addData(newStateCctvFuncInfo, 'FUNCTION');
+        addData(propLayerInfo, 'LAYER');
 
-    }
+    }, []);
 
-    onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id } = e.target;
         const check = e.target.checked;
-        const { stateCctvFunctionInfo } = this.state;
 
         const newStateCctvFuncInfo = stateCctvFunctionInfo.map((funcGroup: IFunc) => {
             const findChildren = _.find(funcGroup.children, { func_code: id } );
@@ -67,18 +59,16 @@ export class CctvFunction extends React.Component<IProps, IState> {
         });
 
         if (check) {
-            this.cctvFuncAllChecked = check;
+            setCctvFuncAllChecked(check);
         }
 
-        this.setState({ stateCctvFunctionInfo: newStateCctvFuncInfo });
-        const { addData } = this.props;
+        setStateCctvFunctionInfo(newStateCctvFuncInfo);
         addData(newStateCctvFuncInfo, 'FUNCTION');
     }
 
-    onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id } = e.target;
         const check = e.target.checked;
-        const { stateCctvFunctionInfo } = this.state;
 
         const newStateCctvFuncInfo = stateCctvFunctionInfo.map((funcGroup: IFunc) => {
             const findChildren = _.find(funcGroup.children, (firstChildren: IFunc) => {
@@ -99,21 +89,18 @@ export class CctvFunction extends React.Component<IProps, IState> {
                     return children;
                 })
                 findChildren.setup_flag = _.some(findChildren.children, { setup_flag: true });
-                this.cctvFuncAllChecked = !_.some(findChildren.children, { setup_flag: false });
+                setCctvFuncAllChecked(!_.some(findChildren.children, { setup_flag: false }));
             }   
             
             return funcGroup;
         });
-        this.setState({ stateCctvFunctionInfo: newStateCctvFuncInfo });
-
-        const { addData } = this.props;
+        setStateCctvFunctionInfo(newStateCctvFuncInfo);
         addData(newStateCctvFuncInfo, 'FUNCTION');
     }
 
-    onCheckboxLayerChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onCheckboxLayerChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id } = e.target;
         const check = e.target.checked;
-        const { stateLayerInfo } = this.state;
 
         if (!check) {
             confirmAlert({
@@ -135,8 +122,7 @@ export class CctvFunction extends React.Component<IProps, IState> {
                             }
                             return layer;
                         })
-                        this.setState({ stateLayerInfo: copyStateLayerInfo });
-                        const { addData } = this.props;
+                        setStateLayerInfo(copyStateLayerInfo);
                         addData(copyStateLayerInfo, 'LAYER');
                     }) }
                 ],
@@ -153,81 +139,77 @@ export class CctvFunction extends React.Component<IProps, IState> {
                 }
                 return layer;
             })
-            this.setState({ stateLayerInfo: copyStateLayerInfo });
-            const { addData } = this.props;
+            setStateLayerInfo(copyStateLayerInfo);
             addData(copyStateLayerInfo, 'LAYER');
         }
     }
 
-    render() {
-        const { stateCctvFunctionInfo, stateLayerInfo } = this.state;
-        return <div className="box-content" style={{ height: '100%' }}> {
-            stateCctvFunctionInfo.map((funcInfo) => {
-                return (
-                    <div key={ funcInfo.func_code } className="cctv-function-content">
+    return <div className="box-content" style={{ height: '100%' }}> {
+        stateCctvFunctionInfo.map((funcInfo) => {
+            return (
+                <div key={ funcInfo.func_code } className="cctv-function-content">
+                    {
+                        funcInfo.func_code === 'DEFAULT_LAYER' 
+                            ? <h2>
+                                자동 생성 레이어
+                                <span style={{ color: '#ff0000', fontWeight: 'bold' }}> (* 함부로 수정하지 마시오!!)</span>
+                              </h2>
+                            : <h2>{ funcInfo.func_name }</h2>
+                    }
+                    <ul className="menu_wrap">
                         {
                             funcInfo.func_code === 'DEFAULT_LAYER' 
-                                ? <h2>
-                                    자동 생성 레이어
-                                    <span style={{ color: '#ff0000', fontWeight: 'bold' }}> (* 함부로 수정하지 마시오!!)</span>
-                                  </h2>
-                                : <h2>{ funcInfo.func_name }</h2>
-                        }
-                        <ul className="menu_wrap">
-                            {
-                                funcInfo.func_code === 'DEFAULT_LAYER' 
-                                    ? stateLayerInfo.map((layerInfo: ILayer) => {
-                                        return <div key={ layerInfo.layer_id } className="menu_head">
-                                                    <span className="menu_title">
-                                                        <span className="checkbox_wrap">
-                                                            <input className="form-check-input" onChange={ this.onCheckboxLayerChangeHandler } type="checkbox" id={ layerInfo.layer_id } checked={ layerInfo.setup_flag }/>
-                                                            <label className="form-check-label" htmlFor={ layerInfo.layer_id }>{ layerInfo.layer_name }</label>
-                                                        </span>
+                                ? stateLayerInfo.map((layerInfo: ILayer) => {
+                                    return <div key={ layerInfo.layer_id } className="menu_head">
+                                                <span className="menu_title">
+                                                    <span className="checkbox_wrap">
+                                                        <input className="form-check-input" onChange={ onCheckboxLayerChangeHandler } type="checkbox" id={ layerInfo.layer_id } checked={ layerInfo.setup_flag }/>
+                                                        <label className="form-check-label" htmlFor={ layerInfo.layer_id }>{ layerInfo.layer_name }</label>
                                                     </span>
-                                                </div>
-                                    }) 
-                                    : null
-                            }
-                            { funcInfo.children.map((funcChildInfo: IFunc) => {
-                                return <li key={funcChildInfo.func_code} className="menu_list">
-                                    <div className="menu_head">
-                                        <span className="menu_title">
-                                            <span className="checkbox_wrap">
-                                                <input className="form-check-input" onChange={ this.onCheckboxAllChangeHandler } type="checkbox" id={ funcChildInfo.func_code } checked={ 
-                                                    funcChildInfo.func_code === 'CCTV_CONTROL' 
-                                                        ? funcChildInfo.setup_flag && this.cctvFuncAllChecked
-                                                        : funcChildInfo.setup_flag
-                                                }/>
-                                                <label className="form-check-label" htmlFor={ funcChildInfo.func_code }>{ funcChildInfo.func_name }</label>
-                                            </span>
+                                                </span>
+                                            </div>
+                                }) 
+                                : null
+                        }
+                        { funcInfo.children.map((funcChildInfo: IFunc) => {
+                            return <li key={funcChildInfo.func_code} className="menu_list">
+                                <div className="menu_head">
+                                    <span className="menu_title">
+                                        <span className="checkbox_wrap">
+                                            <input className="form-check-input" onChange={ onCheckboxAllChangeHandler } type="checkbox" id={ funcChildInfo.func_code } checked={ 
+                                                funcChildInfo.func_code === 'CCTV_CONTROL' 
+                                                    ? funcChildInfo.setup_flag && cctvFuncAllChecked
+                                                    : funcChildInfo.setup_flag
+                                            }/>
+                                            <label className="form-check-label" htmlFor={ funcChildInfo.func_code }>{ funcChildInfo.func_name }</label>
                                         </span>
-                                    </div>
-                                    { funcChildInfo.children.length > 0 
-                                        ? <div className="sub_menu">
-                                            <ul>
-                                                { funcChildInfo.children.map((funcInnerChildInfo: IFunc) => {
-                                                    return (
-                                                        <li key={ funcInnerChildInfo.func_code }>
-                                                            <span className="menu_title">
-                                                                <span className="checkbox_wrap">
-                                                                    <input className="form-check-input" onChange={ this.onCheckboxChangeHandler } type="checkbox" id={ funcInnerChildInfo.func_code } checked={ funcInnerChildInfo.setup_flag }/>
-                                                                    <label className="form-check-label" htmlFor={ funcInnerChildInfo.func_code }>{ funcInnerChildInfo.func_name }</label>
-                                                                </span>
+                                    </span>
+                                </div>
+                                { funcChildInfo.children.length > 0 
+                                    ? <div className="sub_menu">
+                                        <ul>
+                                            { funcChildInfo.children.map((funcInnerChildInfo: IFunc) => {
+                                                return (
+                                                    <li key={ funcInnerChildInfo.func_code }>
+                                                        <span className="menu_title">
+                                                            <span className="checkbox_wrap">
+                                                                <input className="form-check-input" onChange={ onCheckboxChangeHandler } type="checkbox" id={ funcInnerChildInfo.func_code } checked={ funcInnerChildInfo.setup_flag }/>
+                                                                <label className="form-check-label" htmlFor={ funcInnerChildInfo.func_code }>{ funcInnerChildInfo.func_name }</label>
                                                             </span>
-                                                        </li>
-                                                    )
-                                                })}
-                                            </ul>
-                                        </div>
-                                        : null
-                                    }
-                                </li>
-                            })}
-                        </ul>
-                    </div>
-                )
-            })
-        }</div>
+                                                        </span>
+                                                    </li>
+                                                )
+                                            })}
+                                        </ul>
+                                    </div>
+                                    : null
+                                }
+                            </li>
+                        })}
+                    </ul>
+                </div>
+            )
+        })
+    }</div>
 
-    }
 }
