@@ -8,6 +8,8 @@ const REQUEST_URL = '/vurix-dms/api/v1';
 export const getSetupProps = () => {
     return (dispatch: Dispatch) => {
         axios.get(`${REQUEST_URL}/role/getSetupProp`).then((response) => {
+            console.log('0.getSetupProps::');
+            console.log(response); // 전체를 걍다 넘김
             dispatch({
                 type: GET_SETUP_PROPS,
                 payload: response
@@ -53,6 +55,7 @@ export const resetPutSetupStatus = () => {
 }
 
 export const addSetupData = (setupData: Array<IMenu | IEvent | IFunc | ISetup | ILayer>, type: string) => {
+    console.log(setupData);
     return (dispatch: Dispatch) => {
         dispatch({
             dataType: type,

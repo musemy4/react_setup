@@ -13,15 +13,24 @@ interface IProps {
 export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
     const [allChecked, setAllChecked] = useState(!propsMenuInfo.some((menuInfo: { setup_flag: any; }) => !menuInfo.setup_flag));
     const [stateMenuInfo, setStateMenuInfo] = useState(propsMenuInfo);
-
+    console.log(propsMenuInfo);
+    // 한번 발휘됨 (componentDidMount);
     useEffect(() => {
         addData(propsMenuInfo, 'MENU');
     }, []);
 
-    const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onCheckboxAllMenuChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('AllMenu===');
         const check = e.target.checked;
 
         const newStateMenuInfo = stateMenuInfo.map((menuInfo: IMenu) => {
+            // submenu changed
+            const newChildren = menuInfo.children.map((subMenu: IMenu)=>{
+                return {
+                    ...subMenu,
+                    setup_flag: check
+                }
+            })
             return {
                 area_flag: menuInfo.area_flag,
                 menu_code: menuInfo.menu_code,
@@ -29,7 +38,7 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
                 ordering: menuInfo.ordering,
                 p_menu_code: menuInfo.p_menu_code,
                 setup_flag: check,
-                children: menuInfo.children
+                children: newChildren
             }
         });
         setAllChecked(e.target.checked);
@@ -37,13 +46,23 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
         addData(newStateMenuInfo, 'MENU');
     }
 
-    const onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onCheckboxMenuChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('Menu===');
         const { id } = e.target;
         const check = e.target.checked;
+        console.log(id);
+        console.log(check);
 
         const newStateMenuInfo = stateMenuInfo.map((menuGroup: IMenu) => {
             let copyMenuGroup = { ...menuGroup };
             if (menuGroup.menu_code === id) {
+                // submenu changed
+                const newChildren = copyMenuGroup.children.map((subMenu: IMenu)=>{
+                    return {
+                        ...subMenu,
+                        setup_flag: check
+                    }
+                })
                 copyMenuGroup = {
                     area_flag: menuGroup.area_flag,
                     menu_code: menuGroup.menu_code,
@@ -51,11 +70,11 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
                     ordering: menuGroup.ordering,
                     p_menu_code: menuGroup.p_menu_code,
                     setup_flag: check,
-                    children: menuGroup.children
+                    children: newChildren,
                 };
                 return copyMenuGroup;
             }
-
+            // 이거 뭐냐 윽..
             const childrenIndex = _.findIndex(copyMenuGroup.children, [ 'menu_code', id ]);
             if (childrenIndex > -1) {
                 const findMenu: IMenu = copyMenuGroup.children[childrenIndex];
@@ -70,7 +89,51 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
         addData(newStateMenuInfo, 'MENU');
     }
 
+    const onCheckboxSubmenuChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('submenu==');
+        const { id } = e.target;
+        const [main, sub] = id.split(':');
+        const check = e.target.checked;
+
+        const newStateMenuInfo = stateMenuInfo.map((menuGroup: IMenu) => {
+            let copyMenuGroup = { ...menuGroup };
+            if (menuGroup.menu_code === main) {
+                // submenu changed
+                const newChildren = copyMenuGroup.children.map((subMenu: IMenu)=>{
+                    if(subMenu.menu_code === sub) {
+                        return {
+                            ...subMenu,
+                            setup_flag: check
+                        }
+                    }
+                    return subMenu;
+                })
+
+                const menuAllChecked = newChildren.some((child)=> !child.setup_flag);
+                copyMenuGroup = {
+                    area_flag: menuGroup.area_flag,
+                    menu_code: menuGroup.menu_code,
+                    menu_name: menuGroup.menu_name,
+                    ordering: menuGroup.ordering,
+                    p_menu_code: menuGroup.p_menu_code,
+                    setup_flag: !menuAllChecked,
+                    children: newChildren,
+                };
+                return copyMenuGroup;
+            }
+            return menuGroup;
+        });
+
+
+        // some함수: 하나라도 true면 true 리턴
+        const isAllChecked = newStateMenuInfo.some((menuInfo: IMenu) => !menuInfo.setup_flag );
+        setAllChecked(!isAllChecked);
+        setStateMenuInfo(newStateMenuInfo);
+        addData(newStateMenuInfo, 'MENU');
+    }
+
     const onCheckboxAreaChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('area==');
         const { id } = e.target;
         const check = e.target.checked;
 
@@ -106,7 +169,7 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
                     <tr>
                         <th>
                             <span className="checkbox_wrap">
-                                <input onChange={ onCheckboxAllChangeHandler } className="form-check-input"  type="checkbox" id="allChecked" checked={ allChecked } value={ undefined } />
+                                <input onChange={ onCheckboxAllMenuChangeHandler } className="form-check-input"  type="checkbox" id="allChecked" checked={ allChecked } value={ undefined } />
                                 <label className="form-check-label" htmlFor="allChecked">메뉴</label>
                             </span>
                         </th>
@@ -120,7 +183,7 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
                         ? <tr key={menuGroup.menu_code}>
                               <td style={{ textAlign: "left", borderRight: '1px solid rgba(255, 255, 255, 0.15)' }}>
                                     <span className="checkbox_wrap">
-                                        <input onChange={ onCheckboxChangeHandler } className="form-check-input" type="checkbox" id={ menuGroup.menu_code } checked={ menuGroup.setup_flag } />
+                                        <input onChange={ onCheckboxMenuChangeHandler } className="form-check-input" type="checkbox" id={ menuGroup.menu_code } checked={ menuGroup.setup_flag } />
                                         <label className="form-check-label" htmlFor={ menuGroup.menu_code }>{ menuGroup.menu_name }</label>
                                     </span>
                                 </td>
@@ -134,7 +197,7 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
                                         (
                                             <td rowSpan={menuGroup.children.length} style={{ textAlign: "left", borderRight: '1px solid rgba(255, 255, 255, 0.15)' }}>
                                                 <span className="checkbox_wrap">
-                                                    <input onChange={ onCheckboxChangeHandler } className="form-check-input" type="checkbox" id={ menuGroup.menu_code } checked={ menuGroup.setup_flag } />
+                                                    <input onChange={ onCheckboxMenuChangeHandler } className="form-check-input" type="checkbox" id={ menuGroup.menu_code } checked={ menuGroup.setup_flag } />
                                                     <label className="form-check-label" htmlFor={ menuGroup.menu_code }>{ menuGroup.menu_name }</label>
                                                 </span>
                                             </td>
@@ -143,7 +206,7 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
                                 }
                                 <td style={{ textAlign: "left", borderRight: '1px solid rgba(255, 255, 255, 0.15)' }}>
                                     <span className="checkbox_wrap">
-                                        <input onChange={ onCheckboxChangeHandler } className="form-check-input" type="checkbox" id={ menu.menu_code } checked={ menu.setup_flag } />
+                                        <input onChange={ onCheckboxSubmenuChangeHandler } className="form-check-input" type="checkbox" id={ `${menu.p_menu_code}:${menu.menu_code}` } checked={ menu.setup_flag } />
                                         <label className="form-check-label" htmlFor={ menu.menu_code }>{ menu.menu_name }</label>
                                     </span>
                                 </td>

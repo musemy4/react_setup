@@ -70,32 +70,37 @@ const override = css`
   z-index: 999999`;
 
 
-const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupState,
-                                    setupCreateID, setupResetRole, setupResetPw, resetAdminStatus,resetSetupLogin,
+const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupState, // stateToProps
+                                    setupCreateID, setupResetRole, setupResetPw, resetAdminStatus,resetSetupLogin, // dispatchToProps
                                     getSetupProps, getSetupPropsJson, resetGetSetupStatus, putSetupProps, resetPutSetupStatus, addSetupData}: IProps) => {
     const inputFile = useRef<HTMLInputElement | null>(null); // ***
     const [refresh, setRefresh] = useState(String(new Date()));
     const [loading, setLoading] = useState(false);
     const [setupPropsList, setSetupPropsList] = useState(getSetupState);
 
+    console.log(setupPropsList);
     // componentDidMount(with React hooks) : ,[]
     useEffect(() => {
         // 아래는 클래스 방식일때 처리
         // refInputFIle = React.createRef<HTMLInputElement>();
-        resetSetupLogin();
-        getSetupProps();
+        console.log('useEff:[]');
+        resetSetupLogin(); // 왜 리셋?..
+        getSetupProps(); // ** 전체 리스트 가져옴
         return () => {
             console.log('componentWillUnmount:::');
         }
-
+        
     }, []);
-
+    
     const mounted = useRef(false); // componentDidmount는 넘어가도록 처리(지역변수 너낌)
     // componentDidUpdate(with React hooks) : 
     useEffect(() => {
+        console.log('useEff: ');
         if(!mounted.current) {
+            console.log('init'); // 여기 치고 넘어가죠
             mounted.current = true;
         } else {
+            console.log(getSetupState);
             if (getSetupState && getSetupState.code) {
                 if (getSetupState.code === 200) {
                     updateState();
@@ -282,6 +287,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
         });
     };
 
+    // setupProps 초기화
     const onPutSetupProps = () => {
         const httpParam: IPutSetupGroup = {
             menu_info: [],
@@ -321,6 +327,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
         putSetupProps(httpParam);
     }
 
+    // div에 key를 왜
     return (
         <div key={ refresh }>
             <ClipLoader color="#0d6efd" loading={loading} css={override} size={50} />
@@ -421,7 +428,14 @@ interface IStateToProps {
     addSetupState: Array<IAddSetupData>;
 }
 
-// get
+// get datas from reducers::
+// export const reducers = {
+//     adminState: adminReducer,
+//     loginState: loginReducer,
+//     getSetupState: getSetupPropsReducer,
+//     putSetupState: putSetupPropsReducer,
+//     addSetupState: returnSetupPropsReducer,
+// };
 const mapStateToProps = ({ adminState, getSetupState, putSetupState, addSetupState }: IStateToProps) => {
     return { adminState, getSetupState, putSetupState, addSetupState };
 }

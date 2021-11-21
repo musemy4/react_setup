@@ -36,16 +36,23 @@ interface IConvertTreeOptions {
 }
 
 export const getConvertTreeData = 
-    (setupData: Array<IMenuCode | IFuncCode | IConfigCode> | Array<IMenu | IFunc | ISetup>, parentId: string, options: IConvertTreeOptions): any => {
-        return setupData
-            .filter((node: IMenuCode | IFuncCode | IConfigCode | IMenu | IFunc | ISetup ) => node[options.group] === parentId)
-            .reduce((tree: Array<IMenuCode | IFuncCode | IConfigCode>, node: IMenuCode | IFuncCode | IConfigCode) => [
-                    ...tree,
-                    {
-                        ...node,
-                        children: getConvertTreeData(setupData, String(node[options.code]), options)
-                    },
-                ],
-                []
-            )
+    (
+        setupData: Array<IMenuCode | IFuncCode | IConfigCode> | Array<IMenu | IFunc | ISetup>, 
+        parentId: string, 
+        options: IConvertTreeOptions
+    ): any => {
+        // p_code_name을 기준으로 묶는다.(children으로 분류한다)
+        const filtered  = setupData
+        .filter((node: IMenuCode | IFuncCode | IConfigCode | IMenu | IFunc | ISetup ) => node[options.group] === parentId)
+        .reduce((tree: Array<IMenuCode | IFuncCode | IConfigCode>, node: IMenuCode | IFuncCode | IConfigCode) => [
+                ...tree,
+                {
+                    ...node,
+                    children: getConvertTreeData(setupData, String(node[options.code]), options)
+                },
+            ],
+            []
+        )
+        // console.log(filtered);
+        return filtered;
 }
