@@ -1,7 +1,6 @@
 // React
 import _ from 'lodash';
 import React, { useState, useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
 // confirm, toast
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
