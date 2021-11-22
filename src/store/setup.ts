@@ -11,7 +11,7 @@ import {
     IFunc, 
     ISetup, 
     ILayer 
-} from '../components/setupView/setupSetting/setup_interface';
+} from '../components/setupView/setupSetting/setup_setting_interface';
 
 import { IAction, IHttpAction, IState } from './types'
 

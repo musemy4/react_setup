@@ -1,7 +1,7 @@
 // React
 import React, { useState, useEffect } from 'react';
 // Interfaces
-import { IEvent } from './setup_interface';
+import { IEvent } from './setup_setting_interface';
 
 interface IProps {
     propsEventInfo: Array<IEvent>;

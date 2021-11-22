@@ -3,7 +3,7 @@ import {
     IEvent, 
     IFunc, 
     ISetup, 
-} from '../components/setupView/setupSetting/setup_interface';
+} from '../components/setupView/setupSetting/setup_setting_interface';
 // } from '../components/setupView/setupSetting/setup_interface';
 
 export interface IState {

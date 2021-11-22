@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 // External Lib
 import _ from 'lodash';
 // Interfaces
-import { ISetup } from './setup_interface';
+import { ISetup } from './setup_setting_interface';
 
 interface IProps {
     propsSetupInfo: Array<ISetup>;

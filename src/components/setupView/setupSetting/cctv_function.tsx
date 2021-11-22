@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 // Interfaces
-import { IFunc, ILayer } from './setup_interface';
+import { IFunc, ILayer } from './setup_setting_interface';
 
 interface IProps {
     propsCctvFunctionInfo: Array<IFunc>;

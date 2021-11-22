@@ -39,7 +39,7 @@ import {
     IPutSetup, 
     IPutSetupHttpBody,
     IAddSetupData
-} from './setup_interface';
+} from './setup_setting_interface';
 
 // interfaces
 interface IProps {

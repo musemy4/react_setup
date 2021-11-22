@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
 // Interfaces
-import { IMenu } from './setup_interface';
+import { IMenu } from './setup_setting_interface';
 
 interface IProps {
     propsMenuInfo: Array<IMenu>;
