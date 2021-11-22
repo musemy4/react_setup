@@ -1,6 +1,4 @@
 // React
-import React, { useState, useEffect } from 'react';
-
 export const TabType = {
     SETUP: "SETUP",
     TAB2: "TAB2",

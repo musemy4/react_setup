@@ -12,7 +12,6 @@ interface IProps {
 export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
     const [allChecked, setAllChecked] = useState(!propsMenuInfo.some((menuInfo: { setup_flag: any; }) => !menuInfo.setup_flag));
     const [stateMenuInfo, setStateMenuInfo] = useState(propsMenuInfo);
-    console.log(propsMenuInfo);
     // 한번 발휘됨 (componentDidMount);
     useEffect(() => {
         addData(propsMenuInfo, 'MENU');

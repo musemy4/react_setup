@@ -1,6 +1,5 @@
 // React
-import _ from 'lodash';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 
 // Component
@@ -13,13 +12,13 @@ const SetupWrap = () => {
     // TABS
     const [selectedTab, setSelectedTab] = useState(TabType.SETUP);
     const [refresh, setRefresh] = useState(String(new Date()));
-    
+
     useEffect(() => {
-        console.log('useEff:[]');
         return () => {
             console.log('componentWillUnmount:::');
         }
     }, []);
+    
     return (
          <div key={ refresh }>
             <Tabs
