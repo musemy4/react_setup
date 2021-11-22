@@ -1,8 +1,9 @@
-import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { applyMiddleware, combineReducers, createStore } from 'redux'
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { History } from 'history'
 import thunk from 'redux-thunk';
-import { reducers } from '../_reducers';
+import { reducers } from './index';
 
 export default function configureStore(history: History) {
   const middleware = [
@@ -17,6 +18,6 @@ export default function configureStore(history: History) {
 
   return createStore(
     rootReducer,
-    compose(applyMiddleware(...middleware))
+    composeWithDevTools(applyMiddleware(...middleware))
   );
 }

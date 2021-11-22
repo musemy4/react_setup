@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Switch } from 'react-router';
+import Login from './components/login/login'
 
-import Login from './_views/login/login';
-import PrivateRoute from './_routes/private_route';
-import SetupSettingWrap from './_views/setupSettings/setup_setting_wrap';
+import PrivateRoute from './routes/private_route';
+import SetupSettingWrap from './components/setupView/setup_setting_wrap';
 
 const App = () => {
     return (

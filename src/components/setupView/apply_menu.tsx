@@ -9,16 +9,17 @@ interface IProps {
     addData: (data: Array<IMenu>, type: string) => void;
 }
 
-
 export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
     const [allChecked, setAllChecked] = useState(!propsMenuInfo.some((menuInfo: { setup_flag: any; }) => !menuInfo.setup_flag));
     const [stateMenuInfo, setStateMenuInfo] = useState(propsMenuInfo);
+    console.log(propsMenuInfo);
     // 한번 발휘됨 (componentDidMount);
     useEffect(() => {
         addData(propsMenuInfo, 'MENU');
     }, []);
 
     const onCheckboxAllMenuChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('AllMenu===');
         const check = e.target.checked;
 
         const newStateMenuInfo = stateMenuInfo.map((menuInfo: IMenu) => {
@@ -45,8 +46,11 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
     }
 
     const onCheckboxMenuChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('Menu===');
         const { id } = e.target;
         const check = e.target.checked;
+        console.log(id);
+        console.log(check);
 
         const newStateMenuInfo = stateMenuInfo.map((menuGroup: IMenu) => {
             let copyMenuGroup = { ...menuGroup };
@@ -85,6 +89,7 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
     }
 
     const onCheckboxSubmenuChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('submenu==');
         const { id } = e.target;
         const [main, sub] = id.split(':');
         const check = e.target.checked;
@@ -127,6 +132,7 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
     }
 
     const onCheckboxAreaChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('area==');
         const { id } = e.target;
         const check = e.target.checked;
 

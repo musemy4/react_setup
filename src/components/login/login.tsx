@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { postSetupLogin } from '../../_actions/login';
+import { postSetupLogin } from '../../store/login';
 
-const Login:React.FC = (props: any) => {
+const Login = (props: any) => {
 
     const [ id, setStateId ] = useState('');
     const [ pw, setStatePw ] = useState('');

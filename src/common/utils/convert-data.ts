@@ -1,4 +1,4 @@
-import { IMenu, IFunc, ISetup } from '../../_views/setupSettings/setup_interface';
+import { IMenu, IFunc, ISetup } from '../../components/setupView/setup_interface';
 
 interface IMenuCode {
     [index: string]: string | boolean | number | Array<IMenuCode> | undefined;
