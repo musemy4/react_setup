@@ -79,7 +79,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
     const inputFile = useRef<HTMLInputElement | null>(null); // ***
     const [refresh, setRefresh] = useState(String(new Date()));
     const [loading, setLoading] = useState(false);
-    const [setupPropsList, setSetupPropsList] = useState(getSetupState);
+    const [setupPropsList, setSetupPropsList] = useState<IGetSetupHttpBody | null>();
 
 
     const dispatch = useDispatch();
@@ -90,6 +90,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
         // 아래는 클래스 방식일때 처리
         // refInputFIle = React.createRef<HTMLInputElement>();
         console.log('useEff:[]');
+        setSetupPropsList(getSetupState);
         resetSetupLogin(); // 왜 리셋?..
         getSetupProps(); // ** 전체 리스트 가져옴
         return () => {
@@ -240,6 +241,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
     }
 
     const onDownloadSetupFile = () => {
+        if(!setupPropsList) return;
         const fileName = `vurix-dms-platform_셋업 정보_${dateFormat(new Date())}`;
         const json = JSON.stringify(setupPropsList.response, null, 4);
         const blob = new Blob([json],{type:'application/json'});
