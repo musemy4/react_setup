@@ -13,7 +13,7 @@ ol, ul { list-style: none; }
 .input_t1 { width: 150px; height:30px; background-color:#fff; line-height:32px; font-size:13px; color:#515151; padding:0 9px; box-sizing:border-box; }
 .row { margin: 0; padding: 10px; }
 .row > * { padding: 0; }
-.row .box { overflow: hidden; box-sizing: border-box; background-color: rgba(255, 255, 255, 0.075); height: 100%; padding: 0 10px 10px 10px; border: 1px solid rgba(255, 255, 255, 0.1) }
+.row .box { overflow: hidden; box-sizing: border-box; background-color: rgba(255, 255, 255, 0.075); height: 95%; padding: 0 10px 10px 10px; border: 1px solid rgba(255, 255, 255, 0.1) }
 .row .box h2 { margin-bottom: 0px; font-size: 16px; font-weight: bold; line-height: 36px; border-bottom: 1px solid rgba(255 ,255, 255,.1 ); height: 40px; box-sizing: border-box; }
 .row .box .box-content { width: calc(100% + 3px); height: calc(100% - 40px); overflow-y: auto; }
 .row .box .box-content:hover::-webkit-scrollbar { color: #ff0000; }
