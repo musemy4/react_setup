@@ -5,6 +5,7 @@ body { margin: 0; padding: 0; font-family:'Noto Sans KR', "Malgun Gothic", sans-
 #root { background-color: #3b3b3b; color: #fff; }
 ol, ul { list-style: none; }
 .h-95 { height: 95%; }
+.h-90 { height: 90%; }
 .h-5 { height: 5%; }
 .ml-5 { margin-left: 5px; }
 .mr-3 { margin-right: 3px; }
@@ -13,7 +14,7 @@ ol, ul { list-style: none; }
 .input_t1 { width: 150px; height:30px; background-color:#fff; line-height:32px; font-size:13px; color:#515151; padding:0 9px; box-sizing:border-box; }
 .row { margin: 0; padding: 10px; }
 .row > * { padding: 0; }
-.row .box { overflow: hidden; box-sizing: border-box; background-color: rgba(255, 255, 255, 0.075); height: 95%; padding: 0 10px 10px 10px; border: 1px solid rgba(255, 255, 255, 0.1) }
+.row .box { overflow: hidden; box-sizing: border-box; background-color: rgba(255, 255, 255, 0.075); height: 100%; padding: 0 10px 10px 10px; border: 1px solid rgba(255, 255, 255, 0.1) }
 .row .box h2 { margin-bottom: 0px; font-size: 16px; font-weight: bold; line-height: 36px; border-bottom: 1px solid rgba(255 ,255, 255,.1 ); height: 40px; box-sizing: border-box; }
 .row .box .box-content { width: calc(100% + 3px); height: calc(100% - 40px); overflow-y: auto; }
 .row .box .box-content:hover::-webkit-scrollbar { color: #ff0000; }
@@ -114,6 +115,26 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 .form-control:hover, .form-control:focus { background: transparent; outline: none; -webkit-box-shadow: none; box-shadow: none; border-color: rgba(255, 255, 255, 0.4); }
 .form-control:focus { border-color: rgba(255, 255, 255, 0.4); }
 @media (prefers-reduced-motion: reduce) { .form-control { -webkit-transition: none; -o-transition: none; transition: none; } }
+
+
+/* tabs */
+.tab_wrap {height:5% ;}
+.nav_tabs {border-bottom:1px solid #3080d0;margin-bottom: 20px;	display:flex;flex-wrap:wrap;padding-left:15px;padding-top:5px;list-style:none;position:relative}
+.nav_tabs .nav_link {
+	background-color: #3B3B3B; margin-bottom: -1px;
+	color: #A4A4A4;border: 1px solid transparent;border-bottom-color:#3080d0;
+	border-top-left-radius: 0; border-top-right-radius: 0;    display: block; line-height:28px;
+	padding: 0.5rem 1rem; text-decoration: none;font-size:15px;	  box-sizing:border-box;height:42px;}
+.nav_tabs .nav_item.on .nav_link {
+	color: #fff;border-color: #3080d0;border-bottom-color:transparent;
+}
+.nav_tabs .nav_item:hover {
+	color: #fff;
+}
+.tab_content_wrap {height:calc(100% - 42px);overflow-y:auto}
+.nav_tabs button {position:absolute;right:0;top:2px;}
+.nav_item {position:relative}
+.tab_content {display:none}
 
 /* confirm */
 .react-confirm-alert-overlay { background: rgba(0, 0, 0, 0.7) !important; }

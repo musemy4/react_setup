@@ -10,19 +10,20 @@ import ClipLoader from 'react-spinners/ClipLoader';
 // Redux lib
 import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-// Actions
+
+
+
+// Actions, Reducers
 import { setupCreateID, setupResetRole, setupResetPw, resetAdminStatus } from '../../store/admin';
 import { resetSetupLogin } from '../../store/login';
 import { getSetupProps, getSetupPropsJson, putSetupProps, addSetupData, resetGetSetupStatus, resetPutSetupStatus } from '../../store/setup';
-// import { setupCreateID, setupResetRole, setupResetPw, resetAdminStatus } from '../../_actions/admin';
-// import { resetSetupLogin } from '../../_actions/login';
-// import { getSetupProps, getSetupPropsJson, putSetupProps, addSetupData, resetGetSetupStatus, resetPutSetupStatus } from '../../_actions/setup';
 
 // Components
 import { ApplyMenu } from './apply_menu';
 import { IncomingEvent } from './incoming_event';
 import { CctvFunction } from './cctv_function';
 import { FrontSetup } from './front_setup';
+import { Tabs, TabType, TabLabel } from "./tabs";
 // Util
 import { getConvertTreeData } from '../../common/utils/convert-data';
 import { dateFormat } from '../../common/utils/date';
@@ -76,6 +77,9 @@ const override = css`
 const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupState, // stateToProps
                             setupCreateID, setupResetRole, setupResetPw, resetAdminStatus,resetSetupLogin, // dispatchToProps
                             getSetupProps, getSetupPropsJson, resetGetSetupStatus, putSetupProps, resetPutSetupStatus, addSetupData}: IProps) => {
+    // TABS
+    const [selectedTab, setSelectedTab] = useState(TabType.SETUP);
+    
     const inputFile = useRef<HTMLInputElement | null>(null); // ***
     const [refresh, setRefresh] = useState(String(new Date()));
     const [loading, setLoading] = useState(false);
@@ -84,7 +88,6 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
 
     const dispatch = useDispatch();
 
-    console.log(setupPropsList);
     // componentDidMount(with React hooks) : ,[]
     useEffect(() => {
         // 아래는 클래스 방식일때 처리
@@ -345,51 +348,52 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
     // div에 key를 왜
     return (
         <div key={ refresh }>
+            <Tabs
+                selectedTab={selectedTab}
+                onChange={(selectedTab: any) => setSelectedTab(selectedTab)} 
+            />
             <ClipLoader color="#0d6efd" loading={loading} css={override} size={50} />
             {
-                loading 
-                    ? <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} />
-                    : null
-            }
-            { 
-                setupPropsList ? 
-                <div className="row h-95">
-                    {/* 1. 적용 메뉴 */}
-                    <div className="apply-menu box">
-                        <h2>적용메뉴</h2>
-                        { 
-                            !setupPropsList.response.menuInfo
-                            ? <span>loading...</span> 
-                            : 
-                            <div className="box-content">
-                                <ApplyMenu 
-                                    addData={ addSetupData } 
-                                    propsMenuInfo={ getConvertTreeData(setupPropsList.response.menuInfo, 'root', { group: 'p_menu_code', code: 'menu_code' }) } 
-                                />
-                            </div> 
-                        }
-                    </div>
-                    {/* 2. 수신 이벤트 */}
-                    <div className="incoming-event box">
-                        <h2>수신 이벤트</h2>
-                        { 
-                            !setupPropsList.response.eventInfo
-                            ? <span>loading...</span> 
-                            : 
+                loading || !setupPropsList ?
+                    <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} /> 
+                      :
+                    <div className="row h-90">
+                        {/* 1. 적용 메뉴 */}
+                        <div className="apply-menu box">
+                            <h2>적용메뉴</h2>
+                            { 
+                                setupPropsList && !setupPropsList.response.menuInfo?
+                                <span>loading...</span> 
+                                    : 
+                                <div className="box-content">
+                                    <ApplyMenu 
+                                        addData={ addSetupData } 
+                                        propsMenuInfo={ getConvertTreeData(setupPropsList.response.menuInfo, 'root', { group: 'p_menu_code', code: 'menu_code' }) } 
+                                    />
+                                </div> 
+                            }
+                        </div>
+                        {/* 2. 수신 이벤트 */}
+                        <div className="incoming-event box">
+                            <h2>수신 이벤트</h2>
+                            { 
+                                !setupPropsList.response.eventInfo?
+                                <span>loading...</span> 
+                                    : 
                                 <div className="box-content">
                                     <IncomingEvent 
                                         addData={ addSetupData } 
                                         propsEventInfo={ setupPropsList.response.eventInfo } 
                                     />
                                 </div> 
-                        }
-                    </div>
-                     {/* 3. CCTV 기능 */}
-                    <div className="cctv-function box">
-                        { 
-                            !setupPropsList.response.layerInfo 
-                            ? <span>loading...</span> 
-                            : 
+                            }
+                        </div>
+                        {/* 3. CCTV 기능 */}
+                        <div className="cctv-function box">
+                            { 
+                                !setupPropsList.response.layerInfo? 
+                                <span>loading...</span> 
+                                    : 
                                 <CctvFunction 
                                     addData={ addSetupData }
                                     propsCctvFunctionInfo={ 
@@ -398,33 +402,31 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                                     }
                                     propLayerInfo={ setupPropsList.response.layerInfo }
                                 /> 
-                        }
-                    </div>
-                     {/* 4. FRONT 설정 */}
-                    <div className="front-setting box">
-                        <h2>FRONT 설정</h2>
-                        { 
-                            !setupPropsList.response.setupInfo
-                            ? <span>loading...</span> 
-                            : 
+                            }
+                        </div>
+                        {/* 4. FRONT 설정 */}
+                        <div className="front-setting box">
+                            <h2>FRONT 설정</h2>
+                            { 
+                                !setupPropsList.response.setupInfo?
+                                <span>loading...</span> 
+                                    : 
                                 <div className="box-content">
                                     <FrontSetup 
                                         addData={ addSetupData } 
                                         propsSetupInfo={ getConvertTreeData(setupPropsList.response.setupInfo, 'root', { group: 'config_group', code: 'config_code' }) } 
                                     />
                                 </div> 
-                        }
-                    </div>
-
-                </div>
-                : <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} />
+                            }
+                        </div>
+                    </div> 
             }
 
             <div className="bottom h-5">
                 <div className="btn-left">
-                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('admin') } >관리자 계정 생성</button>
-                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('auth') } >관리자 권한 초기화</button>
-                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('pw') } >관리자 비밀번호 초기화</button>
+                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('admin') }>관리자 계정 생성</button>
+                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('auth') }>관리자 권한 초기화</button>
+                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('pw') }>관리자 비밀번호 초기화</button>
                 </div>
                 <div className="btn-right">
                     <form>
