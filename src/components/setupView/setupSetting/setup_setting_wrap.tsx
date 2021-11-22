@@ -424,6 +424,9 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
     );
 }
 
+// 
+// 여기 밑에 싹 없애자
+
 interface IStateToProps {
     adminState: {
         [key: string] : {
