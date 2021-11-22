@@ -1,7 +1,9 @@
 export const Tabs2 = () => {
     return (
-        <div>  
-            tab2 화면입니다
+        <div className="row h-90">
+            <div className="box">
+                <h2>탭2 화면입니다</h2>
+            </div>
 		</div>
     );
 };
