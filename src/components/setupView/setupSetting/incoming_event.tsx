@@ -13,7 +13,7 @@ export const IncomingEvent = ({propsEventInfo, addData}: IProps) => {
     const [stateEventInfo, setStateEventInfo] = useState(propsEventInfo);
 
     useEffect(() => {
-        addData(propsEventInfo, 'MENU');
+        addData(propsEventInfo, 'EVENT');
     }, []);
 
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
