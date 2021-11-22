@@ -13,15 +13,18 @@ export const TabLabel = {
     [TabType.TAB3]: "탭 3 - 미정",
 };
 
-export const Tabs = ({ selectedTab = 'SETUP', onChange }: any) => {
+interface ITabProps {
+    selectedTab: string;
+    onChange: (tabType: string) => void;
+}
 
+
+export const Tabs = ({ selectedTab = 'SETUP', onChange }: ITabProps) => {
 
     const handleTabClick = (tabType: string) => {
         onChange(tabType)
     }
 
-
-    // 
     return (
         <div className="tab_wrap">  
 			<ul className="nav_tabs">
@@ -37,7 +40,6 @@ export const Tabs = ({ selectedTab = 'SETUP', onChange }: any) => {
                         </a>
                     </li>
                 ))}
-
 			</ul>
 		</div>
     );

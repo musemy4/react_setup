@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Dispatch } from 'redux';
 import _ from 'lodash';
 
+// types
 import { 
     IGetSetupGroup,
     IPutSetupGroup,
@@ -10,7 +11,7 @@ import {
     IFunc, 
     ISetup, 
     ILayer 
-} from '../components/setupView/setup_interface';
+} from '../components/setupView/setupSetting/setup_interface';
 
 import { IAction, IHttpAction, IState } from './types'
 

@@ -14,19 +14,18 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 
 // Actions, Reducers
-import { setupCreateID, setupResetRole, setupResetPw, resetAdminStatus } from '../../store/admin';
-import { resetSetupLogin } from '../../store/login';
-import { getSetupProps, getSetupPropsJson, putSetupProps, addSetupData, resetGetSetupStatus, resetPutSetupStatus } from '../../store/setup';
+import { setupCreateID, setupResetRole, setupResetPw, resetAdminStatus } from '../../../store/admin';
+import { resetSetupLogin } from '../../../store/login';
+import { getSetupProps, getSetupPropsJson, putSetupProps, addSetupData, resetGetSetupStatus, resetPutSetupStatus } from '../../../store/setup';
 
 // Components
 import { ApplyMenu } from './apply_menu';
 import { IncomingEvent } from './incoming_event';
 import { CctvFunction } from './cctv_function';
 import { FrontSetup } from './front_setup';
-import { Tabs, TabType, TabLabel } from "./tabs";
 // Util
-import { getConvertTreeData } from '../../common/utils/convert-data';
-import { dateFormat } from '../../common/utils/date';
+import { getConvertTreeData } from '../../../common/utils/convert-data';
+import { dateFormat } from '../../../common/utils/date';
 // Interfaces
 import { 
     IMenu, 
@@ -77,16 +76,10 @@ const override = css`
 const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupState, // stateToProps
                             setupCreateID, setupResetRole, setupResetPw, resetAdminStatus,resetSetupLogin, // dispatchToProps
                             getSetupProps, getSetupPropsJson, resetGetSetupStatus, putSetupProps, resetPutSetupStatus, addSetupData}: IProps) => {
-    // TABS
-    const [selectedTab, setSelectedTab] = useState(TabType.SETUP);
-    
     const inputFile = useRef<HTMLInputElement | null>(null); // ***
     const [refresh, setRefresh] = useState(String(new Date()));
     const [loading, setLoading] = useState(false);
     const [setupPropsList, setSetupPropsList] = useState<IGetSetupHttpBody | null>();
-
-
-    const dispatch = useDispatch();
 
     // componentDidMount(with React hooks) : ,[]
     useEffect(() => {
@@ -348,10 +341,6 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
     // div에 key를 왜
     return (
         <div key={ refresh }>
-            <Tabs
-                selectedTab={selectedTab}
-                onChange={(selectedTab: any) => setSelectedTab(selectedTab)} 
-            />
             <ClipLoader color="#0d6efd" loading={loading} css={override} size={50} />
             {
                 loading || !setupPropsList ?
@@ -362,7 +351,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                         <div className="apply-menu box">
                             <h2>적용메뉴</h2>
                             { 
-                                setupPropsList && !setupPropsList.response.menuInfo?
+                                !setupPropsList.response || setupPropsList && !setupPropsList.response.menuInfo?
                                 <span>loading...</span> 
                                     : 
                                 <div className="box-content">
@@ -377,7 +366,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                         <div className="incoming-event box">
                             <h2>수신 이벤트</h2>
                             { 
-                                !setupPropsList.response.eventInfo?
+                                !setupPropsList.response || !setupPropsList.response.eventInfo?
                                 <span>loading...</span> 
                                     : 
                                 <div className="box-content">
@@ -391,7 +380,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                         {/* 3. CCTV 기능 */}
                         <div className="cctv-function box">
                             { 
-                                !setupPropsList.response.layerInfo? 
+                                !setupPropsList.response || !setupPropsList.response.layerInfo? 
                                 <span>loading...</span> 
                                     : 
                                 <CctvFunction 
@@ -408,7 +397,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                         <div className="front-setting box">
                             <h2>FRONT 설정</h2>
                             { 
-                                !setupPropsList.response.setupInfo?
+                                !setupPropsList.response || !setupPropsList.response.setupInfo?
                                 <span>loading...</span> 
                                     : 
                                 <div className="box-content">
