@@ -12,7 +12,8 @@ import { Tabs3 } from './tab3/tab3';
 const SetupWrap = () => {
     // TABS
     const [selectedTab, setSelectedTab] = useState(TabType.SETUP);
-
+    const [refresh, setRefresh] = useState(String(new Date()));
+    
     useEffect(() => {
         console.log('useEff:[]');
         return () => {
@@ -20,14 +21,14 @@ const SetupWrap = () => {
         }
     }, []);
     return (
-         <div>
+         <div key={ refresh }>
             <Tabs
                 selectedTab={selectedTab}
                 onChange={(selectedTab: string) => setSelectedTab(selectedTab)} 
             />
-             {selectedTab === TabType.SETUP && (
-                  <SetupSettingWrap />
-                )}
+            {selectedTab === TabType.SETUP && (
+                <SetupSettingWrap />
+            )}
             {selectedTab === TabType.TAB2 && (
                 <Tabs2 />
             )}

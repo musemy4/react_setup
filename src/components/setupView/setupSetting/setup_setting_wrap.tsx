@@ -340,7 +340,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
 
     // div에 key를 왜
     return (
-        <div key={ refresh }>
+        <>
             <ClipLoader color="#0d6efd" loading={loading} css={override} size={50} />
             {
                 loading || !setupPropsList ?
@@ -427,7 +427,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                     </form>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 
