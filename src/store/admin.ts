@@ -16,68 +16,60 @@ const REQUEST_URL = '/vurix-dms/api/v1';
 
 // action start 
 export const setupCreateID = () => {
-    return (dispatch: Dispatch) => {
-        axios.post(`${REQUEST_URL}/auth/setupCreateID`).then((response) => {
-            dispatch({
-                type: ADMIN_CREATE_SUCCESS,
-                payload: response
-            });
-        }).catch((error: AxiosError) => {
-            // ID 중복
-            if (error.response?.data.code === 500 
-                    && error.response?.data.message.indexOf('unique')) {
-                        dispatch({
-                            type: ADMIN_CREATE_FAILURE_DUPLICATE,
-                            payload: error
-                        });
-            } else {
-                dispatch({
-                    type: ADMIN_CREATE_FAILURE,
+    axios.post(`${REQUEST_URL}/auth/setupCreateID`)
+    .then((response) => {
+        return {
+            type: ADMIN_CREATE_SUCCESS,
+            payload: response
+        }
+    })
+    .catch((error: AxiosError) => {
+        // ID 중복
+        if (error.response?.data.code === 500 
+                && error.response?.data.message.indexOf('unique')) {
+            return {
+                type: ADMIN_CREATE_FAILURE_DUPLICATE,
                     payload: error
-                });
             }
-            
-        });
-    }
+        } 
+        return {
+            type: ADMIN_CREATE_FAILURE,
+            payload: error
+        }
+    });
 }
 
 export const setupResetRole = () => {
-    return (dispatch: Dispatch) => {
-        axios.put(`${REQUEST_URL}/auth/setupResetRole`).then((response) => {
-            dispatch({
-                type: ADMIN_AUTH_RESET_SUCCESS,
-                payload: response
-            });
-        }).catch((error: Error) => {
-            dispatch({
-                type: ADMIN_AUTH_RESET_FAILURE,
-                payload: error
-            });
-        });
-    }
+    axios.put(`${REQUEST_URL}/auth/setupResetRole`).then((response) => {
+        return {
+            type: ADMIN_AUTH_RESET_SUCCESS,
+            payload: response
+        }
+    }).catch((error: Error) => {
+        return {
+            type: ADMIN_AUTH_RESET_FAILURE,
+            payload: error
+        }
+    });
 }
 
 export const setupResetPw = () => {
-    return (dispatch: Dispatch) => {
-        axios.put(`${REQUEST_URL}/auth/setupResetPw`).then((response) => {
-            dispatch({
-                type: ADMIN_PW_RESET_SUCCESS,
-                payload: response
-            });
-        }).catch((error: Error) => {
-            dispatch({
-                type: ADMIN_PW_RESET_FAILURE,
-                payload: error
-            });
-        });
-    }
+    axios.put(`${REQUEST_URL}/auth/setupResetPw`).then((response) => {
+        return {
+            type: ADMIN_PW_RESET_SUCCESS,
+            payload: response
+        }
+    }).catch((error: Error) => {
+        return {
+            type: ADMIN_PW_RESET_FAILURE,
+            payload: error
+        }
+    });
 }
 
 export const resetAdminStatus = () => {
-    return (dispatch: Dispatch) => {
-        dispatch({
-            type: ADMIN_STATUS_RESET
-        });
+    return {
+        type: ADMIN_STATUS_RESET
     }
 }
 // action end

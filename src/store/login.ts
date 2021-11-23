@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Dispatch } from 'redux';
 
 import { 
     IAction, 
@@ -19,22 +18,19 @@ interface ILogin {
 
 // action start
 export const postSetupLogin = (params: ILogin) => {
-    return (dispatch: Dispatch) => {
-        axios.post(`${REQUEST_URL}/auth/setupLogin`, params).then((response) => {
-            if (response.status === 200) {
-                dispatch({
-                    type: USER_LOGIN_SUCCESS,
-                    payload: response
-                });
+    axios.post(`${REQUEST_URL}/auth/setupLogin`, params).then((response) => {
+        if (response.status === 200) {
+            return {
+                type: USER_LOGIN_SUCCESS,
+                payload: response
             }
-            if (response.status === 250 || response.status === 260) {
-                dispatch({
-                    type: USER_LOGIN_FAILURE,
-                    payload: response
-                });
-            }
-      });
-    }
+        }
+        // 200 나머지는 login_failure
+        return {
+            type: USER_LOGIN_FAILURE,
+            payload: response
+        }
+    });
 }
 
 export const resetSetupLogin = () => {

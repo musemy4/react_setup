@@ -8,12 +8,8 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { css } from '@emotion/react';
 import ClipLoader from 'react-spinners/ClipLoader';
 // Redux lib
-import { connect, useDispatch } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
-
-
-// Actions, Reducers
 import { setupCreateID, setupResetRole, setupResetPw, resetAdminStatus } from '../../../store/admin';
 import { resetSetupLogin } from '../../../store/login';
 import { getSetupProps, getSetupPropsJson, putSetupProps, addSetupData, resetGetSetupStatus, resetPutSetupStatus } from '../../../store/setup';
@@ -26,14 +22,9 @@ import { FrontSetup } from './front_setup';
 // Util
 import { getConvertTreeData } from '../../../common/utils/convert-data';
 import { dateFormat } from '../../../common/utils/date';
+
 // Interfaces
 import { 
-    IMenu, 
-    IFunc, 
-    IEvent, 
-    ISetup, 
-    ILayer,
-    IGetSetupGroup,
     IGetSetupHttpBody, 
     IPutSetupGroup,
     IPutSetup, 
@@ -41,29 +32,7 @@ import {
     IAddSetupData
 } from './setup_setting_interface';
 
-// interfaces
-interface IProps {
-    setupCreateID: () => void; 
-    setupResetRole: () => void;
-    setupResetPw: () => void;
-    resetAdminStatus: () => void;
-    adminState: {
-        [key: string] : {
-            type: string;
-            status: string;
-         }   
-    };
-    getSetupProps: () => void;
-    getSetupPropsJson: (param: IGetSetupGroup) => void;
-    resetGetSetupStatus: () => void;
-    putSetupProps: (param: IPutSetupGroup) => void;
-    resetPutSetupStatus: () => void;
-    addSetupData: (data: Array<IMenu | IFunc | IEvent | ISetup | ILayer>, type: string) => void;
-    getSetupState: IGetSetupHttpBody;
-    putSetupState: IPutSetupHttpBody;
-    addSetupState: Array<IAddSetupData>;
-    resetSetupLogin: () => void;
-}
+import { IRootState } from '../../../store';
 
 const override = css`
     display: block;
@@ -73,20 +42,28 @@ const override = css`
     border-width: 6px;
     z-index: 999999`;
 
-const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupState, // stateToProps
-                            setupCreateID, setupResetRole, setupResetPw, resetAdminStatus,resetSetupLogin, // dispatchToProps
-                            getSetupProps, getSetupPropsJson, resetGetSetupStatus, putSetupProps, resetPutSetupStatus, addSetupData}: IProps) => {
+const SetupSettingWrap = () => {
     const inputFile = useRef<HTMLInputElement | null>(null); // ***
     const [loading, setLoading] = useState(false);
     const [setupPropsList, setSetupPropsList] = useState<IGetSetupHttpBody | null>();
+
+    // 상태 조회
+    const {adminState, getSetupState, putSetupState, addSetupState} = useSelector((state: IRootState) => ({
+        adminState: state.adminState,
+        getSetupState: state.getSetupState,
+        putSetupState: state.putSetupState,
+        addSetupState: state.addSetupState
+    }));                            
+    // 액션 디스패치
+    const dispatch = useDispatch();
 
     // componentDidMount(with React hooks) : ,[]
     useEffect(() => {
         // 아래는 클래스 방식일때 처리
         // refInputFIle = React.createRef<HTMLInputElement>();
         setSetupPropsList(getSetupState);
-        resetSetupLogin(); // 왜 리셋?..
-        getSetupProps(); // ** 전체 리스트 가져옴
+        dispatch(resetSetupLogin()); // 왜 리셋?..
+        dispatch(getSetupProps()); // ** 전체 리스트 가져옴
         return () => {
             console.log('componentWillUnmount:::');
         }
@@ -102,7 +79,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                 if (getSetupState.code === 200) {
                     updateState();
                 }
-                resetGetSetupStatus();
+                dispatch(resetGetSetupStatus());
             }
 
             if (putSetupState && putSetupState.code) {
@@ -112,7 +89,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                 } else {
                     showAlert('셋업 설정 수정에 실패하였습니다.', 'failure');
                 }
-                    resetPutSetupStatus();
+                dispatch(resetPutSetupStatus());
             }
 
             if (adminState.admin && adminState.admin.type === 'create') {
@@ -125,7 +102,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                     showAlert('관리자 계정 생성에 실패하였습니다.', 'failure');
                 }
 
-                resetAdminStatus();
+                dispatch(resetAdminStatus());
             }
 
             if (adminState.admin && adminState.admin.type === 'auth') {
@@ -135,7 +112,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                 } else {
                     showAlert('관리자 권한 초기화에 실패하였습니다.', 'failure');
                 }
-                    resetAdminStatus();
+                    dispatch(resetAdminStatus());
             }
             
             if (adminState.admin && adminState.admin.type === 'pw') {
@@ -145,7 +122,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                 } else {
                     showAlert('관리자 비밀번호 초기화에 실패하였습니다.', 'failure');
                 }
-                resetAdminStatus();
+                dispatch(resetAdminStatus());
             }
         }
     });
@@ -190,7 +167,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                     { label: '취소', onClick: () => null },
                     { label: '생성', onClick: (() => {
                         showLoading();
-                        setupCreateID() 
+                        dispatch(setupCreateID()); 
                         })
                     }
                 ],
@@ -205,7 +182,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                     { label: '취소', onClick: () => null },
                     { label: '초기화', onClick: (() => {
                         showLoading();
-                        setupResetRole() 
+                        dispatch(setupResetRole()); 
                         })
                     }
                 ],
@@ -220,7 +197,7 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
                     { label: '취소', onClick: () => null },
                     { label: '초기화', onClick: (() => {
                         showLoading();
-                        setupResetPw() 
+                        dispatch(setupResetPw()); 
                         })
                     }
                 ],
@@ -301,13 +278,13 @@ const SetupSettingWrap = ({ adminState, getSetupState, putSetupState, addSetupSt
             layer_info: []
         };
 
-        const setupTypes: { [index: string]: {code: string, value: string, param: string}} = {
-            'MENU': { code: 'menu_code', value: 'setup_flag', param: 'menu_info' },
-            'EVENT': { code: 'event_code', value: 'setup_flag', param: 'event_info' },
-            'FUNCTION': { code: 'func_code', value: 'setup_flag', param: 'func_info' },
-            'SETUP': { code: 'config_code', value: 'setup_data', param: 'setup_info' },
-            'LAYER': { code: 'layer_id', value: 'setup_flag', param: 'layer_info' }
-        };
+    const setupTypes: { [index: string]: {code: string, value: string, param: string}} = {
+        'MENU': { code: 'menu_code', value: 'setup_flag', param: 'menu_info' },
+        'EVENT': { code: 'event_code', value: 'setup_flag', param: 'event_info' },
+        'FUNCTION': { code: 'func_code', value: 'setup_flag', param: 'func_info' },
+        'SETUP': { code: 'config_code', value: 'setup_data', param: 'setup_info' },
+        'LAYER': { code: 'layer_id', value: 'setup_flag', param: 'layer_info' }
+    };
 
     const setConvertPropsParam = (setupData: any, setupTypeInfo: {code: string, value: string, param: string}, setupType: string) => {
         _.forEach(setupData, (info) => {
@@ -439,7 +416,7 @@ interface IStateToProps {
     addSetupState: Array<IAddSetupData>;
 }
 
-// get datas from reducers::
+// EXAMPLE /// get datas from reducers::
 // export const reducers = {
 //     adminState: adminReducer,
 //     loginState: loginReducer,
@@ -447,25 +424,27 @@ interface IStateToProps {
 //     putSetupState: putSetupPropsReducer,
 //     addSetupState: returnSetupPropsReducer,
 // };
-const mapStateToProps = ({ adminState, getSetupState, putSetupState, addSetupState }: IStateToProps) => {
-    return { adminState, getSetupState, putSetupState, addSetupState };
-}
+// const mapStateToProps = ({ adminState, getSetupState, putSetupState, addSetupState }: IStateToProps) => {
+//     return { adminState, getSetupState, putSetupState, addSetupState };
+// }
 
-// set
-const mapDispatchToProps = (dispatch: Dispatch) => {
-return bindActionCreators({ 
-    setupCreateID, 
-    setupResetRole, 
-    setupResetPw,
-    resetAdminStatus,
-    getSetupProps, 
-    getSetupPropsJson,
-    resetGetSetupStatus,
-    putSetupProps, 
-    resetPutSetupStatus,
-    addSetupData, 
-    resetSetupLogin,
-    }, dispatch);
-}
+// // // set
+// const mapDispatchToProps = (dispatch: Dispatch) => {
+// return bindActionCreators({ 
+//     setupCreateID, 
+//     setupResetRole, 
+//     setupResetPw,
+//     resetAdminStatus,
+//     getSetupProps, 
+//     getSetupPropsJson,
+//     resetGetSetupStatus,
+//     putSetupProps, 
+//     resetPutSetupStatus,
+//     addSetupData, 
+//     resetSetupLogin,
+//     }, dispatch);
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SetupSettingWrap);
+// export default connect(mapStateToProps, mapDispatchToProps)(SetupSettingWrap);
+
+export default SetupSettingWrap;
