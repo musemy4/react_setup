@@ -52,12 +52,16 @@ export const resetGetSetupStatus = () => {
 }
 
 export const putSetupProps = (params: IPutSetupGroup) => {
-    const response = axios.put(`${REQUEST_URL}/role/putSetupProp`, params);
-    return {    
-        type: PUT_SETUP_PROPS,
-        payload: response
+    return (dispatch: Dispatch) => {
+        axios.put(`${REQUEST_URL}/role/putSetupProp`, params).then((response) => {
+            dispatch({
+                type: PUT_SETUP_PROPS,
+                payload: response
+            });
+        });
     }
 }
+
 
 export const resetPutSetupStatus = () => {
     return {

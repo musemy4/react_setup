@@ -82,6 +82,7 @@ const SetupSettingWrap = () => {
                 dispatch(resetGetSetupStatus());
             }
 
+            // "수정"
             if (putSetupState && putSetupState.code) {
                 hideLoading();
                 if (putSetupState.code === 200) {
@@ -92,6 +93,7 @@ const SetupSettingWrap = () => {
                 dispatch(resetPutSetupStatus());
             }
 
+            // "관리자 계정 생성"
             if (adminState.admin && adminState.admin.type === 'create') {
                 hideLoading();
                 if (adminState.admin.status === 'SUCCESS') {
@@ -105,6 +107,7 @@ const SetupSettingWrap = () => {
                 dispatch(resetAdminStatus());
             }
 
+            // "관리자 권한 초기화"
             if (adminState.admin && adminState.admin.type === 'auth') {
                 hideLoading();
                 if (adminState.admin.status === 'SUCCESS') {
@@ -112,9 +115,10 @@ const SetupSettingWrap = () => {
                 } else {
                     showAlert('관리자 권한 초기화에 실패하였습니다.', 'failure');
                 }
-                    dispatch(resetAdminStatus());
+                dispatch(resetAdminStatus());
             }
             
+            // "관리자 비밀번호 초기화"
             if (adminState.admin && adminState.admin.type === 'pw') {
                 hideLoading();
                 if (adminState.admin.status === 'SUCCESS') {
@@ -278,37 +282,37 @@ const SetupSettingWrap = () => {
             layer_info: []
         };
 
-    const setupTypes: { [index: string]: {code: string, value: string, param: string}} = {
-        'MENU': { code: 'menu_code', value: 'setup_flag', param: 'menu_info' },
-        'EVENT': { code: 'event_code', value: 'setup_flag', param: 'event_info' },
-        'FUNCTION': { code: 'func_code', value: 'setup_flag', param: 'func_info' },
-        'SETUP': { code: 'config_code', value: 'setup_data', param: 'setup_info' },
-        'LAYER': { code: 'layer_id', value: 'setup_flag', param: 'layer_info' }
-    };
+        const setupTypes: { [index: string]: {code: string, value: string, param: string}} = {
+            'MENU': { code: 'menu_code', value: 'setup_flag', param: 'menu_info' },
+            'EVENT': { code: 'event_code', value: 'setup_flag', param: 'event_info' },
+            'FUNCTION': { code: 'func_code', value: 'setup_flag', param: 'func_info' },
+            'SETUP': { code: 'config_code', value: 'setup_data', param: 'setup_info' },
+            'LAYER': { code: 'layer_id', value: 'setup_flag', param: 'layer_info' }
+        };
 
-    const setConvertPropsParam = (setupData: any, setupTypeInfo: {code: string, value: string, param: string}, setupType: string) => {
-        _.forEach(setupData, (info) => {
-            const infoObj: IPutSetup = {
-                key: info[setupTypeInfo.code],
-                value: info[setupTypeInfo.value],
-            }
-            if (info.area_flag) {
-                infoObj.area_flag = info.area_flag
-            }
-                httpParam[setupTypeInfo.param].push(infoObj)
-            if (info.children) {
-                setConvertPropsParam(info.children, setupTypeInfo, setupType);
-            }
-        });
+        const setConvertPropsParam = (setupData: any, setupTypeInfo: {code: string, value: string, param: string}, setupType: string) => {
+            _.forEach(setupData, (info) => {
+                const infoObj: IPutSetup = {
+                    key: info[setupTypeInfo.code],
+                    value: info[setupTypeInfo.value],
+                }
+                if (info.area_flag) {
+                    infoObj.area_flag = info.area_flag
+                }
+                    httpParam[setupTypeInfo.param].push(infoObj)
+                if (info.children) {
+                    setConvertPropsParam(info.children, setupTypeInfo, setupType);
+                }
+            });
+        }
+        _.forEach(addSetupState, (setupGroup) => {
+            setConvertPropsParam(setupGroup.data, setupTypes[setupGroup.type], setupGroup.type);
+        })
+
+        dispatch(putSetupProps(httpParam));
     }
-    _.forEach(addSetupState, (setupGroup) => {
-        setConvertPropsParam(setupGroup.data, setupTypes[setupGroup.type], setupGroup.type);
-    })
 
-        putSetupProps(httpParam);
-    }
-
-    // div에 key를 왜
+    // div에 key를 왜? 렌더링 되는 VIEW
     return (
         <>
             <ClipLoader color="#0d6efd" loading={loading} css={override} size={50} />
