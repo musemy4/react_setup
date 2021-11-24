@@ -28,8 +28,6 @@ import {
     IGetSetupHttpBody, 
     IPutSetupGroup,
     IPutSetup, 
-    IPutSetupHttpBody,
-    IAddSetupData
 } from './setup_setting_interface';
 
 import { ISetupState } from '../../../store';
@@ -405,51 +403,5 @@ const SetupSettingWrap = () => {
         </>
     );
 }
-
-// 
-// 여기 밑에 싹 없애자
-
-interface IStateToProps {
-    adminState: {
-        [key: string] : {
-            type: string;
-            status: string;
-        }   
-    };
-    getSetupState: IGetSetupHttpBody;
-    putSetupState: IPutSetupHttpBody;
-    addSetupState: Array<IAddSetupData>;
-}
-
-// EXAMPLE /// get datas from reducers::
-// export const reducers = {
-//     adminState: adminReducer,
-//     loginState: loginReducer,
-//     getSetupState: getSetupPropsReducer,
-//     putSetupState: putSetupPropsReducer,
-//     addSetupState: returnSetupPropsReducer,
-// };
-// const mapStateToProps = ({ adminState, getSetupState, putSetupState, addSetupState }: IStateToProps) => {
-//     return { adminState, getSetupState, putSetupState, addSetupState };
-// }
-
-// // // set
-// const mapDispatchToProps = (dispatch: Dispatch) => {
-// return bindActionCreators({ 
-//     setupCreateID, 
-//     setupResetRole, 
-//     setupResetPw,
-//     resetAdminStatus,
-//     getSetupProps, 
-//     getSetupPropsJson,
-//     resetGetSetupStatus,
-//     putSetupProps, 
-//     resetPutSetupStatus,
-//     addSetupData, 
-//     resetSetupLogin,
-//     }, dispatch);
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(SetupSettingWrap);
 
 export default SetupSettingWrap;
