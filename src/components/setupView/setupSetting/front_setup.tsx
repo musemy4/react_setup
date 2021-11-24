@@ -12,7 +12,6 @@ import { ISetup } from './setup_setting_interface';
 
 interface IProps {
     propsSetupInfo: Array<ISetup>;
-    // addData: (data: Array<ISetup>, type: string) => void;
 }
 
 export const FrontSetup = ({propsSetupInfo}: IProps) => {
@@ -22,7 +21,6 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
 
     useEffect(() => {
         dispatch(addSetupData(propsSetupInfo, 'SETUP'));
-        // addData(propsSetupInfo, 'SETUP');
     }, []);
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +76,6 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
         });
         setStateSetupInfo(newStateSetupInfo);
         dispatch(addSetupData(newStateSetupInfo, 'SETUP'));
-        // addData(newStateSetupInfo, 'SETUP');
     }
 
     return (

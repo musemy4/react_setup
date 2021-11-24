@@ -329,7 +329,6 @@ const SetupSettingWrap = () => {
                                     : 
                                 <div className="box-content">
                                     <ApplyMenu 
-                                        // addData={ addSetupData } 
                                         propsMenuInfo={ getConvertTreeData(setupPropsList.response.menuInfo, 'root', { group: 'p_menu_code', code: 'menu_code' }) } 
                                     />
                                 </div> 
@@ -344,7 +343,6 @@ const SetupSettingWrap = () => {
                                     : 
                                 <div className="box-content">
                                     <IncomingEvent 
-                                        // addData={ addSetupData } 
                                         propsEventInfo={ setupPropsList.response.eventInfo } 
                                     />
                                 </div> 
@@ -357,7 +355,6 @@ const SetupSettingWrap = () => {
                                 <span>loading...</span> 
                                     : 
                                 <CctvFunction 
-                                    // addData={ addSetupData }
                                     propsCctvFunctionInfo={ 
                                         getConvertTreeData(setupPropsList.response.funcInfo, 'root', 
                                         { group: 'func_group', code: 'func_code' }) 
@@ -375,7 +372,6 @@ const SetupSettingWrap = () => {
                                     : 
                                 <div className="box-content">
                                     <FrontSetup 
-                                        // addData={ addSetupData } 
                                         propsSetupInfo={ getConvertTreeData(setupPropsList.response.setupInfo, 'root', { group: 'config_group', code: 'config_code' }) } 
                                     />
                                 </div> 

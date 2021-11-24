@@ -9,7 +9,6 @@ import { IEvent } from './setup_setting_interface';
 
 interface IProps {
     propsEventInfo: Array<IEvent>;
-    // addData: (data: Array<IEvent>, type: string) => void;
 }
 
 export const IncomingEvent = ({propsEventInfo}: IProps) => {
@@ -18,7 +17,6 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(addSetupData(propsEventInfo, 'EVENT'));
-        // addData(propsEventInfo, 'EVENT');
     }, []);
 
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +31,6 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
         setAllChecked(check);
         setStateEventInfo(newStateEventInfo);
         dispatch(addSetupData(newStateEventInfo, 'EVENT'));
-        // addData(newStateEventInfo, 'EVENT');
     }
 
     const onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +52,6 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
         setAllChecked(!isAllChecked);
         setStateEventInfo(newStateEventInfo);
         dispatch(addSetupData(newStateEventInfo, 'EVENT'));
-        // addData(newStateEventInfo, 'EVENT');
     }
 
     return (

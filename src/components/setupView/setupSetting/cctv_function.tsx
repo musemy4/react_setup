@@ -15,7 +15,6 @@ import { IFunc, ILayer } from './setup_setting_interface';
 interface IProps {
     propsCctvFunctionInfo: Array<IFunc>;
     propLayerInfo: Array<ILayer>; 
-    // addData: (data: Array<IFunc | ILayer>, type: string) => void;
 }
 
 export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => {
@@ -39,9 +38,6 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
         setStateCctvFunctionInfo(newStateCctvFuncInfo);
         dispatch(addSetupData(newStateCctvFuncInfo, 'FUNCTION'));
         dispatch(addSetupData(propLayerInfo, 'LAYER'));
-        // addData(newStateCctvFuncInfo, 'FUNCTION');
-        // addData(propLayerInfo, 'LAYER');
-
     }, []);
 
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +68,6 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
 
         setStateCctvFunctionInfo(newStateCctvFuncInfo);
         dispatch(addSetupData(newStateCctvFuncInfo, 'FUNCTION'));
-        // addData(newStateCctvFuncInfo, 'FUNCTION');
     }
 
     const onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +100,6 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
         });
         setStateCctvFunctionInfo(newStateCctvFuncInfo);
         dispatch(addSetupData(newStateCctvFuncInfo, 'FUNCTION'));
-        // addData(newStateCctvFuncInfo, 'FUNCTION');
     }
 
     const onCheckboxLayerChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,7 +129,6 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
                         setStateLayerInfo(copyStateLayerInfo);
                         
                         dispatch(addSetupData(copyStateLayerInfo, 'LAYER'));
-                        // addData(copyStateLayerInfo, 'LAYER');
                     }) }
                 ],
             });
@@ -153,7 +146,6 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
             })
             setStateLayerInfo(copyStateLayerInfo);
             dispatch(addSetupData(copyStateLayerInfo, 'LAYER'));
-            // addData(copyStateLayerInfo, 'LAYER');
         }
     }
 

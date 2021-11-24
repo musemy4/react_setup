@@ -26,7 +26,6 @@ export const RESET_PUT_SETUP_PROPS_STATUS = 'RESET_PUT_SETUP_PROPS_STATUS';
 const REQUEST_URL = '/vurix-dms/api/v1';
 
 // actions start  
-// 와 이걸 가져옴과 동시에 store에 탑재하는군..
 export const getSetupProps = () => {
     return (dispatch: Dispatch) => {
         axios.get(`${REQUEST_URL}/role/getSetupProp`).then((response) => {
