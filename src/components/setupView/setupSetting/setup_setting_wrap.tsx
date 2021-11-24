@@ -12,7 +12,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
 import { setupCreateID, setupResetRole, setupResetPw, resetAdminStatus } from '../../../store/admin';
 import { resetSetupLogin } from '../../../store/login';
-import { getSetupProps, putSetupProps, addSetupData, resetGetSetupStatus, resetPutSetupStatus } from '../../../store/setup';
+import { getSetupProps, putSetupProps, resetGetSetupStatus, resetPutSetupStatus } from '../../../store/setup';
 
 // Components
 import { ApplyMenu } from './apply_menu';
@@ -32,7 +32,7 @@ import {
     IAddSetupData
 } from './setup_setting_interface';
 
-import { IRootState } from '../../../store';
+import { ISetupState } from '../../../store';
 
 const override = css`
     display: block;
@@ -48,7 +48,7 @@ const SetupSettingWrap = () => {
     const [setupPropsList, setSetupPropsList] = useState<IGetSetupHttpBody | null>();
 
     // 상태 조회
-    const {adminState, getSetupState, putSetupState, addSetupState} = useSelector((state: IRootState) => ({
+    const {adminState, getSetupState, putSetupState, addSetupState} = useSelector((state: ISetupState) => ({
         adminState: state.adminState,
         getSetupState: state.getSetupState,
         putSetupState: state.putSetupState,

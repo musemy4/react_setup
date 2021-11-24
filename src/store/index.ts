@@ -8,7 +8,7 @@ import {
     IAddSetupData
 } from '../components/setupView/setupSetting/setup_setting_interface'
 
-export interface IRootState {
+export interface ISetupState {
     adminState: {
         [key: string] : {
             type: string;
@@ -18,6 +18,14 @@ export interface IRootState {
     getSetupState: IGetSetupHttpBody;
     putSetupState: IPutSetupHttpBody;
     addSetupState: Array<IAddSetupData>;
+}
+
+export interface ILoginState {
+    loginState : {
+        login: {
+            status: string;
+        }
+    }
 }
 
 

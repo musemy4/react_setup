@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+// react-redux lib
+import { useDispatch, useSelector } from 'react-redux';
+
+import { ILoginState } from '../../store';
 import { postSetupLogin } from '../../store/login';
 
 const Login = (props: any) => {
@@ -9,22 +11,30 @@ const Login = (props: any) => {
     const [ pw, setStatePw ] = useState('');
     const [ error, setError ] = useState(false);
 
+    // 상태 조회
+    const { loginState } = useSelector((state:ILoginState) => ({
+        loginState: state.loginState
+    }));
+
+    // 액션 디스패치
+    const dispatch = useDispatch();
+
     useEffect(() => {
         if (sessionStorage.getItem('authorization')) {
             sessionStorage.removeItem('authorization');
         }
-        if (props.login && props.login.status === 'SUCCESS') {
+        if (loginState.login && loginState.login.status === 'SUCCESS') {
             sessionStorage.setItem('authorization', 'success');
             props.history.push('/setup');
         }
-        if (props.login && props.login.status === 'FAILURE') {
+        if (loginState.login && loginState.login.status === 'FAILURE') {
             setError(true);
         }
-    }, [props] );
+    });
 
     const onFormSubmit = (event: React.FormEvent<HTMLFormElement>, id: string, pw: string) => {
         event.preventDefault();
-        props.postSetupLogin({ id, pw });
+        dispatch(postSetupLogin({ id, pw }));
         setStateId('');
         setStatePw('');
     }
@@ -79,20 +89,4 @@ const Login = (props: any) => {
     );
 }
 
-interface IStateToProps {
-    loginState : {
-        login: {
-            status: string;
-        }
-    }
-}
-
-const mapStateToProps = ({ loginState }: IStateToProps) => {
-    return loginState;
-};
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-    return bindActionCreators({ postSetupLogin }, dispatch);
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;
