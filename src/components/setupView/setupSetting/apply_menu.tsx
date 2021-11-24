@@ -1,20 +1,29 @@
 // React
 import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
+// react-redux lib
+import { useDispatch } from 'react-redux';
+import { addSetupData } from '../../../store/setup';
+
+
+
 // Interfaces
 import { IMenu } from './setup_setting_interface';
 
 interface IProps {
     propsMenuInfo: Array<IMenu>;
-    addData: (data: Array<IMenu>, type: string) => void;
+    // addData: (data: Array<IMenu>, type: string) => void;
 }
 
-export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
+export const ApplyMenu = ({propsMenuInfo}: IProps) => {
     const [allChecked, setAllChecked] = useState(!propsMenuInfo.some((menuInfo: { setup_flag: any; }) => !menuInfo.setup_flag));
     const [stateMenuInfo, setStateMenuInfo] = useState(propsMenuInfo);
+
+    const dispatch = useDispatch();
     // 한번 발휘됨 (componentDidMount);
     useEffect(() => {
-        addData(propsMenuInfo, 'MENU');
+        dispatch(addSetupData(propsMenuInfo, 'MENU'));
+        // addData(propsMenuInfo, 'MENU');
     }, []);
 
     const onCheckboxAllMenuChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +49,8 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
         });
         setAllChecked(e.target.checked);
         setStateMenuInfo(newStateMenuInfo);
-        addData(newStateMenuInfo, 'MENU');
+        dispatch(addSetupData(newStateMenuInfo, 'MENU'));
+        // addData(newStateMenuInfo, 'MENU');
     }
 
     const onCheckboxMenuChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +90,7 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
         const isAllChecked = newStateMenuInfo.some((menuInfo: IMenu) => !menuInfo.setup_flag );
         setAllChecked(!isAllChecked);
         setStateMenuInfo(newStateMenuInfo);
-        addData(newStateMenuInfo, 'MENU');
+        dispatch(addSetupData(newStateMenuInfo, 'MENU'));
     }
 
     const onCheckboxSubmenuChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +132,7 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
         const isAllChecked = newStateMenuInfo.some((menuInfo: IMenu) => !menuInfo.setup_flag );
         setAllChecked(!isAllChecked);
         setStateMenuInfo(newStateMenuInfo);
-        addData(newStateMenuInfo, 'MENU');
+        dispatch(addSetupData(newStateMenuInfo, 'MENU'));
     }
 
     const onCheckboxAreaChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,7 +156,7 @@ export const ApplyMenu = ({propsMenuInfo, addData}: IProps) => {
             return menuGroup;
         });
         setStateMenuInfo(newStateMenuInfo);
-        addData(newStateMenuInfo, 'MENU');
+        dispatch(addSetupData(newStateMenuInfo, 'MENU'));
     }
 
     return (

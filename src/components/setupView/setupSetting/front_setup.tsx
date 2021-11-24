@@ -2,18 +2,27 @@
 import React, { useState, useEffect } from 'react';
 // External Lib
 import _ from 'lodash';
+// react-redux lib
+import { useDispatch } from 'react-redux';
+import { addSetupData } from '../../../store/setup';
+
+
 // Interfaces
 import { ISetup } from './setup_setting_interface';
 
 interface IProps {
     propsSetupInfo: Array<ISetup>;
-    addData: (data: Array<ISetup>, type: string) => void;
+    // addData: (data: Array<ISetup>, type: string) => void;
 }
 
-export const FrontSetup = ({propsSetupInfo, addData}: IProps) => {
+export const FrontSetup = ({propsSetupInfo}: IProps) => {
     const [stateSetupInfo, setStateSetupInfo] = useState(propsSetupInfo);
+
+    const dispatch = useDispatch();
+
     useEffect(() => {
-        addData(propsSetupInfo, 'SETUP');
+        dispatch(addSetupData(propsSetupInfo, 'SETUP'));
+        // addData(propsSetupInfo, 'SETUP');
     }, []);
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +53,8 @@ export const FrontSetup = ({propsSetupInfo, addData}: IProps) => {
             return setupGroup;
         });
         setStateSetupInfo(newStateSetupInfo);
-        addData(newStateSetupInfo, 'SETUP');
+        dispatch(addSetupData(newStateSetupInfo, 'SETUP'));
+        // addData(newStateSetupInfo, 'SETUP');
     }
 
     const onRadioChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +77,8 @@ export const FrontSetup = ({propsSetupInfo, addData}: IProps) => {
             return setupGroup;
         });
         setStateSetupInfo(newStateSetupInfo);
-        addData(newStateSetupInfo, 'SETUP');
+        dispatch(addSetupData(newStateSetupInfo, 'SETUP'));
+        // addData(newStateSetupInfo, 'SETUP');
     }
 
     return (

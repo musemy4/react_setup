@@ -4,22 +4,28 @@ import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+// react-redux lib
+import { useDispatch } from 'react-redux';
+import { addSetupData } from '../../../store/setup';
+
+
 // Interfaces
 import { IFunc, ILayer } from './setup_setting_interface';
 
 interface IProps {
     propsCctvFunctionInfo: Array<IFunc>;
     propLayerInfo: Array<ILayer>; 
-    addData: (data: Array<IFunc | ILayer>, type: string) => void;
+    // addData: (data: Array<IFunc | ILayer>, type: string) => void;
 }
 
-export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo, addData}: IProps) => {
+export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => {
     
     const [cctvFuncAllChecked, setCctvFuncAllChecked] = useState(false);
     const [stateCctvFunctionInfo, setStateCctvFunctionInfo] = useState(propsCctvFunctionInfo);
     const [stateLayerInfo, setStateLayerInfo] = useState(propLayerInfo);
 
-    
+    const dispatch = useDispatch();
+   
     useEffect(() => {
         const newStateCctvFuncInfo = propsCctvFunctionInfo.map((funcGroup: IFunc) => {
             const findChildren = _.find(propsCctvFunctionInfo, { func_code: 'CCTV_FUNCTION' } );
@@ -31,8 +37,10 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo, addData}: IP
             return funcGroup;
         });
         setStateCctvFunctionInfo(newStateCctvFuncInfo);
-        addData(newStateCctvFuncInfo, 'FUNCTION');
-        addData(propLayerInfo, 'LAYER');
+        dispatch(addSetupData(newStateCctvFuncInfo, 'FUNCTION'));
+        dispatch(addSetupData(propLayerInfo, 'LAYER'));
+        // addData(newStateCctvFuncInfo, 'FUNCTION');
+        // addData(propLayerInfo, 'LAYER');
 
     }, []);
 
@@ -63,7 +71,8 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo, addData}: IP
         }
 
         setStateCctvFunctionInfo(newStateCctvFuncInfo);
-        addData(newStateCctvFuncInfo, 'FUNCTION');
+        dispatch(addSetupData(newStateCctvFuncInfo, 'FUNCTION'));
+        // addData(newStateCctvFuncInfo, 'FUNCTION');
     }
 
     const onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +104,8 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo, addData}: IP
             return funcGroup;
         });
         setStateCctvFunctionInfo(newStateCctvFuncInfo);
-        addData(newStateCctvFuncInfo, 'FUNCTION');
+        dispatch(addSetupData(newStateCctvFuncInfo, 'FUNCTION'));
+        // addData(newStateCctvFuncInfo, 'FUNCTION');
     }
 
     const onCheckboxLayerChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,7 +133,9 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo, addData}: IP
                             return layer;
                         })
                         setStateLayerInfo(copyStateLayerInfo);
-                        addData(copyStateLayerInfo, 'LAYER');
+                        
+                        dispatch(addSetupData(copyStateLayerInfo, 'LAYER'));
+                        // addData(copyStateLayerInfo, 'LAYER');
                     }) }
                 ],
             });
@@ -140,7 +152,8 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo, addData}: IP
                 return layer;
             })
             setStateLayerInfo(copyStateLayerInfo);
-            addData(copyStateLayerInfo, 'LAYER');
+            dispatch(addSetupData(copyStateLayerInfo, 'LAYER'));
+            // addData(copyStateLayerInfo, 'LAYER');
         }
     }
 

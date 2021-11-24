@@ -1,19 +1,24 @@
 // React
 import React, { useState, useEffect } from 'react';
+// react-redux lib
+import { useDispatch } from 'react-redux';
+import { addSetupData } from '../../../store/setup';
+
 // Interfaces
 import { IEvent } from './setup_setting_interface';
 
 interface IProps {
     propsEventInfo: Array<IEvent>;
-    addData: (data: Array<IEvent>, type: string) => void;
+    // addData: (data: Array<IEvent>, type: string) => void;
 }
 
-export const IncomingEvent = ({propsEventInfo, addData}: IProps) => {
+export const IncomingEvent = ({propsEventInfo}: IProps) => {
     const [allChecked, setAllChecked] = useState(!propsEventInfo.some((menuInfo: { setup_flag: any; }) => !menuInfo.setup_flag));
     const [stateEventInfo, setStateEventInfo] = useState(propsEventInfo);
-
+    const dispatch = useDispatch();
     useEffect(() => {
-        addData(propsEventInfo, 'EVENT');
+        dispatch(addSetupData(propsEventInfo, 'EVENT'));
+        // addData(propsEventInfo, 'EVENT');
     }, []);
 
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +32,8 @@ export const IncomingEvent = ({propsEventInfo, addData}: IProps) => {
         });
         setAllChecked(check);
         setStateEventInfo(newStateEventInfo);
-        addData(newStateEventInfo, 'EVENT');
+        dispatch(addSetupData(newStateEventInfo, 'EVENT'));
+        // addData(newStateEventInfo, 'EVENT');
     }
 
     const onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +54,8 @@ export const IncomingEvent = ({propsEventInfo, addData}: IProps) => {
         const isAllChecked = newStateEventInfo.some(eventInfo => !eventInfo.setup_flag );
         setAllChecked(!isAllChecked);
         setStateEventInfo(newStateEventInfo);
-        addData(newStateEventInfo, 'EVENT');
+        dispatch(addSetupData(newStateEventInfo, 'EVENT'));
+        // addData(newStateEventInfo, 'EVENT');
     }
 
     return (

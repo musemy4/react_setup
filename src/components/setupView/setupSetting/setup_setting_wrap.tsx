@@ -7,12 +7,12 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 // spinner
 import { css } from '@emotion/react';
 import ClipLoader from 'react-spinners/ClipLoader';
-// Redux lib
+// react-redux lib
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
 import { setupCreateID, setupResetRole, setupResetPw, resetAdminStatus } from '../../../store/admin';
 import { resetSetupLogin } from '../../../store/login';
-import { getSetupProps, getSetupPropsJson, putSetupProps, addSetupData, resetGetSetupStatus, resetPutSetupStatus } from '../../../store/setup';
+import { getSetupProps, putSetupProps, addSetupData, resetGetSetupStatus, resetPutSetupStatus } from '../../../store/setup';
 
 // Components
 import { ApplyMenu } from './apply_menu';
@@ -53,7 +53,8 @@ const SetupSettingWrap = () => {
         getSetupState: state.getSetupState,
         putSetupState: state.putSetupState,
         addSetupState: state.addSetupState
-    }));                            
+    }), shallowEqual); // 기본은 렌더링 될때마다 객체를 생성. shallowEqual: 값이 바뀌었을때 렌더링되도록
+
     // 액션 디스패치
     const dispatch = useDispatch();
 
@@ -69,7 +70,7 @@ const SetupSettingWrap = () => {
         }
     }, []);
 
-    const mounted = useRef(false); // componentDidmount는 넘어가도록 처리(지역변수 너낌)
+    const mounted = useRef(false); // componentDidmount는 넘어가도록 처리(지역변수 느낌)
     // componentDidUpdate(with React hooks) : 
     useEffect(() => {
         if(!mounted.current) {
@@ -162,50 +163,50 @@ const SetupSettingWrap = () => {
     const onClickAdminAction = (type: string) => {
         switch(type) {
             case 'admin' :
-            confirmAlert({
-                title: '[관리자 계정 생성]',
-                message: `ID: 이노뎁.
-                    Password: p@ssw0rd
-                    계정으로 생성하시겠습니까?`,
-                buttons: [
-                    { label: '취소', onClick: () => null },
-                    { label: '생성', onClick: (() => {
-                        showLoading();
-                        dispatch(setupCreateID()); 
-                        })
-                    }
-                ],
-            });
+                confirmAlert({
+                    title: '[관리자 계정 생성]',
+                    message: `ID: 이노뎁.
+                        Password: p@ssw0rd
+                        계정으로 생성하시겠습니까?`,
+                    buttons: [
+                        { label: '취소', onClick: () => null },
+                        { label: '생성', onClick: (() => {
+                            showLoading();
+                            dispatch(setupCreateID()); 
+                            })
+                        }
+                    ],
+                });
             break;
 
             case 'auth' :
-            confirmAlert({
-                title: '[관리자 권한 초기화]',
-                message: '권한그룹: 관리자 그룹으로 초기화 하시겠습니까?',
-                buttons: [
-                    { label: '취소', onClick: () => null },
-                    { label: '초기화', onClick: (() => {
-                        showLoading();
-                        dispatch(setupResetRole()); 
-                        })
-                    }
-                ],
-            });
+                confirmAlert({
+                    title: '[관리자 권한 초기화]',
+                    message: '권한그룹: 관리자 그룹으로 초기화 하시겠습니까?',
+                    buttons: [
+                        { label: '취소', onClick: () => null },
+                        { label: '초기화', onClick: (() => {
+                            showLoading();
+                            dispatch(setupResetRole()); 
+                            })
+                        }
+                    ],
+                });
             break;
             
             case 'pw' :
-            confirmAlert({
-                title: '[관리자 비밀번호 초기화]',
-                message: '비밀번호를 p@ssw0rd로 초기화 하시겠습니까??',
-                buttons: [
-                    { label: '취소', onClick: () => null },
-                    { label: '초기화', onClick: (() => {
-                        showLoading();
-                        dispatch(setupResetPw()); 
-                        })
-                    }
-                ],
-            });
+                confirmAlert({
+                    title: '[관리자 비밀번호 초기화]',
+                    message: '비밀번호를 p@ssw0rd로 초기화 하시겠습니까??',
+                    buttons: [
+                        { label: '취소', onClick: () => null },
+                        { label: '초기화', onClick: (() => {
+                            showLoading();
+                            dispatch(setupResetPw()); 
+                            })
+                        }
+                    ],
+                });
             break;
 
             default: break;
@@ -330,7 +331,7 @@ const SetupSettingWrap = () => {
                                     : 
                                 <div className="box-content">
                                     <ApplyMenu 
-                                        addData={ addSetupData } 
+                                        // addData={ addSetupData } 
                                         propsMenuInfo={ getConvertTreeData(setupPropsList.response.menuInfo, 'root', { group: 'p_menu_code', code: 'menu_code' }) } 
                                     />
                                 </div> 
@@ -345,7 +346,7 @@ const SetupSettingWrap = () => {
                                     : 
                                 <div className="box-content">
                                     <IncomingEvent 
-                                        addData={ addSetupData } 
+                                        // addData={ addSetupData } 
                                         propsEventInfo={ setupPropsList.response.eventInfo } 
                                     />
                                 </div> 
@@ -358,7 +359,7 @@ const SetupSettingWrap = () => {
                                 <span>loading...</span> 
                                     : 
                                 <CctvFunction 
-                                    addData={ addSetupData }
+                                    // addData={ addSetupData }
                                     propsCctvFunctionInfo={ 
                                         getConvertTreeData(setupPropsList.response.funcInfo, 'root', 
                                         { group: 'func_group', code: 'func_code' }) 
@@ -376,7 +377,7 @@ const SetupSettingWrap = () => {
                                     : 
                                 <div className="box-content">
                                     <FrontSetup 
-                                        addData={ addSetupData } 
+                                        // addData={ addSetupData } 
                                         propsSetupInfo={ getConvertTreeData(setupPropsList.response.setupInfo, 'root', { group: 'config_group', code: 'config_code' }) } 
                                     />
                                 </div> 
