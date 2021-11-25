@@ -5,6 +5,7 @@ import { History } from 'history'
 import thunk from 'redux-thunk';
 import { reducers } from './index';
 
+
 export default function configureStore(history: History) {
   const middleware = [
     thunk,
