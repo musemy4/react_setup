@@ -1,9 +1,11 @@
-import { composeWithDevTools } from 'redux-devtools-extension';
 import { applyMiddleware, combineReducers, createStore } from 'redux'
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { History } from 'history'
+
 import thunk from 'redux-thunk';
-// setup
+import { composeWithDevTools } from 'redux-devtools-extension';
+
+// setup reducer
 import adminReducer from "./setup/admin";
 import loginReducer from "./setup/login";
 import fetchSetupReducer from "./setup/fetchSetup";
