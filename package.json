@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.4.1",
+    "@fortawesome/fontawesome-free": "^5.15.4",
     "@reduxjs/toolkit": "^1.6.2",
     "axios": "^0.21.1",
     "bootstrap": "^5.1.0",

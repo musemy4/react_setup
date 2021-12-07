@@ -42,29 +42,14 @@ export interface ISetup {
     children: Array<ISetup>
 }
 
-export interface IPutSetup {
-    key: string;
-    value: boolean;
-    area_flag?: boolean;
+export interface ISetupBody {
+    code?: number;
+    message?: string;
+    response: ISetupData
+    responseTime?: string;
 }
 
-export interface IPutSetupGroup {
-    [index: string]: Array<IPutSetup>;
-    menu_info: Array<IPutSetup>;
-    event_info: Array<IPutSetup>;
-    func_info: Array<IPutSetup>;
-    setup_info: Array<IPutSetup>;
-    layer_info: Array<IPutSetup>;
-}
-
-export interface IPutSetupHttpBody {
-    code: number;
-    message: string;
-    response: IPutSetupGroup
-    responseTime: string;
-}
-
-export interface IGetSetupGroup {
+export interface ISetupData {
     menuInfo: Array<IMenu>;
     eventInfo: Array<IEvent>;
     funcInfo: Array<IFunc>;
@@ -72,14 +57,17 @@ export interface IGetSetupGroup {
     layerInfo: Array<ILayer>;
 }
 
-export interface IGetSetupHttpBody {
-    code?: number;
-    message?: string;
-    response: IGetSetupGroup
-    responseTime?: string;
+export interface IPutSetup {
+    key: string;
+    value: boolean;
+    area_flag?: boolean;
 }
 
-export interface IAddSetupData {
-    type: string;
-    data: Array<IMenu | IEvent | IFunc | ISetup | ILayer>;
+export interface IPutSetupBody {
+    [index: string]: Array<IPutSetup>;
+    menu_info: Array<IPutSetup>;
+    event_info: Array<IPutSetup>;
+    func_info: Array<IPutSetup>;
+    setup_info: Array<IPutSetup>;
+    layer_info: Array<IPutSetup>;
 }

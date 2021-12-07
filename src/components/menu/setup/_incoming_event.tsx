@@ -1,23 +1,43 @@
 // React
-import React, { useState, useEffect } from 'react';
+import _ from 'lodash';
+import React, { useState, useEffect, useRef } from 'react';
 // react-redux lib
-import { useDispatch } from 'react-redux';
-import { addSetupData } from '../../../store/setup';
-
+import { useDispatch, useSelector } from 'react-redux';
+// fetch
+// import { addPartsData } from '../../store/setup/setup';
 // Interfaces
-import { IEvent } from './setup_setting_interface';
+import { IEvent } from './setup_interface';
 
 interface IProps {
-    propsEventInfo: Array<IEvent>;
+    [index: string]: Array<IEvent>;
 }
+
+
 
 export const IncomingEvent = ({propsEventInfo}: IProps) => {
     const [allChecked, setAllChecked] = useState(!propsEventInfo.some((menuInfo: { setup_flag: any; }) => !menuInfo.setup_flag));
     const [stateEventInfo, setStateEventInfo] = useState(propsEventInfo);
+
+    // get
+    const { eventInfo }: IProps = useSelector((state:any)=> state.setup.packedTmpSetup.response); // 정제된것 그냥 뿌린다
+    // set
     const dispatch = useDispatch();
+
     useEffect(() => {
-        dispatch(addSetupData(propsEventInfo, 'EVENT'));
+        // setStateEventInfo(propsEventInfo);
+        // dispatch(addPartsData({data:propsEventInfo, type:'EVENT'}));
     }, []);
+
+    const mounted = useRef(false);
+    useEffect(() => {
+        if(!mounted.current) {
+            mounted.current = true;
+        } else {
+            console.log('eventInfo 변경 감지!');
+            setStateEventInfo(eventInfo);
+        } 
+    }, [eventInfo]);
+
 
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const check = e.target.checked;
@@ -29,8 +49,7 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
             }
         });
         setAllChecked(check);
-        setStateEventInfo(newStateEventInfo);
-        dispatch(addSetupData(newStateEventInfo, 'EVENT'));
+        // dispatch(addPartsData({data:newStateEventInfo, type:'EVENT'}));
     }
 
     const onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,10 +67,9 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
             return eventInfo;
         });
 
-        const isAllChecked = newStateEventInfo.some(eventInfo => !eventInfo.setup_flag );
+        const isAllChecked = newStateEventInfo.some((eventInfo: any) => !eventInfo.setup_flag );
         setAllChecked(!isAllChecked);
-        setStateEventInfo(newStateEventInfo);
-        dispatch(addSetupData(newStateEventInfo, 'EVENT'));
+        // dispatch(addPartsData({data:newStateEventInfo, type:'EVENT'}));
     }
 
     return (
@@ -70,22 +88,25 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
                     </div>
                     <div className="sub_menu">
                         <ul>
-                            { stateEventInfo.map((eventInfo: IEvent) => {
-                                return (
-                                    <li key={ eventInfo.event_code }>
-                                        <span className="menu_title">
-                                            <span className="checkbox_wrap">
-                                                <input className="form-check-input" onChange={ onCheckboxChangeHandler } type="checkbox" id={ eventInfo.event_code } checked={ eventInfo.setup_flag }/>
-                                                <label className="form-check-label" htmlFor={ eventInfo.event_code }>{ eventInfo.event_name }</label>
+                            { 
+                                eventInfo.length !== 0 ? eventInfo.map((eventInfo: any) => {
+                                    return (
+                                        <li key={ eventInfo.event_code }>
+                                            <span className="menu_title">
+                                                <span className="checkbox_wrap">
+                                                    <input className="form-check-input" onChange={ onCheckboxChangeHandler } type="checkbox" id={ eventInfo.event_code } checked={ eventInfo.setup_flag }/>
+                                                    <label className="form-check-label" htmlFor={ eventInfo.event_code }>{ eventInfo.event_name }</label>
+                                                </span>
                                             </span>
-                                        </span>
-                                    </li>
-                                )
-                            })}
+                                        </li>
+                                    )
+                                }) :
+                                <div>부모가 준 정보가 도달한게 없다!!</div>
+                            }
                         </ul>
                     </div>
                 </li>
             </ul>
         </div>
     )
-}
+};

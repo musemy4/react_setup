@@ -1,32 +1,48 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
 // External Lib
 import _ from 'lodash';
 // react-redux lib
-import { useDispatch } from 'react-redux';
-import { addSetupData } from '../../../store/setup';
-
-
+import { useDispatch, useSelector } from 'react-redux';
+// fetch
+// import { addPartsData } from '../../store/setup/setup';
 // Interfaces
-import { ISetup } from './setup_setting_interface';
+import { ISetup } from './setup_interface';
 
 interface IProps {
-    propsSetupInfo: Array<ISetup>;
+    [index: string]: Array<ISetup>;
 }
 
 export const FrontSetup = ({propsSetupInfo}: IProps) => {
-    const [stateSetupInfo, setStateSetupInfo] = useState(propsSetupInfo);
+    const [stateSetupInfo, setStateSetupInfo] = useState<Array<ISetup> | undefined | null>();
 
+    // get
+    const { setupInfo }: IProps = useSelector((state:any)=> state.setup.packedTmpSetup.response); // 정제된것 그냥 뿌린다
+    // set 
     const dispatch = useDispatch();
 
+
     useEffect(() => {
-        dispatch(addSetupData(propsSetupInfo, 'SETUP'));
+        // setStateSetupInfo(propsSetupInfo); // props
+        // dispatch(addPartsData({data:propsSetupInfo, type:'SETUP'}));
     }, []);
+
+    const mounted = useRef(false);
+    useEffect(() => {
+        if(!mounted.current) {
+            mounted.current = true;
+        } else {
+            console.log('setInfo 변경 감지!');
+            setStateSetupInfo(setupInfo);
+        } 
+    }, [setupInfo]);
+
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
 
-        const newStateSetupInfo = stateSetupInfo.map((setupGroup: ISetup) => {
+        const newStateSetupInfo = setupInfo?.map((setupGroup: ISetup) => {
             const findChildren = _.find(setupGroup.children, { config_code: id } );
             if (findChildren) {
                 const copySetupGroup = { ...setupGroup };
@@ -50,15 +66,16 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
             }
             return setupGroup;
         });
-        setStateSetupInfo(newStateSetupInfo);
-        dispatch(addSetupData(newStateSetupInfo, 'SETUP'));
+        // setStateSetupInfo(newStateSetupInfo);
+        // dispatch(addPartsData({data:newStateSetupInfo, type:'SETUP'}));
+        // dispatch(addSetupData(newStateSetupInfo, 'SETUP'));
         // addData(newStateSetupInfo, 'SETUP');
     }
 
     const onRadioChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         
-        const newStateSetupInfo = stateSetupInfo.map((setupGroup: ISetup) => {
+        const newStateSetupInfo = setupInfo?.map((setupGroup: ISetup) => {
             const findRoot = setupGroup.config_code === id;
             if (findRoot) {
                 const copyRootSetupInfo = { ...setupGroup };
@@ -74,21 +91,25 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
             }
             return setupGroup;
         });
-        setStateSetupInfo(newStateSetupInfo);
-        dispatch(addSetupData(newStateSetupInfo, 'SETUP'));
+        // setStateSetupInfo(newStateSetupInfo);
+        // dispatch(addPartsData({data:newStateSetupInfo, type:'SETUP'}));
+        // dispatch(addSetupData(newStateSetupInfo, 'SETUP'));
     }
+
+
+
 
     return (
         <div className="front-setting-content">
             <ul className="subgroup_setup mt10">
                 {
-                    stateSetupInfo.map((setupInfo: ISetup) => {
+                    stateSetupInfo?.length !== 0 ? stateSetupInfo?.map((setupInfo: any) => {
                         return (
                             <li key={ setupInfo.config_code }>
                                 <h3>{ setupInfo.config_name }</h3>
                                 { 
                                     setupInfo.data_type === 'string' && setupInfo.children.length > 0
-                                        ? setupInfo.children.map((setupChildren: ISetup) => {
+                                        ? setupInfo.children.map((setupChildren: any) => {
                                             return (
                                                 <div key={ setupChildren.config_code }>
                                                     <p>- {setupChildren.config_name}</p>
@@ -113,9 +134,9 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
                                 }
                             </li>
                         )
-                    })
+                    }) :  <div>부모가 준 정보가 도달한게 없다!!</div>
                 }
             </ul>
         </div>
     )
-}
+};

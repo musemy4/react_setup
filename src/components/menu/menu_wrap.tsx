@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 
 // Component
 import { Tabs, TabType } from "./tabs"; // tabs
-import SetupSettingWrap from './setupSetting/setup_setting_wrap';
+import SetupWrap from './setup/setup_wrap';
 import { Tabs2 } from './tab2/tab2';
 import { Tabs3 } from './tab3/tab3';
 
-const SetupWrap = () => {
+const MenuWrap = () => {
     // TABS
     const [selectedTab, setSelectedTab] = useState(TabType.SETUP);
     const [refresh, setRefresh] = useState(String(new Date()));
@@ -26,7 +26,7 @@ const SetupWrap = () => {
                 onChange={(selectedTab: string) => setSelectedTab(selectedTab)} 
             />
             {selectedTab === TabType.SETUP && (
-                <SetupSettingWrap />
+                <SetupWrap />
             )}
             {selectedTab === TabType.TAB2 && (
                 <Tabs2 />
@@ -38,4 +38,4 @@ const SetupWrap = () => {
     );
 }
 
-export default SetupWrap;
+export default MenuWrap;

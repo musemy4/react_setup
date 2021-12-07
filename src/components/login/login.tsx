@@ -2,18 +2,16 @@ import React, { useState, useEffect } from 'react';
 // react-redux lib
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ILoginState } from '../../store';
-import { postSetupLogin } from '../../store/login';
 
 const Login = (props: any) => {
-
+    console.log(props);
     const [ id, setStateId ] = useState('');
     const [ pw, setStatePw ] = useState('');
     const [ error, setError ] = useState(false);
 
     // 상태 조회
-    const { loginState } = useSelector((state:ILoginState) => ({
-        loginState: state.loginState
+    const { loginState } = useSelector((state:any) => ({
+        loginState: state.login
     }));
 
     // 액션 디스패치
@@ -23,18 +21,18 @@ const Login = (props: any) => {
         if (sessionStorage.getItem('authorization')) {
             sessionStorage.removeItem('authorization');
         }
-        if (loginState.login && loginState.login.status === 'SUCCESS') {
+        if (loginState && loginState.status === 'SUCCESS') {
             sessionStorage.setItem('authorization', 'success');
             props.history.push('/setup');
         }
-        if (loginState.login && loginState.login.status === 'FAILURE') {
+        if (loginState && loginState.status === 'FAILURE') {
             setError(true);
         }
     });
 
     const onFormSubmit = (event: React.FormEvent<HTMLFormElement>, id: string, pw: string) => {
         event.preventDefault();
-        dispatch(postSetupLogin({ id, pw }));
+        // dispatch(postSetupLogin({ id, pw }));
         setStateId('');
         setStatePw('');
     }
