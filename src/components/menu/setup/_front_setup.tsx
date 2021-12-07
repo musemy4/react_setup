@@ -18,7 +18,7 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
     const [stateSetupInfo, setStateSetupInfo] = useState<Array<ISetup> | undefined | null>();
 
     // get
-    const { setupInfo }: IProps = useSelector((state:any)=> state.setup.packedTmpSetup.response); // 정제된것 그냥 뿌린다
+    const { setupInfo }: IProps = useSelector((state:any)=> state.tmpSetup.response); // 정제된것 그냥 뿌린다
     // set 
     const dispatch = useDispatch();
 

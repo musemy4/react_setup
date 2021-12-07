@@ -12,8 +12,8 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // fetch
-// import { fetchSetupProps, putSetupProps, resetFetchedSetupStatus, resetSetupStatus } from '../../store/setup/setup';
-
+import { fetchSetupProps, resetFetchSetupStatus } from '../../../store/setup/fetchSetup';
+import { putTmpSetupProps, resetTmpSetupStatus } from '../../../store/setup/tmpSetup';
 // utils
 import { getConvertTreeData } from '../../../common/utils/convert-data';
 
@@ -53,12 +53,12 @@ const SetupWrap = () => {
     useEffect(() => {
         if(!code || code !== 200) {
             // fetch된 db 데이터가 없으면 가져온다
-            // dispatch(fetchSetupProps());
+            dispatch(fetchSetupProps());
         }
         return () => {
             console.log('SETUPcomponentWillUnmount=============');
-            // dispatch(resetSetupStatus());
-            // dispatch(resetFetchedSetupStatus());
+            dispatch(resetTmpSetupStatus());
+            dispatch(resetFetchSetupStatus());
         }
     }, [])
 
@@ -70,7 +70,7 @@ const SetupWrap = () => {
             // fetch된 코드가 있고 제대로 들
             console.log('parent:::code감지');
             if(code && code === 200) {
-                // dispatch(resetSetupStatus());// 자식이 tmp로 들고있는 status 내용 지우기
+                dispatch(resetTmpSetupStatus());// 자식이 tmp로 들고있는 status 내용 지우기
                 console.log(response);
                 setSetupPropsList(response); // fetch된 코드를 다시 반영하자
             }
@@ -94,7 +94,7 @@ const SetupWrap = () => {
             console.log('reseponseT');
             if(packedTmpSetup.code && packedTmpSetup.code === 200) { // 성공 직후
                 console.log('성공 이후');
-                // dispatch(fetchSetupProps());
+                dispatch(fetchSetupProps());
             }
         }
     }, [packedTmpSetup.code])
@@ -107,7 +107,7 @@ const SetupWrap = () => {
             // fetch된 코드가 있고 제대로 들
             console.log('parent:::code감지');
             if(code && code === 200) {
-                // dispatch(resetSetupStatus()); // 자식이 tmp로 들고있는 status 내용 지우기
+                dispatch(resetTmpSetupStatus()); // 자식이 tmp로 들고있는 status 내용 지우기
                 setSetupPropsList(response); // fetch된 코드를 다시 반영하자
             }
         }
@@ -211,13 +211,8 @@ const SetupWrap = () => {
             buttons: [
                 { label: '취소', onClick: () => null },
                 { label: '초기화', onClick: () => {
-                    // window.location.reload();  // 전체가 다 날라가버림!! ** 
-                    // fetch된 코드를 다시 반영하자
-                    // dispatch(resetSetupStatus()); // 자식이 tmp로 들고있는 status 내용 지우기
                     setSetupPropsList(response); // fetch된 코드를 다시 반영하자
-                    // forceUpdate();    
-                    }
-                }
+                }}
             ],
         });
     };
@@ -242,7 +237,7 @@ const SetupWrap = () => {
                                     :  */}
                                 <div className="box-content">
                                     <ApplyMenu 
-                                        // propsMenuInfo={ getConvertTreeData(setupPropsList.response.menuInfo, 'root', { group: 'p_menu_code', code: 'menu_code' }) } 
+                                        propsMenuInfo={ getConvertTreeData(setupPropsList.menuInfo, 'root', { group: 'p_menu_code', code: 'menu_code' }) } 
                                     />
                                 </div> 
                             {/* } */}
@@ -256,7 +251,7 @@ const SetupWrap = () => {
                                     :  */}
                                 <div className="box-content">
                                     <IncomingEvent 
-                                        // propsEventInfo={ setupPropsList.response.eventInfo } 
+                                        propsEventInfo={ setupPropsList.eventInfo } 
                                     />
                                 </div> 
                             {/* } */}
@@ -268,11 +263,11 @@ const SetupWrap = () => {
                                 <span>loading...</span> 
                                     :  */}
                                 <CctvFunction 
-                                    // propsCctvFunctionInfo={ 
-                                    //     getConvertTreeData(setupPropsList.response.funcInfo, 'root', 
-                                    //     { group: 'func_group', code: 'func_code' }) 
-                                    // }
-                                    // propLayerInfo={ setupPropsList.response.layerInfo }
+                                    propsCctvFunctionInfo={ 
+                                        getConvertTreeData(setupPropsList.funcInfo, 'root', 
+                                        { group: 'func_group', code: 'func_code' }) 
+                                    }
+                                    propLayerInfo={ setupPropsList.layerInfo }
                                 /> 
                             {/* } */}
                         </div>
@@ -285,7 +280,7 @@ const SetupWrap = () => {
                                     :  */}
                                 <div className="box-content">
                                     <FrontSetup 
-                                        // propsSetupInfo={ getConvertTreeData(setupPropsList.response.setupInfo, 'root', { group: 'config_group', code: 'config_code' }) } 
+                                        propsSetupInfo={ getConvertTreeData(setupPropsList.setupInfo, 'root', { group: 'config_group', code: 'config_code' }) } 
                                     />
                                 </div> 
                             {/* } */}

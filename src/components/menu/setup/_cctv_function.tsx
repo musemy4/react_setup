@@ -16,15 +16,14 @@ interface IProps {
     propLayerInfo: Array<ILayer>; 
 }
 
-// export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => {  
-export const CctvFunction = () => {  
+export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => {  
     const [cctvFuncAllChecked, setCctvFuncAllChecked] = useState(false);
     const [stateCctvFunctionInfo, setStateCctvFunctionInfo] = useState<Array<IFunc> | undefined | null>();
     const [stateLayerInfo, setStateLayerInfo] = useState<Array<ILayer> | undefined | null>();
     
     
     // get
-    const { funcInfo, layerInfo }: any = useSelector((state:any)=> state.setup.packedTmpSetup.response); // 정제된것 그냥 뿌린다
+    const { funcInfo, layerInfo }: any = useSelector((state:any)=> state.tmpSetup.response); // 정제된것 그냥 뿌린다
     // set
     const dispatch = useDispatch();
     

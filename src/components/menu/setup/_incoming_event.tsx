@@ -19,7 +19,7 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
     const [stateEventInfo, setStateEventInfo] = useState(propsEventInfo);
 
     // get
-    const { eventInfo }: IProps = useSelector((state:any)=> state.setup.packedTmpSetup.response); // 정제된것 그냥 뿌린다
+    const { eventInfo }: IProps = useSelector((state:any)=> state.tmpSetup.response); // 정제된것 그냥 뿌린다
     // set
     const dispatch = useDispatch();
 

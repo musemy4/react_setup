@@ -17,7 +17,7 @@ export const ApplyMenu = ({propsMenuInfo}: IProps) => {
     const [stateMenuInfo, setStateMenuInfo] = useState<Array<IMenu> | undefined | null>(); // 초기화 작업
 
     // get
-    const { menuInfo }: IProps = useSelector((state:any)=> state.setup.packedTmpSetup.response); 
+    const { menuInfo }: IProps = useSelector((state:any)=> state.tmpSetup.response); 
     // set 
     const dispatch = useDispatch();
     
