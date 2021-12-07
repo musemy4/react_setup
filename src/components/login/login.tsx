@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 // react-redux lib
 import { useDispatch, useSelector } from 'react-redux';
 
+// fetch
+import { postLogin } from '../../store/login';
+
 
 const Login = (props: any) => {
     console.log(props);
@@ -10,9 +13,7 @@ const Login = (props: any) => {
     const [ error, setError ] = useState(false);
 
     // 상태 조회
-    const { loginState } = useSelector((state:any) => ({
-        loginState: state.login
-    }));
+    const { loginState } = useSelector((state:any) => ({loginState: state.login}));
 
     // 액션 디스패치
     const dispatch = useDispatch();
@@ -32,7 +33,7 @@ const Login = (props: any) => {
 
     const onFormSubmit = (event: React.FormEvent<HTMLFormElement>, id: string, pw: string) => {
         event.preventDefault();
-        // dispatch(postSetupLogin({ id, pw }));
+        dispatch(postLogin({ id, pw }));
         setStateId('');
         setStatePw('');
     }

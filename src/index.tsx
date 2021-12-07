@@ -3,7 +3,7 @@ import './common/css/common.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import ReactDOM from 'react-dom';
-import { Provider, ReactReduxContext } from 'react-redux';
+import { Provider } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import { ConnectedRouter } from 'connected-react-router';
 
