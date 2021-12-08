@@ -11,12 +11,15 @@ import ClipLoader from 'react-spinners/ClipLoader';
 // redux
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// fetch
+// from redux store
+// setup
 import { fetchSetupProps, resetFetchSetupStatus } from '../../../store/setup/fetchSetup';
 import { putTmpSetupProps, resetTmpSetupStatus } from '../../../store/setup/tmpSetup';
+// admin
+import { setupCreateID, setupResetRole, setupResetPw  } from '../../../store/setup/admin';
 // utils
 import { getConvertTreeData } from '../../../common/utils/convert-data';
-
+import { dateFormat } from '../../../common/utils/date';
 // interface
 import { ISetupData, IPutSetupBody, IPutSetup } from './setup_interface';
 
@@ -36,6 +39,7 @@ const override = css`
     z-index: 999999`;
 
 const SetupWrap = () => {
+    const inputFile = useRef<HTMLInputElement | null>(null);
     const [loading, setLoading] = useState(false);
     const [setupPropsList, setSetupPropsList] = useState<ISetupData | undefined | null>();
     // redux (state: rootState)
@@ -114,9 +118,136 @@ const SetupWrap = () => {
     }, [tmpSetup.code])
 
 
+    // /////////////////////////////////////////////////////////////////
+    // ADMIN
 
-    
 
+
+
+
+
+    // /////////////////////////////////////////////////////////////////
+    // FUNCTION
+
+    const showLoading = () => {
+        setLoading(true);
+    }
+
+    const hideLoading = () => {
+        setLoading(false);
+    }
+
+    const updateState = () => {
+        // setSetupPropsList(getSetupState);
+    }
+
+    const showAlert = (message: string, status?: string) => {
+        confirmAlert({
+            title: '[알림]',
+            message,
+            buttons: [
+                {
+                    label: '닫기',
+                    onClick: (() => null)
+                }
+            ],
+            overlayClassName: `${status}`
+        });
+    }
+
+    const onClickAdminAction = (type: string) => {
+        switch(type) {
+            case 'admin' :
+                confirmAlert({
+                    title: '[관리자 계정 생성]',
+                    message: `ID: 이노뎁.
+                        Password: p@ssw0rd
+                        계정으로 생성하시겠습니까?`,
+                    buttons: [
+                        { label: '취소', onClick: () => null },
+                        { label: '생성', onClick: (() => {
+                            showLoading();
+                            dispatch(setupCreateID()); 
+                            })
+                        }
+                    ],
+                });
+            break;
+
+            case 'auth' :
+                confirmAlert({
+                    title: '[관리자 권한 초기화]',
+                    message: '권한그룹: 관리자 그룹으로 초기화 하시겠습니까?',
+                    buttons: [
+                        { label: '취소', onClick: () => null },
+                        { label: '초기화', onClick: (() => {
+                            showLoading();
+                            dispatch(setupResetRole()); 
+                            })
+                        }
+                    ],
+                });
+            break;
+            
+            case 'pw' :
+                confirmAlert({
+                    title: '[관리자 비밀번호 초기화]',
+                    message: '비밀번호를 p@ssw0rd로 초기화 하시겠습니까??',
+                    buttons: [
+                        { label: '취소', onClick: () => null },
+                        { label: '초기화', onClick: (() => {
+                            showLoading();
+                            dispatch(setupResetPw()); 
+                            })
+                        }
+                    ],
+                });
+            break;
+
+            default: break;
+        }
+    }
+
+    const onDownloadSetupFile = () => {
+        if(!setupPropsList) return;
+        const fileName = `vurix-dms-platform_셋업 정보_${dateFormat(new Date())}`;
+        const json = JSON.stringify(setupPropsList, null, 4);
+        const blob = new Blob([json],{type:'application/json'});
+        const href = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = href;
+        link.download = `${ fileName }.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    const showOpenFileDialog = () => {
+        if(inputFile.current) inputFile.current.click();
+    }
+
+
+    const onChangeFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const fileReader = new FileReader();
+        if (event.target && event.target.files) {
+            fileReader.readAsText(event.target.files[0], 'UTF-8"');
+            fileReader.onload = e => {
+                if (e.target && e.target.result !== 'undefined' && !e.target.result) {
+                    const response = { response: {...JSON.parse(String(e.target.result))} };
+                    console.log(response);
+                    // setSetupPropsList(response);
+                } else {
+                    showAlert(
+                        `업로드에 실패하였습니다.
+                        .json 파일 데이터를 확인해 주세요.`,
+                        'failure'
+                        );
+                }   
+            }
+        }
+    }   
+
+   
     const onPutSetup = () => {
         console.log('onPutSetup::');
         const httpParam: IPutSetupBody = {
@@ -291,14 +422,15 @@ const SetupWrap = () => {
 
             <div className="bottom h-5">
                 <div className="btn-left">
-                    <button type="button" className="btn btn-primary btn-sm mr-10 disabled_btn">관리자 계정 생성</button> 
-                    <button type="button" className="btn btn-primary btn-sm mr-10 disabled_btn">관리자 권한 초기화</button> 
-                    <button type="button" className="btn btn-primary btn-sm mr-10 disabled_btn">관리자 비밀번호 초기화</button> 
+                    <button type="button" className="btn btn-primary btn-sm mr-10">관리자 계정 생성</button> 
+                    <button type="button" className="btn btn-primary btn-sm mr-10">관리자 권한 초기화</button> 
+                    <button type="button" className="btn btn-primary btn-sm mr-10">관리자 비밀번호 초기화</button> 
                 </div>
                 <div className="btn-right">
                     <form>
-                        <button type="button" className="btn btn-primary btn-sm mr-10 disabled_btn">백업(JSON)</button>
-                        <button type="button" className="btn btn-primary btn-sm mr-10 disabled_btn">복원(JSON)</button>
+                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ onDownloadSetupFile } >백업(JSON)</button>
+                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ showOpenFileDialog } >복원(JSON)</button>
+                        <input type="file" ref={inputFile} onChange={onChangeFile} accept=".json" style={{ display: 'none' }} />
                         <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ onModifySetup } >수정</button>
                         <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ onResetSetup } >초기화</button>
                     </form>
