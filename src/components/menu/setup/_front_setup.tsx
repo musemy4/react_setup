@@ -6,6 +6,7 @@ import _ from 'lodash';
 // react-redux lib
 import { useDispatch, useSelector } from 'react-redux';
 // fetch
+import { addTmpData } from '../../../store/setup/tmpSetup';
 // import { addPartsData } from '../../store/setup/setup';
 // Interfaces
 import { ISetup } from './setup_interface';
@@ -24,8 +25,7 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
 
 
     useEffect(() => {
-        // setStateSetupInfo(propsSetupInfo); // props
-        // dispatch(addPartsData({data:propsSetupInfo, type:'SETUP'}));
+        dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
     }, []);
 
     const mounted = useRef(false);
@@ -34,7 +34,11 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
             mounted.current = true;
         } else {
             console.log('setInfo 변경 감지!');
-            setStateSetupInfo(setupInfo);
+            if(setupInfo.length === 0) {
+                dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
+            } else {
+                setStateSetupInfo(setupInfo);
+            }
         } 
     }, [setupInfo]);
 
@@ -66,10 +70,7 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
             }
             return setupGroup;
         });
-        // setStateSetupInfo(newStateSetupInfo);
-        // dispatch(addPartsData({data:newStateSetupInfo, type:'SETUP'}));
-        // dispatch(addSetupData(newStateSetupInfo, 'SETUP'));
-        // addData(newStateSetupInfo, 'SETUP');
+        dispatch(addTmpData({data:newStateSetupInfo, type:'SETUP'}));
     }
 
     const onRadioChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,9 +92,7 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
             }
             return setupGroup;
         });
-        // setStateSetupInfo(newStateSetupInfo);
-        // dispatch(addPartsData({data:newStateSetupInfo, type:'SETUP'}));
-        // dispatch(addSetupData(newStateSetupInfo, 'SETUP'));
+        dispatch(addTmpData({data:newStateSetupInfo, type:'SETUP'}));
     }
 
 
@@ -134,7 +133,7 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
                                 }
                             </li>
                         )
-                    }) :  <div>부모가 준 정보가 도달한게 없다!!</div>
+                    }) :  <li>no data...</li>
                 }
             </ul>
         </div>

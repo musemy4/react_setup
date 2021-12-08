@@ -36,29 +36,31 @@ const override = css`
     z-index: 999999`;
 
 const SetupWrap = () => {
-    const [setupPropsList, setSetupPropsList] = useState<ISetupData | undefined | null>();
     const [loading, setLoading] = useState(false);
+    const [setupPropsList, setSetupPropsList] = useState<ISetupData | undefined | null>();
     // redux (state: rootState)
     // get
-    const {code, message, response, responseTime} = useSelector((state: any) => state.fetchSetup);
-    const packedTmpSetup = useSelector((state: any)  => state.tmpSetup);
+    const fetchSetup = useSelector((state: any) => state.fetchSetup);
+    const tmpSetup = useSelector((state: any)  => state.tmpSetup);
     // set
     const dispatch = useDispatch();
-
 
 
     // //////////////////////////// 여기까지 FETCH
 
     // component INIT!
     useEffect(() => {
-        if(!code || code !== 200) {
+        console.log('init***');
+        if(!fetchSetup.code || fetchSetup.code !== 200) {
+            console.log('!code || code !== 200');
             // fetch된 db 데이터가 없으면 가져온다
             dispatch(fetchSetupProps());
+            setLoading(true);
         }
         return () => {
             console.log('SETUPcomponentWillUnmount=============');
             dispatch(resetTmpSetupStatus());
-            dispatch(resetFetchSetupStatus());
+            // dispatch(resetFetchSetupStatus());
         }
     }, [])
 
@@ -69,49 +71,48 @@ const SetupWrap = () => {
             } else {
             // fetch된 코드가 있고 제대로 들
             console.log('parent:::code감지');
-            if(code && code === 200) {
-                dispatch(resetTmpSetupStatus());// 자식이 tmp로 들고있는 status 내용 지우기
-                console.log(response);
-                setSetupPropsList(response); // fetch된 코드를 다시 반영하자
+            if(fetchSetup.code && fetchSetup.code === 200) {
+                // dispatch(resetTmpSetupStatus());// 자식이 tmp로 들고있는 status 내용 지우기
+                console.log(fetchSetup.response);
+                setSetupPropsList(fetchSetup.response); // fetch된 코드를 다시 반영하자
+                setLoading(false);
             }
         }
-    }, [code])
-
+    }, [fetchSetup.code])
 
 
 
     // //////////////////////////// 여기까지 FETCH
-
     
     
-    
-    const mounted1 = useRef(false);
-    useEffect(() => {
-        console.log('parent:::codeT감지');
-        if(!mounted1.current) {
-            mounted1.current = true;
-        } else {
-            console.log('reseponseT');
-            if(packedTmpSetup.code && packedTmpSetup.code === 200) { // 성공 직후
-                console.log('성공 이후');
-                dispatch(fetchSetupProps());
-            }
-        }
-    }, [packedTmpSetup.code])
-
     const mounted2 = useRef(false);
     useEffect(() => {
         if(!mounted2.current) {
             mounted2.current = true;
             } else {
             // fetch된 코드가 있고 제대로 들
-            console.log('parent:::code감지');
-            if(code && code === 200) {
+            console.log('parent:::response감지');
+            if(fetchSetup.code && fetchSetup.code === 200) {
                 dispatch(resetTmpSetupStatus()); // 자식이 tmp로 들고있는 status 내용 지우기
-                setSetupPropsList(response); // fetch된 코드를 다시 반영하자
+                setSetupPropsList(fetchSetup.response); // fetch된 코드를 다시 반영하자
             }
         }
-    }, [response])
+    }, [fetchSetup.response]) // fetch의 내용
+
+    const mounted1 = useRef(false);
+    useEffect(() => {
+        console.log('child:::codeT감지');
+        if(!mounted1.current) {
+            mounted1.current = true;
+        } else {
+            console.log('reseponseT');
+            if(tmpSetup.code && tmpSetup.code === 200) { // 성공 직후
+                console.log('성공 이후');
+                dispatch(fetchSetupProps());
+            }
+        }
+    }, [tmpSetup.code])
+
 
 
     
@@ -152,8 +153,8 @@ const SetupWrap = () => {
 
         // 약간 억지로 급하게 만든 부분
         const newSetupArr: any[] = [];
-        if(packedTmpSetup.response) {
-            const entries = Object.entries(packedTmpSetup.response);
+        if(tmpSetup.response) {
+            const entries = Object.entries(tmpSetup.response);
             entries.forEach((ele) => {
                 const obj: any = {type: '', data: []};
                 if (ele[0]==='menuInfo') {
@@ -211,7 +212,7 @@ const SetupWrap = () => {
             buttons: [
                 { label: '취소', onClick: () => null },
                 { label: '초기화', onClick: () => {
-                    setSetupPropsList(response); // fetch된 코드를 다시 반영하자
+                    setSetupPropsList(fetchSetup.response); // fetch된 코드를 다시 반영하자
                 }}
             ],
         });
@@ -224,44 +225,44 @@ const SetupWrap = () => {
         <>
             <ClipLoader color="#0d6efd" loading={loading} css={override} size={50} />
             {
-                loading || !setupPropsList ?
+                loading ?
                     <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} /> 
                       :
                     <div className="row h-90">
                         {/* 1. 적용 메뉴 */}
                         <div className="apply-menu box">
                             <h2>적용메뉴</h2>
-                            {/* { 
-                                !setupPropsList.response || setupPropsList && !setupPropsList.response.menuInfo?
+                            { 
+                                !setupPropsList || setupPropsList && !setupPropsList.menuInfo?
                                 <span>loading...</span> 
-                                    :  */}
+                                    : 
                                 <div className="box-content">
                                     <ApplyMenu 
                                         propsMenuInfo={ getConvertTreeData(setupPropsList.menuInfo, 'root', { group: 'p_menu_code', code: 'menu_code' }) } 
                                     />
                                 </div> 
-                            {/* } */}
+                            }
                         </div>
                         {/* 2. 수신 이벤트 */}
                         <div className="incoming-event box">
                             <h2>수신 이벤트</h2>
-                            {/* { 
-                                !setupPropsList.response || !setupPropsList.response.eventInfo?
+                            { 
+                                !setupPropsList || setupPropsList && !setupPropsList.eventInfo?
                                 <span>loading...</span> 
-                                    :  */}
+                                    : 
                                 <div className="box-content">
                                     <IncomingEvent 
                                         propsEventInfo={ setupPropsList.eventInfo } 
                                     />
                                 </div> 
-                            {/* } */}
+                            }
                         </div>
                         {/* 3. CCTV 기능 */}
                         <div className="cctv-function box">
-                            {/* { 
-                                !setupPropsList.response || !setupPropsList.response.layerInfo? 
+                            { 
+                                !setupPropsList || setupPropsList && !setupPropsList.layerInfo? 
                                 <span>loading...</span> 
-                                    :  */}
+                                    : 
                                 <CctvFunction 
                                     propsCctvFunctionInfo={ 
                                         getConvertTreeData(setupPropsList.funcInfo, 'root', 
@@ -269,21 +270,21 @@ const SetupWrap = () => {
                                     }
                                     propLayerInfo={ setupPropsList.layerInfo }
                                 /> 
-                            {/* } */}
+                            }
                         </div>
                         {/* 4. FRONT 설정 */}
                         <div className="front-setting box">
                             <h2>FRONT 설정</h2>
-                            {/* { 
-                                !setupPropsList.response || !setupPropsList.response.setupInfo?
+                            {
+                                !setupPropsList || setupPropsList && !setupPropsList.setupInfo?
                                 <span>loading...</span> 
-                                    :  */}
+                                    :  
                                 <div className="box-content">
                                     <FrontSetup 
                                         propsSetupInfo={ getConvertTreeData(setupPropsList.setupInfo, 'root', { group: 'config_group', code: 'config_code' }) } 
                                     />
                                 </div> 
-                            {/* } */}
+                            }
                         </div>
                     </div> 
             }

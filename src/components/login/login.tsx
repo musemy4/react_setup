@@ -7,7 +7,6 @@ import { postLogin } from '../../store/login';
 
 
 const Login = (props: any) => {
-    console.log(props);
     const [ id, setStateId ] = useState('');
     const [ pw, setStatePw ] = useState('');
     const [ error, setError ] = useState(false);

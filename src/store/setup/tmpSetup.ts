@@ -11,6 +11,7 @@ const REQUEST_URL = '/vurix-dms/api/v1';
 
 
 const initialState: ISetupBody = {
+    loading: false,
     response: {
         menuInfo: [],
         eventInfo: [],
@@ -56,12 +57,7 @@ const tmpSetupSlice = createSlice({
             }
         },
         resetTmpSetupStatus: state => { // initialState 로
-            state.code = undefined;
-            state.response.menuInfo = [];
-            state.response.eventInfo = [];
-            state.response.funcInfo = [];
-            state.response.setupInfo = [];
-            state.response.layerInfo =[];
+            return initialState;
         },
     },
     extraReducers: (builder) => {
