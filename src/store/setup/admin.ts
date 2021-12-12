@@ -26,11 +26,18 @@ export const setupCreateID = createAsyncThunk( // init시 호출
         try {
             const response = await axios.post(`${REQUEST_URL}/auth/setupCreateID`);
             console.log(response);
+            const state: IAdmin = {
+                type: 'createID',
+                status: undefined
+            }
+
             if (response.status === 200) {
-                return 'SUCCESS';
+                state.status = 'SUCCESS';
+                return state;
             }
             if (response.status === 500) {
-                return 'FAILURE'; // 500에러가 여기서 나는지
+                state.status = 'DUPLICATE';
+                return state; // 500에러가 여기서 나는지
             }
         } catch(error) {
             console.log(error); // 여기서 나는지 관찰할것
