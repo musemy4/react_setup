@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, combineReducers } from '@reduxjs/toolkit
 import axios from 'axios';
 
 const REQUEST_URL = '/vurix-dms/api/v1';
-interface ILogin {
+export interface ILogin {
     loading: boolean;
     status: undefined | 'SUCCESS' | 'FAILURE'
 }

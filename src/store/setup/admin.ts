@@ -3,7 +3,7 @@ import axios from 'axios';
 
 
 const REQUEST_URL = '/vurix-dms/api/v1';
-interface IAdmin {
+export interface IAdmin {
     type: undefined | 'createID' | 'resetRole' | 'resetPw' 
     status: undefined | 'SUCCESS' | 'FAILURE' | 'DUPLICATE' | 'ERROR'
 }

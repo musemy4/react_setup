@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // interface
@@ -16,7 +16,8 @@ const initialState: ISetupBody = {
         funcInfo: [],
         setupInfo: [],
         layerInfo: []
-    }
+    },
+    loading: false
 }
 
 export const fetchSetupProps = createAsyncThunk( // init시 호출
@@ -29,8 +30,7 @@ export const fetchSetupProps = createAsyncThunk( // init시 호출
                 return response.data;
             }
         } catch(error) {
-            console.log(error); // 여기서 나는지 관찰할것
-            return error;
+            console.log('login rejected::', error);
         }
         return null;
     }
@@ -45,30 +45,23 @@ const fetchSetupSlice = createSlice({
             return initialState;
         },
     },
-    extraReducers: (builder) => {
-        builder.addCase(fetchSetupProps.fulfilled, (state, action) => { // action.payload는 위의 axios에서 return된 값
-            console.log(';;2. fulfilled');
-            // 1. 안됨
-            // const { code, message, response, responseTime} = action.payload;
-            // state = {...state, code, message, response, responseTime};
-
-            // 2. 직접넣기 - 됨
-            // state.code = action.payload.code;
-            // state.message = action.payload.message;
-            // state.response = action.payload.response;
-            // state.responseTime = action.payload.responseTime;
-            
-            return action.payload;
-        })
-        .addCase(fetchSetupProps.pending, (state, action)=> {
-            console.log(';;1. pending');
+    extraReducers: {
+        [fetchSetupProps.fulfilled.type]: (state, action) => {
+            state.code = action.payload.code;
+            state.message = action.payload.message;
+            state.response = action.payload.response;
+            state.responseTime = action.payload.responseTime;
+            state.loading = false; 
+        },
+        [fetchSetupProps.pending.type]: (state) => {
+            state.loading = true; 
+        },
+        [fetchSetupProps.rejected.type]: (state, action: PayloadAction<{message: string; status: number}>) => {
+            // 실패시 return 되는 action의 type을 정해줄수 있어 이방법으로 하겠다
             console.log(action);
-        })
-        // 잘못되었을때의 처리는 어떻게?
-        .addCase(fetchSetupProps.rejected, (state, action) => {
-            console.log(action); 
-        })
-    },
+            state.loading = false; 
+        },
+    }
 });
 
 export const {resetFetchSetupStatus} = fetchSetupSlice.actions;

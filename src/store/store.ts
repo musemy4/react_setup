@@ -1,4 +1,4 @@
-import { applyMiddleware, combineReducers, createStore } from 'redux'
+import { applyMiddleware, combineReducers, createStore, Store } from 'redux'
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { History } from 'history'
 
@@ -7,10 +7,19 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 // setup reducer
-import adminReducer from "./setup/admin";
-import loginReducer from "./login";
+import adminReducer, { IAdmin } from "./setup/admin";
+import loginReducer, { ILogin } from "./login";
 import fetchSetupReducer from "./setup/fetchSetup";
 import tmpSetupReducer from "./setup/tmpSetup";
+import { ISetupBody } from '../components/menu/setup/setup_interface';
+
+
+interface rootState {
+   admin: IAdmin | undefined;
+   login: ILogin | undefined;
+   fetchSetup: ISetupBody | undefined;
+   tmpSetup: ISetupBody | undefined;
+}
 
 
 const reducers = {
@@ -21,7 +30,7 @@ const reducers = {
 };
 
 
-export default function configureStore(history: History) {
+export default function configureStore(history: History, initialState?: rootState): Store<any> {
     const middleware = [
       thunk,
       routerMiddleware(history)
@@ -34,6 +43,7 @@ export default function configureStore(history: History) {
   
     return createStore(
       rootReducer,
+      initialState,
       composeWithDevTools(applyMiddleware(...middleware))
     );
   }
