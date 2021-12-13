@@ -3,14 +3,9 @@ import axios from 'axios';
 
 
 const REQUEST_URL = '/vurix-dms/api/v1';
-interface IAdmin {
+export interface IAdmin {
     type: undefined | 'createID' | 'resetRole' | 'resetPw' 
-    status: undefined | 'SUCCESS' | 'FAILURE' | 'DUPLICATE'
-}
-
-interface ILoginParams {
-    id: string;
-    pw: string;
+    status: undefined | 'SUCCESS' | 'FAILURE' | 'DUPLICATE' | 'ERROR'
 }
 
 
@@ -19,31 +14,24 @@ const initialState: IAdmin = {
     status: undefined
 }
 
-
 export const setupCreateID = createAsyncThunk( // init시 호출
     'admin/createAdminAccount',
     async() => {
         try {
             const response = await axios.post(`${REQUEST_URL}/auth/setupCreateID`);
             console.log(response);
-            const state: IAdmin = {
-                type: 'createID',
-                status: undefined
-            }
-
+            
             if (response.status === 200) {
-                state.status = 'SUCCESS';
-                return state;
+                return 'SUCCESS';
             }
             if (response.status === 500) {
-                state.status = 'DUPLICATE';
-                return state; // 500에러가 여기서 나는지
+                return 'DUPLICATE';
             }
-        } catch(error) {
-            console.log(error); // 여기서 나는지 관찰할것
             return 'FAILURE';
+        } catch(error) {
+            console.log('login rejected::', error);
         }
-        return undefined;
+        return 'FAILURE';
     }
 );
 
@@ -57,10 +45,9 @@ export const setupResetRole = createAsyncThunk( // init시 호출
                 return 'SUCCESS';
             }
         } catch(error) {
-            console.log(error);
-            return 'FAILURE';
+            console.log('login rejected::', error);
         }
-        return undefined;
+        return 'FAILURE';
     }
 );
 
@@ -74,10 +61,9 @@ export const setupResetPw = createAsyncThunk( // init시 호출
                 return 'SUCCESS';
             }
         } catch(error) {
-            console.log(error);
-            return 'FAILURE';
+            console.log('login rejected::', error);
         }
-        return undefined;
+        return 'FAILURE';
     }
 );
 
@@ -87,50 +73,45 @@ const adminSlice = createSlice({
     name: 'admin',
     initialState,
     reducers: {
-        resetAdminStatus: state => { // initialState 로
-            state.type = undefined;
-            state.status = undefined;
+        resetAdminStatus: () => { // initialState 로
+            return initialState;
         },
     },
     extraReducers: (builder) => {
         // 1. setupCreateID
-        builder.addCase(setupCreateID.fulfilled, (state, action) => { // action.payload는 위의 axios에서 return된 값
-            state.type = 'createID';
+        builder.addCase(setupCreateID.fulfilled, (state, action) => { 
             state.status = action.payload;
         })
         .addCase(setupCreateID.pending, (state) => {
             console.log(state);
         })
-        .addCase(setupCreateID.rejected, (state, action) => {
+        .addCase(setupCreateID.rejected, (state) => {
             state.type = 'createID';
-            console.log(action);
-            // state.status = action.payload;
+            state.status = 'ERROR';
         })
         // 2.setupResetRole
-        .addCase(setupResetRole.fulfilled, (state, action) => { // action.payload는 위의 axios에서 return된 값
+        .addCase(setupResetRole.fulfilled, (state, action) => { 
             state.type = 'resetRole';
             state.status = action.payload;
         })
         .addCase(setupResetRole.pending, (state) => {
             console.log(state);
         })
-        .addCase(setupResetRole.rejected, (state, action) => {
-            console.log(action);
+        .addCase(setupResetRole.rejected, (state) => {
             state.type = 'resetRole';
-            // state.status = action.payload;
+            state.status = 'ERROR';
         })
          // 3.setupResetPw
-         .addCase(setupResetPw.fulfilled, (state, action) => { // action.payload는 위의 axios에서 return된 값
+         .addCase(setupResetPw.fulfilled, (state, action) => {
             state.type = 'resetPw';
             state.status = action.payload;
         })
         .addCase(setupResetPw.pending, (state) => {
             console.log(state);
         })
-        .addCase(setupResetPw.rejected, (state, action) => {
+        .addCase(setupResetPw.rejected, (state) => {
             state.type = 'resetPw';
-            console.log(action);
-            // state.status = action.payload;
+            state.status = 'ERROR';
         })
     },
 });
