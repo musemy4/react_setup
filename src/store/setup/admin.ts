@@ -26,7 +26,7 @@ export const setupCreateID = createAsyncThunk( // init시 호출
         try {
             const response = await axios.post(`${REQUEST_URL}/auth/setupCreateID`);
             console.log(response);
-            const state: IAdmin = {
+            const state: any = {
                 type: 'createID',
                 status: undefined
             }
