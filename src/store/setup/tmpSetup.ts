@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // interface
@@ -28,11 +28,10 @@ export const putTmpSetupProps  = createAsyncThunk( // 수정
             const response = await axios.put(`${REQUEST_URL}/role/putSetupProp`, params);
             // {data: {…}, status: 200, statusText: 'OK', headers: {…}, config: {…},…}
             console.log(response);
-            if (response.status === 200) return response.data; // put의 반환 내용은 별거없다
+            if (response.status === 200) return response.data; 
             return response.data; // fulfilled
         } catch(error) {
-            console.log(error); // 모양이 어떤지..
-            return error; // reject
+            console.log('put setup rejected::', error);
         }
     }
 );
@@ -56,24 +55,26 @@ const tmpSetupSlice = createSlice({
                 state.response.layerInfo = action.payload.data;
             }
         },
-        resetTmpSetupStatus: state => { // initialState 로
+        resetTmpSetupStatus: () => { // initialState 로
             return initialState;
         },
     },
-    extraReducers: (builder) => {
-        builder.addCase(putTmpSetupProps.fulfilled, (state, action) => { // action.payload는 위의 axios에서 return된 값
-            console.log(state);
-            console.log(action.payload);
-            state.code = 200;
-        })
-        // 잘못되었을때의 처리는 어떻게?
-        // .addCase(fetchSetupProps.rejected, (state, action) => {
-        //     state.code = action.payload.code;
-        //     state.message = action.payload.message;
-        //     state.response = action.payload.response;
-        //     state.responseTime = action.payload.responseTime;
-        // })
-    },
+    extraReducers: {
+        [putTmpSetupProps.fulfilled.type]: (state, action) => {
+            state.code = action.payload.code;
+            state.message = action.payload.message;
+            state.response = action.payload.response;
+            state.responseTime = action.payload.responseTime;
+            state.loading = false; 
+        },
+        [putTmpSetupProps.pending.type]: (state) => {
+            state.loading = true; 
+        },
+        [putTmpSetupProps.rejected.type]: (state, action: PayloadAction<{message: string; status: number}>) => {
+            console.log(action);
+            state.loading = false; 
+        },
+    }
 });
 
 export const { addTmpData, resetTmpSetupStatus } = tmpSetupSlice.actions;

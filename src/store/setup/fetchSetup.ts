@@ -30,7 +30,7 @@ export const fetchSetupProps = createAsyncThunk( // init시 호출
                 return response.data;
             }
         } catch(error) {
-            console.log('login rejected::', error);
+            console.log('fetch rejected::', error);
         }
         return null;
     }
@@ -41,7 +41,7 @@ const fetchSetupSlice = createSlice({
     name: 'fetchSetup',
     initialState,
     reducers: {
-        resetFetchSetupStatus: state => { // initialState 로
+        resetFetchSetupStatus: () => { // initialState 로
             return initialState;
         },
     },
