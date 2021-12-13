@@ -33,6 +33,7 @@ export const putTmpSetupProps  = createAsyncThunk( // 수정
         } catch(error) {
             console.log('put setup rejected::', error);
         }
+        return null;
     }
 );
 
