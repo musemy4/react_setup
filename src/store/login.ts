@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const REQUEST_URL = '/vurix-dms/api/v1';
 interface ILogin {
+    loading: boolean;
     status: undefined | 'SUCCESS' | 'FAILURE'
 }
 
@@ -13,6 +14,7 @@ interface ILoginParams {
 
 
 const initialState: ILogin = {
+    loading: false,
     status: undefined
 }
 
@@ -31,10 +33,9 @@ export const postLogin = createAsyncThunk( // init시 호출
                 return 'FAILURE';
             }// action.payload : http의 모양일것 => IAddSetupData 형태로 바꿔야함
         } catch(error) {
-            console.log(error);
-            return undefined;
+            console.log('login rejected::', error);
         }
-        return undefined;
+        return 'FAILURE';
     }
 );
 
@@ -43,19 +44,19 @@ const loginSlice = createSlice({
     initialState,
     reducers: {
         resetUserLogin: state => { // initialState 로
-            state.status = undefined;
+            return initialState;
         },
     },
     extraReducers: (builder) => {
         builder.addCase(postLogin.fulfilled, (state, action) => { // action.payload는 위의 axios에서 return된 값
-            console.log(action);
+            state.loading = false;
             state.status = action.payload;
         })
         .addCase(postLogin.pending, (state) => {
-            console.log(state);
+            state.loading = true;
         })
-        .addCase(postLogin.rejected, (state) => {
-            state.status = 'FAILURE';
+        .addCase(postLogin.rejected, (state, action) => {
+            state.loading= false;
         })
     },
 });
