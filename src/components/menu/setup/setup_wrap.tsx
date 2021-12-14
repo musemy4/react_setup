@@ -201,7 +201,7 @@ const SetupWrap = () => {
     }
 
     const updateState = () => {
-        // setSetupPropsList(getSetupState);
+        setSetupPropsList(fetchSetup.response);
     }
 
     const showAlert = (message: string, status?: string) => {
@@ -229,7 +229,7 @@ const SetupWrap = () => {
                     buttons: [
                         { label: '취소', onClick: () => null },
                         { label: '생성', onClick: (() => {
-                            showLoading();
+                            // showLoading();
                             dispatch(setupCreateID()); 
                             })
                         }
@@ -396,7 +396,6 @@ const SetupWrap = () => {
         });
     };
 
-    // const forceUpdate = useReducer(() => ({}), {})[1] as () => void
 
     // [초기화] 버튼
     const onResetSetup = () => {
@@ -485,9 +484,9 @@ const SetupWrap = () => {
 
             <div className="bottom h-5">
                 <div className="btn-left">
-                    <button type="button" className="btn btn-primary btn-sm mr-10">관리자 계정 생성</button> 
-                    <button type="button" className="btn btn-primary btn-sm mr-10">관리자 권한 초기화</button> 
-                    <button type="button" className="btn btn-primary btn-sm mr-10">관리자 비밀번호 초기화</button> 
+                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('admin') }>관리자 계정 생성</button>
+                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('auth') }>관리자 권한 초기화</button>
+                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('pw') }>관리자 비밀번호 초기화</button>
                 </div>
                 <div className="btn-right">
                     <form>

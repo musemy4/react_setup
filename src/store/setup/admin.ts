@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const REQUEST_URL = '/vurix-dms/api/v1';
 export interface IAdmin {
-    type: undefined | 'createID' | 'resetRole' | 'resetPw' 
+    type: undefined | 'create' | 'auth' | 'pw' 
     status: undefined | 'SUCCESS' | 'FAILURE' | 'DUPLICATE' | 'ERROR'
 }
 
@@ -19,17 +19,16 @@ export const setupCreateID = createAsyncThunk( // init시 호출
     async() => {
         try {
             const response = await axios.post(`${REQUEST_URL}/auth/setupCreateID`);
-            console.log(response);
-            
+            console.log("***", response);
             if (response.status === 200) {
                 return 'SUCCESS';
-            }
-            if (response.status === 500) {
-                return 'DUPLICATE';
             }
             return 'FAILURE';
         } catch(error) {
             console.log('login rejected::', error);
+            if (error.response?.data.code === 500 && error.response?.data.message.indexOf('unique')) {
+                return 'DUPLICATE';
+            }
         }
         return 'FAILURE';
     }
@@ -80,37 +79,39 @@ const adminSlice = createSlice({
     extraReducers: (builder) => {
         // 1. setupCreateID
         builder.addCase(setupCreateID.fulfilled, (state, action) => { 
+            console.log(action.payload);
+            state.type = 'create';
             state.status = action.payload;
         })
         .addCase(setupCreateID.pending, (state) => {
             console.log(state);
         })
         .addCase(setupCreateID.rejected, (state) => {
-            state.type = 'createID';
+            state.type = 'create';
             state.status = 'ERROR';
         })
         // 2.setupResetRole
         .addCase(setupResetRole.fulfilled, (state, action) => { 
-            state.type = 'resetRole';
+            state.type = 'auth';
             state.status = action.payload;
         })
         .addCase(setupResetRole.pending, (state) => {
             console.log(state);
         })
         .addCase(setupResetRole.rejected, (state) => {
-            state.type = 'resetRole';
+            state.type = 'auth';
             state.status = 'ERROR';
         })
          // 3.setupResetPw
          .addCase(setupResetPw.fulfilled, (state, action) => {
-            state.type = 'resetPw';
+            state.type = 'pw';
             state.status = action.payload;
         })
         .addCase(setupResetPw.pending, (state) => {
             console.log(state);
         })
         .addCase(setupResetPw.rejected, (state) => {
-            state.type = 'resetPw';
+            state.type = 'pw';
             state.status = 'ERROR';
         })
     },

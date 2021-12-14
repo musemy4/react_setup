@@ -26,7 +26,6 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // setStateEventInfo(propsEventInfo);
         dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
     }, []);
 
