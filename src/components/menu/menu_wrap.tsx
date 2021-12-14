@@ -21,7 +21,8 @@ const MenuWrap = () => {
     
     return (
          <div key={ refresh }>
-            <Tabs
+             <SetupWrap />
+            {/* <Tabs
                 selectedTab={selectedTab}
                 onChange={(selectedTab: string) => setSelectedTab(selectedTab)} 
             />
@@ -33,7 +34,7 @@ const MenuWrap = () => {
             )}
             {selectedTab === TabType.TAB3 && (
                 <Tabs3 />
-            )}
+            )} */}
         </div>
     );
 }
