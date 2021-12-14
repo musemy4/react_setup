@@ -13,10 +13,9 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // from redux store
 // setup
+import { resetAdminStatus, setupCreateID, setupResetRole, setupResetPw  } from '../../../store/setup/admin';
 import { fetchSetupProps, resetFetchSetupStatus } from '../../../store/setup/fetchSetup';
 import { putTmpSetupProps, resetTmpSetupStatus } from '../../../store/setup/tmpSetup';
-// admin
-import { setupCreateID, setupResetRole, setupResetPw  } from '../../../store/setup/admin';
 // utils
 import { getConvertTreeData } from '../../../common/utils/convert-data';
 import { dateFormat } from '../../../common/utils/date';
@@ -44,11 +43,75 @@ const SetupWrap = () => {
     const [setupPropsList, setSetupPropsList] = useState<ISetupData | undefined | null>();
     // redux (state: rootState)
     // get
+    const admin = useSelector((state: any) => state.admin);
     const fetchSetup = useSelector((state: any) => state.fetchSetup);
     const tmpSetup = useSelector((state: any)  => state.tmpSetup);
     // set
     const dispatch = useDispatch();
 
+
+    // store에서 온 type에 따라 처리 ////////////////////////////////////////////////
+
+    const mounted0 = useRef(false); 
+    useEffect(() => {
+        if(!mounted0.current) {
+            mounted0.current = true;
+        } else {
+            if (fetchSetup?.code) {
+                if (fetchSetup?.code === 200) {
+                    updateState();
+                }
+                dispatch(resetFetchSetupStatus());
+            }
+
+            // "수정"
+            if (tmpSetup?.code) {
+                hideLoading();
+                if (tmpSetup?.code === 200) {
+                    showAlert('셋업 설정 수정에 성공하였습니다.', 'success');
+                } else {
+                    showAlert('셋업 설정 수정에 실패하였습니다.', 'failure');
+                }
+                dispatch(resetTmpSetupStatus());
+            }
+
+            // "관리자 계정 생성"
+            if (admin && admin.type === 'create') {
+                hideLoading();
+                if (admin.status === 'SUCCESS') {
+                    showAlert('관리자 계정 생성에 성공하였습니다.', 'success');
+                } else if (admin.status === 'DUPLICATE') {
+                    showAlert('관리자 계정 [이노뎁]이 이미 생성되었습니다.', 'failure');
+                } else {
+                    showAlert('관리자 계정 생성에 실패하였습니다.', 'failure');
+                }
+
+                dispatch(resetAdminStatus());
+            }
+
+            // "관리자 권한 초기화"
+            if (admin && admin.type ==='auth') {
+                hideLoading();
+                if (admin.status === 'SUCCESS') {
+                    showAlert('관리자 권한 초기화에 성공하였습니다.', 'success');
+                } else {
+                    showAlert('관리자 권한 초기화에 실패하였습니다.', 'failure');
+                }
+                dispatch(resetAdminStatus());
+            }
+            
+            // "관리자 비밀번호 초기화"
+            if (admin && admin.type === 'pw') {
+                hideLoading();
+                if (admin.status === 'SUCCESS') {
+                    showAlert('관리자 비밀번호 초기화에 성공하였습니다.', 'success');
+                } else {
+                    showAlert('관리자 비밀번호 초기화에 실패하였습니다.', 'failure');
+                }
+                dispatch(resetAdminStatus());
+            }
+        }
+    });
 
     // //////////////////////////// 여기까지 FETCH
 
