@@ -381,7 +381,7 @@ const SetupWrap = () => {
             setConvertPropsParam(setupGroup.data, setupTypes[setupGroup.type], setupGroup.type);
         })
 
-        // dispatch(putSetupProps(httpParam));
+        dispatch(putTmpSetupProps(httpParam));
     }
 
     // [수정] 버튼

@@ -23,7 +23,7 @@ const initialState: ISetupBody = {
 
 export const putTmpSetupProps  = createAsyncThunk( // 수정
     'setup/putSetupProps',
-    async(params: IPutSetupBody) => {
+    async(params: any) => {
         try {
             const response = await axios.put(`${REQUEST_URL}/role/putSetupProp`, params);
             // {data: {…}, status: 200, statusText: 'OK', headers: {…}, config: {…},…}
