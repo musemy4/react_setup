@@ -27,6 +27,7 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
 
     useEffect(() => {
         dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
+        setStateEventInfo(eventInfo);
     }, []);
 
     const mounted = useRef(false);
@@ -35,14 +36,17 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
             mounted.current = true;
         } else {
             console.log('eventInfo 변경 감지!');
-            if(eventInfo.length === 0) {
+            if(eventInfo && eventInfo.length === 0) {
                 dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
             } else {
                 setStateEventInfo(eventInfo);
             }
         } 
     }, [eventInfo]);
-
+   
+    useEffect(() => {
+        setStateEventInfo(eventInfo);
+    })
 
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const check = e.target.checked;

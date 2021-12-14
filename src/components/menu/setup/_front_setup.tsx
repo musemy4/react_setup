@@ -34,13 +34,14 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
             mounted.current = true;
         } else {
             console.log('setInfo 변경 감지!');
-            if(setupInfo.length === 0) {
+            if(setupInfo && setupInfo.length === 0) {
                 dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
             } else {
                 setStateSetupInfo(setupInfo);
             }
         } 
     }, [setupInfo]);
+
 
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

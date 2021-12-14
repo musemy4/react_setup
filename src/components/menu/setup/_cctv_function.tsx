@@ -42,6 +42,8 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
     
         dispatch(addTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
         dispatch(addTmpData({data:propLayerInfo, type:'LAYER'}));
+        setStateCctvFunctionInfo(funcInfo);
+        setStateLayerInfo(layerInfo);
     }, []);
 
     const mounted = useRef(false);
@@ -50,7 +52,7 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
             mounted.current = true;
         } else {
             console.log('funcInfo 변경 감지!');
-            if(funcInfo.length === 0) {
+            if(funcInfo && funcInfo.length === 0) {
                 dispatch(addTmpData({data:propsCctvFunctionInfo, type:'FUNC'}));
             } else {
                 setStateCctvFunctionInfo(funcInfo);
@@ -64,14 +66,13 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
             mounted2.current = true;
         } else {
             console.log('layerInfo 변경 감지!');
-            if(funcInfo.length === 0) {
+            if(funcInfo && funcInfo.length === 0) {
                 dispatch(addTmpData({data:propLayerInfo, type:'LAYER'}));
             } else {
                 setStateLayerInfo(layerInfo);
             }
         }
     }, [layerInfo]);
-
 
 
 
