@@ -30,18 +30,12 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
         setStateEventInfo(eventInfo);
     }, []);
 
-    const mounted = useRef(false);
     useEffect(() => {
-        if(!mounted.current) {
-            mounted.current = true;
+        if(eventInfo && eventInfo.length === 0) {
+            dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
         } else {
-            console.log('eventInfo 변경 감지!');
-            if(eventInfo && eventInfo.length === 0) {
-                dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
-            } else {
-                setStateEventInfo(eventInfo);
-            }
-        } 
+            setStateEventInfo(eventInfo);
+        }
     }, [eventInfo]);
    
     useEffect(() => {

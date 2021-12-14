@@ -24,26 +24,16 @@ export const ApplyMenu = ({propsMenuInfo}: IProps) => {
 
     useEffect(() => {
         dispatch(addTmpData({data:propsMenuInfo, type:'MENU'}));
-        console.log(menuInfo);
         setStateMenuInfo(menuInfo);
     }, []);
 
-    const mounted = useRef(false);
     useEffect(() => {
-        if(!mounted.current) {
-            mounted.current = true;
+        if(menuInfo && menuInfo.length === 0) {
+            dispatch(addTmpData({data:propsMenuInfo, type:'MENU'}));
         } else {
-            console.log('menuInfo 변경 감지!');
-            if(menuInfo && menuInfo.length === 0) {
-                console.log('(menuInfo:초기화 되었으므로 부모로부터 받은 값을 dispatch한다)');
-                dispatch(addTmpData({data:propsMenuInfo, type:'MENU'}));
-            } else {
-                console.log('(menuInfo: dispatch된 값을 stateMenuInfo에 할당한다)');
-                setStateMenuInfo(menuInfo);
+            setStateMenuInfo(menuInfo);
             }
-        }
     }, [menuInfo]);
-
 
 
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

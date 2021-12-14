@@ -25,7 +25,6 @@ export const fetchSetupProps = createAsyncThunk( // init시 호출
     async() => {
         try {
             const response = await axios.get(`${REQUEST_URL}/role/getSetupProp`);
-            console.log(response);
             if (response.status === 200) {
                 return response.data;
             }
@@ -58,7 +57,6 @@ const fetchSetupSlice = createSlice({
         },
         [fetchSetupProps.rejected.type]: (state, action: PayloadAction<{message: string; status: number}>) => {
             // 실패시 return 되는 action의 type을 정해줄수 있어 이방법으로 하겠다
-            console.log(action);
             state.loading = false; 
         },
     }

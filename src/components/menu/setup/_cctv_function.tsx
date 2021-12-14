@@ -46,31 +46,19 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
         setStateLayerInfo(layerInfo);
     }, []);
 
-    const mounted = useRef(false);
     useEffect(() => {
-        if(!mounted.current) {
-            mounted.current = true;
+        if(funcInfo && funcInfo.length === 0) {
+            dispatch(addTmpData({data:propsCctvFunctionInfo, type:'FUNC'}));
         } else {
-            console.log('funcInfo 변경 감지!');
-            if(funcInfo && funcInfo.length === 0) {
-                dispatch(addTmpData({data:propsCctvFunctionInfo, type:'FUNC'}));
-            } else {
-                setStateCctvFunctionInfo(funcInfo);
-            }
+            setStateCctvFunctionInfo(funcInfo);
         }
     }, [funcInfo]);
     
-    const mounted2 = useRef(false);
     useEffect(() => {
-        if(!mounted2.current) {
-            mounted2.current = true;
+        if(funcInfo && funcInfo.length === 0) {
+            dispatch(addTmpData({data:propLayerInfo, type:'LAYER'}));
         } else {
-            console.log('layerInfo 변경 감지!');
-            if(funcInfo && funcInfo.length === 0) {
-                dispatch(addTmpData({data:propLayerInfo, type:'LAYER'}));
-            } else {
-                setStateLayerInfo(layerInfo);
-            }
+            setStateLayerInfo(layerInfo);
         }
     }, [layerInfo]);
 

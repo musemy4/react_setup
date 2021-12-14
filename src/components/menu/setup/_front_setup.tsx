@@ -28,18 +28,12 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
         dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
     }, []);
 
-    const mounted = useRef(false);
     useEffect(() => {
-        if(!mounted.current) {
-            mounted.current = true;
+        if(setupInfo && setupInfo.length === 0) {
+            dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
         } else {
-            console.log('setInfo 변경 감지!');
-            if(setupInfo && setupInfo.length === 0) {
-                dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
-            } else {
-                setStateSetupInfo(setupInfo);
-            }
-        } 
+            setStateSetupInfo(setupInfo);
+        }
     }, [setupInfo]);
 
 

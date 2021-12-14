@@ -52,64 +52,59 @@ const SetupWrap = () => {
 
     // store에서 온 type에 따라 처리 ////////////////////////////////////////////////
 
-    const mounted0 = useRef(false); 
     useEffect(() => {
-        if(!mounted0.current) {
-            mounted0.current = true;
-        } else {
-            if (fetchSetup?.code) {
-                if (fetchSetup?.code === 200) {
-                    updateState();
-                }
-                dispatch(resetFetchSetupStatus());
+        if (fetchSetup?.code) {
+            if (fetchSetup?.code === 200) {
+                updateState();
+            }
+            dispatch(resetFetchSetupStatus());
+        }
+
+        // "수정"
+        if (tmpSetup?.code) {
+            hideLoading();
+            if (tmpSetup?.code === 200) {
+                showAlert('셋업 설정 수정에 성공하였습니다.', 'success');
+            } else {
+                showAlert('셋업 설정 수정에 실패하였습니다.', 'failure');
+            }
+            dispatch(resetTmpSetupStatus());
+        }
+
+        // "관리자 계정 생성"
+        if (admin && admin.type === 'create') {
+            hideLoading();
+            if (admin.status === 'SUCCESS') {
+                showAlert('관리자 계정 생성에 성공하였습니다.', 'success');
+            } else if (admin.status === 'DUPLICATE') {
+                showAlert('관리자 계정 [이노뎁]이 이미 생성되었습니다.', 'failure');
+            } else {
+                showAlert('관리자 계정 생성에 실패하였습니다.', 'failure');
             }
 
-            // "수정"
-            if (tmpSetup?.code) {
-                hideLoading();
-                if (tmpSetup?.code === 200) {
-                    showAlert('셋업 설정 수정에 성공하였습니다.', 'success');
-                } else {
-                    showAlert('셋업 설정 수정에 실패하였습니다.', 'failure');
-                }
-                dispatch(resetTmpSetupStatus());
-            }
+            dispatch(resetAdminStatus());
+        }
 
-            // "관리자 계정 생성"
-            if (admin && admin.type === 'create') {
-                hideLoading();
-                if (admin.status === 'SUCCESS') {
-                    showAlert('관리자 계정 생성에 성공하였습니다.', 'success');
-                } else if (admin.status === 'DUPLICATE') {
-                    showAlert('관리자 계정 [이노뎁]이 이미 생성되었습니다.', 'failure');
-                } else {
-                    showAlert('관리자 계정 생성에 실패하였습니다.', 'failure');
-                }
-
-                dispatch(resetAdminStatus());
+        // "관리자 권한 초기화"
+        if (admin && admin.type ==='auth') {
+            hideLoading();
+            if (admin.status === 'SUCCESS') {
+                showAlert('관리자 권한 초기화에 성공하였습니다.', 'success');
+            } else {
+                showAlert('관리자 권한 초기화에 실패하였습니다.', 'failure');
             }
-
-            // "관리자 권한 초기화"
-            if (admin && admin.type ==='auth') {
-                hideLoading();
-                if (admin.status === 'SUCCESS') {
-                    showAlert('관리자 권한 초기화에 성공하였습니다.', 'success');
-                } else {
-                    showAlert('관리자 권한 초기화에 실패하였습니다.', 'failure');
-                }
-                dispatch(resetAdminStatus());
+            dispatch(resetAdminStatus());
+        }
+        
+        // "관리자 비밀번호 초기화"
+        if (admin && admin.type === 'pw') {
+            hideLoading();
+            if (admin.status === 'SUCCESS') {
+                showAlert('관리자 비밀번호 초기화에 성공하였습니다.', 'success');
+            } else {
+                showAlert('관리자 비밀번호 초기화에 실패하였습니다.', 'failure');
             }
-            
-            // "관리자 비밀번호 초기화"
-            if (admin && admin.type === 'pw') {
-                hideLoading();
-                if (admin.status === 'SUCCESS') {
-                    showAlert('관리자 비밀번호 초기화에 성공하였습니다.', 'success');
-                } else {
-                    showAlert('관리자 비밀번호 초기화에 실패하였습니다.', 'failure');
-                }
-                dispatch(resetAdminStatus());
-            }
+            dispatch(resetAdminStatus());
         }
     });
 
@@ -117,33 +112,21 @@ const SetupWrap = () => {
 
     // component INIT!
     useEffect(() => {
-        console.log('init***');
         if(!fetchSetup.code || fetchSetup.code !== 200) {
-            console.log('!code || code !== 200');
             // fetch된 db 데이터가 없으면 가져온다
             dispatch(fetchSetupProps());
             setLoading(true);
         }
         return () => {
-            console.log('SETUPcomponentWillUnmount=============');
             dispatch(resetTmpSetupStatus());
             // dispatch(resetFetchSetupStatus());
         }
     }, [])
 
-    const mounted = useRef(false);
     useEffect(() => {
-        if(!mounted.current) {
-            mounted.current = true;
-            } else {
-            // fetch된 코드가 있고 제대로 들
-            console.log('parent:::code감지');
-            if(fetchSetup.code && fetchSetup.code === 200) {
-                // dispatch(resetTmpSetupStatus());// 자식이 tmp로 들고있는 status 내용 지우기
-                console.log(fetchSetup.response);
-                setSetupPropsList(fetchSetup.response); // fetch된 코드를 다시 반영하자
-                setLoading(false);
-            }
+        if(fetchSetup.code && fetchSetup.code === 200) {
+            setSetupPropsList(fetchSetup.response); // fetch된 코드를 다시 반영하자
+            setLoading(false);
         }
     }, [fetchSetup.code])
 
@@ -152,41 +135,18 @@ const SetupWrap = () => {
     // //////////////////////////// 여기까지 FETCH
     
     
-    const mounted2 = useRef(false);
     useEffect(() => {
-        if(!mounted2.current) {
-            mounted2.current = true;
-            } else {
-            // fetch된 코드가 있고 제대로 들
-            console.log('parent:::response감지');
-            if(fetchSetup.code && fetchSetup.code === 200) {
-                dispatch(resetTmpSetupStatus()); // 자식이 tmp로 들고있는 status 내용 지우기
-                setSetupPropsList(fetchSetup.response); // fetch된 코드를 다시 반영하자
-            }
+        if(fetchSetup.code && fetchSetup.code === 200) {
+            dispatch(resetTmpSetupStatus()); // 자식이 tmp로 들고있는 status 내용 지우기
+            setSetupPropsList(fetchSetup.response); // fetch된 코드를 다시 반영하자
         }
     }, [fetchSetup.response]) // fetch의 내용
 
-    const mounted1 = useRef(false);
     useEffect(() => {
-        console.log('child:::codeT감지');
-        if(!mounted1.current) {
-            mounted1.current = true;
-        } else {
-            console.log('reseponseT');
-            if(tmpSetup.code && tmpSetup.code === 200) { // 성공 직후
-                console.log('성공 이후');
-                dispatch(fetchSetupProps());
-            }
+        if(tmpSetup.code && tmpSetup.code === 200) { // 성공 직후
+            dispatch(fetchSetupProps());
         }
     }, [tmpSetup.code])
-
-
-    // /////////////////////////////////////////////////////////////////
-    // ADMIN
-
-
-
-
 
 
     // /////////////////////////////////////////////////////////////////
