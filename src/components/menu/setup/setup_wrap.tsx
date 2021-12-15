@@ -110,7 +110,7 @@ const SetupWrap = () => {
             mounted.current = true;
         } else if (fetchSetup.code && fetchSetup.code === 200) {
             updateState(); // fetch된 코드를 다시 반영하자
-            setLoading(false);
+            hideLoading();
         } else if (fetchSetup.code && fetchSetup.code === -1)  {
             showAlert('셋업 설정이 수정되었습니다!', 'success');
             // code === -1 : afterputsetup fetchsetup reset
@@ -126,6 +126,7 @@ const SetupWrap = () => {
 
     useEffect(() => {
         if(tmpSetup.code && tmpSetup.code === 200) { // put 성공 직후
+            showLoading();
             dispatch(resetTmpSetupStatus());
             dispatch(afterPutSetup()); // fetchSetup.code === -1
         }
