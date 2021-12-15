@@ -45,10 +45,7 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
     }, [eventInfo]);
 
     useEffect(()=> {
-        if (eventInfo && eventInfo.length === 0) {
-            // TODO: 여기가 왜 4번 불리냐
-            setStateEventInfo(propsEventInfo);
-        }
+        setStateEventInfo(propsEventInfo);
     }, [propsEventInfo]);
 
    
