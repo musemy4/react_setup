@@ -267,7 +267,7 @@ const SetupWrap = () => {
         const setupTypes: { [index: string]: {code: string, value: string, param: string}} = {
             'MENU': { code: 'menu_code', value: 'setup_flag', param: 'menu_info' },
             'EVENT': { code: 'event_code', value: 'setup_flag', param: 'event_info' },
-            'FUNCTION': { code: 'func_code', value: 'setup_flag', param: 'func_info' },
+            'FUNC': { code: 'func_code', value: 'setup_flag', param: 'func_info' },
             'SETUP': { code: 'config_code', value: 'setup_data', param: 'setup_info' },
             'LAYER': { code: 'layer_id', value: 'setup_flag', param: 'layer_info' }
         };
@@ -297,24 +297,20 @@ const SetupWrap = () => {
                 if (ele[0]==='menuInfo') {
                     obj.type = 'MENU';
                     obj.data = ele[1];
-                    newSetupArr.push(obj);
                 } else if (ele[0]==='eventInfo') {
                     obj.type = 'EVENT';
                     obj.data = ele[1];
-                    newSetupArr.push(obj);
                 } else if (ele[0]==='funcInfo') {
-                    obj.type = 'FUNCTION';
+                    obj.type = 'FUNC';
                     obj.data = ele[1];
-                    newSetupArr.push(obj);
                 } else if (ele[0]==='setupInfo') {
                     obj.type = 'SETUP';
                     obj.data = ele[1];
-                    newSetupArr.push(obj);
                 } else if (ele[0]==='layerInfo') {
                     obj.type = 'LAYER';
                     obj.data = ele[1];
-                    newSetupArr.push(obj);
                 }
+                newSetupArr.push(obj);
             });
         }
         // /////////////////////////////////////////
@@ -401,10 +397,7 @@ const SetupWrap = () => {
                                 <span>loading...</span> 
                                     : 
                                 <CctvFunction 
-                                    propsCctvFunctionInfo={ 
-                                        getConvertTreeData(setupPropsList.funcInfo, 'root', 
-                                        { group: 'func_group', code: 'func_code' }) 
-                                    }
+                                    propsCctvFunctionInfo={getConvertTreeData(setupPropsList.funcInfo, 'root', { group: 'func_group', code: 'func_code' })}
                                     propLayerInfo={ setupPropsList.layerInfo }
                                 /> 
                             }
@@ -418,7 +411,7 @@ const SetupWrap = () => {
                                     :  
                                 <div className="box-content">
                                     <FrontSetup 
-                                        propsSetupInfo={ getConvertTreeData(setupPropsList.setupInfo, 'root', { group: 'config_group', code: 'config_code' }) } 
+                                        propsSetupInfo={getConvertTreeData(setupPropsList.setupInfo, 'root', { group: 'config_group', code: 'config_code'})} 
                                     />
                                 </div> 
                             }

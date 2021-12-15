@@ -44,6 +44,13 @@ const fetchSetupSlice = createSlice({
             return initialState;
         },
         afterPutSetup: (state) => {
+            state.response ={
+                menuInfo: [],
+                eventInfo: [],
+                funcInfo: [],
+                setupInfo: [],
+                layerInfo: []
+            }
             state.code = -1;
         }
     },

@@ -1,6 +1,6 @@
 // React
 import _ from 'lodash';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // react-redux lib
 import { useDispatch, useSelector } from 'react-redux';
 // confirm, toast
@@ -18,8 +18,8 @@ interface IProps {
 
 export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => {  
     const [cctvFuncAllChecked, setCctvFuncAllChecked] = useState(false);
-    const [stateCctvFunctionInfo, setStateCctvFunctionInfo] = useState<Array<IFunc> | undefined | null>();
-    const [stateLayerInfo, setStateLayerInfo] = useState<Array<ILayer> | undefined | null>();
+    const [stateCctvFunctionInfo, setStateCctvFunctionInfo] = useState<Array<IFunc> | undefined | null>(propsCctvFunctionInfo);
+    const [stateLayerInfo, setStateLayerInfo] = useState<Array<ILayer> | undefined | null>(propLayerInfo);
     
     
     // get
@@ -27,38 +27,40 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
     // set
     const dispatch = useDispatch();
     
-    // useEffect(() => {
-    //     // ** Cannot assign to read only property **
-    //     // const copyStateFuncInfo = JSON.parse(JSON.stringify(stateCctvFunctionInfo));
-    //     const newStateCctvFuncInfo = propsCctvFunctionInfo?.map((funcGroup: IFunc) => {
-    //         const findChildren = _.find(propsCctvFunctionInfo, { func_code: 'CCTV_FUNCTION' } );
-    //         if (findChildren) {
-    //             const cctvCtrlObj = findChildren.children[0];
-    //             setCctvFuncAllChecked(!_.some(cctvCtrlObj.children, { setup_flag: false })); 
-    //             cctvCtrlObj.setup_flag = _.some(cctvCtrlObj.children, { setup_flag: true });
-    //         }
-    //         return funcGroup;
-    //     });
+    useEffect(() => {
+        // ** Cannot assign to read only property **
+        // const copyStateFuncInfo = JSON.parse(JSON.stringify(stateCctvFunctionInfo));
+        const newStateCctvFuncInfo = propsCctvFunctionInfo?.map((funcGroup: IFunc) => {
+            const findChildren = _.find(propsCctvFunctionInfo, { func_code: 'CCTV_FUNCTION' } );
+            if (findChildren) {
+                const cctvCtrlObj = findChildren.children[0];
+                setCctvFuncAllChecked(!_.some(cctvCtrlObj.children, { setup_flag: false })); 
+                cctvCtrlObj.setup_flag = _.some(cctvCtrlObj.children, { setup_flag: true });
+            }
+            return funcGroup;
+        });
     
-    //     dispatch(addTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
-    //     dispatch(addTmpData({data:propLayerInfo, type:'LAYER'}));
-    // }, []);
+        dispatch(initTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
+        dispatch(initTmpData({data:propLayerInfo, type:'LAYER'}));
+    }, []);
 
-    // useEffect(() => {
-    //     if(funcInfo && funcInfo.length === 0) {
-    //         dispatch(addTmpData({data:propsCctvFunctionInfo, type:'FUNC'}));
-    //     } else {
-    //         setStateCctvFunctionInfo(funcInfo);
-    //     }
-    // }, [funcInfo]);
+    const mountedFunc = useRef(false);
+    useEffect(() => {
+        if(!mountedFunc.current) {
+            mountedFunc.current = true;
+        } else if(funcInfo && funcInfo.length === 0 || !funcInfo) {
+            setStateCctvFunctionInfo(propsCctvFunctionInfo);
+        }
+    }, [funcInfo]);
     
-    // useEffect(() => {
-    //     if(funcInfo && funcInfo.length === 0) {
-    //         dispatch(addTmpData({data:propLayerInfo, type:'LAYER'}));
-    //     } else {
-    //         setStateLayerInfo(layerInfo);
-    //     }
-    // }, [layerInfo]);
+    const mountedLayer = useRef(false);
+    useEffect(() => {
+        if(!mountedLayer.current) {
+            mountedLayer.current = true;
+        } else if(layerInfo && layerInfo.length === 0 || !layerInfo) {
+            setStateLayerInfo(propLayerInfo);
+        }
+    }, [layerInfo]);
 
 
 
@@ -87,7 +89,7 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
         if (check) {
             setCctvFuncAllChecked(check);
         }
-
+        setStateCctvFunctionInfo(newStateCctvFuncInfo);
         dispatch(changeTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
     }
 
@@ -120,7 +122,7 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
             
             return funcGroup;
         });
-
+        setStateCctvFunctionInfo(newStateCctvFuncInfo);
         dispatch(changeTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
     }
 
@@ -148,6 +150,7 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
                             }
                             return layer;
                         })
+                        setStateLayerInfo(copyStateLayerInfo);
                         dispatch(changeTmpData({data:copyStateLayerInfo, type:'LAYER'}));
                     }) }
                 ],
@@ -164,11 +167,10 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
                 }
                 return layer;
             })
+            setStateLayerInfo(copyStateLayerInfo);
             dispatch(changeTmpData({data:copyStateLayerInfo, type:'LAYER'}));
         }
     }
-
-
 
     
     return (
