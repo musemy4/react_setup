@@ -53,6 +53,5 @@ export const getConvertTreeData =
             ],
             []
         )
-        // console.log(filtered);
         return filtered;
 }

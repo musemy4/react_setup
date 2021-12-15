@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 // React
 import _ from 'lodash';
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 // confirm, toast
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -9,12 +9,11 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { css } from '@emotion/react';
 import ClipLoader from 'react-spinners/ClipLoader';
 // redux
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // from redux store
 // setup
 import { resetAdminStatus, setupCreateID, setupResetRole, setupResetPw  } from '../../../store/setup/admin';
-import { fetchSetupProps, resetFetchSetupStatus } from '../../../store/setup/fetchSetup';
+import { fetchSetupProps, resetFetchSetupStatus, afterPutSetup } from '../../../store/setup/fetchSetup';
 import { putTmpSetupProps, resetTmpSetupStatus } from '../../../store/setup/tmpSetup';
 // utils
 import { getConvertTreeData } from '../../../common/utils/convert-data';
@@ -39,7 +38,7 @@ const override = css`
 
 const SetupWrap = () => {
     const inputFile = useRef<HTMLInputElement | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [setupPropsList, setSetupPropsList] = useState<ISetupData | undefined | null>();
     // redux (state: rootState)
     // get
@@ -53,24 +52,6 @@ const SetupWrap = () => {
     // store에서 온 type에 따라 처리 ////////////////////////////////////////////////
 
     useEffect(() => {
-        if (fetchSetup?.code) {
-            if (fetchSetup?.code === 200) {
-                updateState();
-            }
-            dispatch(resetFetchSetupStatus());
-        }
-
-        // "수정"
-        if (tmpSetup?.code) {
-            hideLoading();
-            if (tmpSetup?.code === 200) {
-                showAlert('셋업 설정 수정에 성공하였습니다.', 'success');
-            } else {
-                showAlert('셋업 설정 수정에 실패하였습니다.', 'failure');
-            }
-            dispatch(resetTmpSetupStatus());
-        }
-
         // "관리자 계정 생성"
         if (admin && admin.type === 'create') {
             hideLoading();
@@ -110,41 +91,44 @@ const SetupWrap = () => {
 
     // //////////////////////////// 여기까지 FETCH
 
-    // component INIT!
+    // 처음 시작될때
     useEffect(() => {
-        if(!fetchSetup.code || fetchSetup.code !== 200) {
+        // setup_wrap start
+        if(!fetchSetup.code) {
             // fetch된 db 데이터가 없으면 가져온다
             dispatch(fetchSetupProps());
-            setLoading(true);
         }
+
+        // 컴포넌트가 꺼질때
         return () => {
             dispatch(resetTmpSetupStatus());
-            // dispatch(resetFetchSetupStatus());
+            dispatch(resetFetchSetupStatus());
         }
     }, [])
 
+    const mounted = useRef(false);
     useEffect(() => {
-        if(fetchSetup.code && fetchSetup.code === 200) {
-            setSetupPropsList(fetchSetup.response); // fetch된 코드를 다시 반영하자
+        if(!mounted.current) {
+            mounted.current = true;
+        } else if (fetchSetup.code && fetchSetup.code === 200) {
+            updateState(); // fetch된 코드를 다시 반영하자
             setLoading(false);
+        } else if (fetchSetup.code && fetchSetup.code === -1)  {
+            // code === -1 : afterputsetup fetchsetup reset
+            dispatch(fetchSetupProps());
+        } else if (fetchSetup.code && fetchSetup.code !== 200)  {
+            showAlert(`셋업 정보를 가져오는데 실패하였습니다. 
+            관리자에게 문의하세요.`, 'failure');
+        } else if (!fetchSetup)  {
+            updateState();
         }
+        
     }, [fetchSetup.code])
 
-
-
-    // //////////////////////////// 여기까지 FETCH
-    
-    
     useEffect(() => {
-        if(fetchSetup.code && fetchSetup.code === 200) {
-            dispatch(resetTmpSetupStatus()); // 자식이 tmp로 들고있는 status 내용 지우기
-            setSetupPropsList(fetchSetup.response); // fetch된 코드를 다시 반영하자
-        }
-    }, [fetchSetup.response]) // fetch의 내용
-
-    useEffect(() => {
-        if(tmpSetup.code && tmpSetup.code === 200) { // 성공 직후
-            dispatch(fetchSetupProps());
+        if(tmpSetup.code && tmpSetup.code === 200) { // put 성공 직후
+            dispatch(resetTmpSetupStatus());
+            dispatch(afterPutSetup()); // fetchSetup.code === -1
         }
     }, [tmpSetup.code])
 
@@ -189,7 +173,7 @@ const SetupWrap = () => {
                     buttons: [
                         { label: '취소', onClick: () => null },
                         { label: '생성', onClick: (() => {
-                            // showLoading();
+                            showLoading();
                             dispatch(setupCreateID()); 
                             })
                         }
@@ -272,7 +256,6 @@ const SetupWrap = () => {
 
    
     const onPutSetup = () => {
-        console.log('onPutSetup::');
         const httpParam: IPutSetupBody = {
             menu_info: [],
             event_info: [],
@@ -305,7 +288,7 @@ const SetupWrap = () => {
             });
         }
 
-        // 약간 억지로 급하게 만든 부분
+        // ////////////////////////////////////////
         const newSetupArr: any[] = [];
         if(tmpSetup.response) {
             const entries = Object.entries(tmpSetup.response);
@@ -334,8 +317,8 @@ const SetupWrap = () => {
                 }
             });
         }
-        // // 약간 억지로 급하게 만든 부분
-        console.log(newSetupArr);
+        // /////////////////////////////////////////
+        // console.log(newSetupArr);
 
         _.forEach(newSetupArr, (setupGroup) => {
             setConvertPropsParam(setupGroup.data, setupTypes[setupGroup.type], setupGroup.type);
@@ -365,13 +348,14 @@ const SetupWrap = () => {
             buttons: [
                 { label: '취소', onClick: () => null },
                 { label: '초기화', onClick: () => {
-                    setSetupPropsList(fetchSetup.response); // fetch된 코드를 다시 반영하자
+                    
+                    dispatch(resetTmpSetupStatus());
+                    updateState();
                 }}
             ],
         });
     };
-  
- 
+
 
     // div에 key를 왜? 렌더링 되는 VIEW
     return (
@@ -390,7 +374,7 @@ const SetupWrap = () => {
                                 <span>loading...</span> 
                                     : 
                                 <div className="box-content">
-                                    <ApplyMenu 
+                                    <ApplyMenu
                                         propsMenuInfo={ getConvertTreeData(setupPropsList.menuInfo, 'root', { group: 'p_menu_code', code: 'menu_code' }) } 
                                     />
                                 </div> 

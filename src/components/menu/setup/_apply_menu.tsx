@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // react-redux lib
 import { useDispatch, useSelector } from 'react-redux';
 // fetch
-import { addTmpData } from '../../../store/setup/tmpSetup';
+import { initTmpData, changeTmpData } from '../../../store/setup/tmpSetup';
 // Interfaces
 import { IMenu } from './setup_interface';
 
@@ -14,7 +14,7 @@ interface IProps {
 
 export const ApplyMenu = ({propsMenuInfo}: IProps) => {
     const [allChecked, setAllChecked] = useState(!propsMenuInfo.some((menuInfo: { setup_flag: any; }) => !menuInfo.setup_flag));
-    const [stateMenuInfo, setStateMenuInfo] = useState<Array<IMenu> | undefined | null>(); // 초기화 작업
+    const [stateMenuInfo, setStateMenuInfo] = useState<Array<IMenu> | undefined | null>(propsMenuInfo); // 초기화 작업
 
     // get
     const { menuInfo }: IProps = useSelector((state:any)=> state.tmpSetup.response); 
@@ -23,18 +23,33 @@ export const ApplyMenu = ({propsMenuInfo}: IProps) => {
     
 
     useEffect(() => {
-        dispatch(addTmpData({data:propsMenuInfo, type:'MENU'}));
-        setStateMenuInfo(menuInfo);
+        // _apply_menu start
+        dispatch(initTmpData({data:propsMenuInfo, type:'MENU'}));
+        // 컴포넌트가 꺼질때
+        return () => {
+            // _apply_menu end
+        }
     }, []);
 
+
+    const mounted = useRef(false);
     useEffect(() => {
-        if(menuInfo && menuInfo.length === 0) {
-            dispatch(addTmpData({data:propsMenuInfo, type:'MENU'}));
-        } else {
-            setStateMenuInfo(menuInfo);
+        if(!mounted.current) {
+            mounted.current = true;
+        } else 
+            // 초기화 되어 menuInfo가 []이 되었을때 부모에서 온 props를 다시 셋팅
+            if(menuInfo && menuInfo.length === 0 || !menuInfo) {
+                setStateMenuInfo(propsMenuInfo);
             }
+        
     }, [menuInfo]);
 
+    useEffect(()=> {
+        if (menuInfo && menuInfo.length === 0) {
+            // TODO: 여기가 왜 4번 불리냐
+            setStateMenuInfo(propsMenuInfo);
+        }
+    }, [propsMenuInfo]);
 
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const check = e.target.checked;
@@ -51,7 +66,8 @@ export const ApplyMenu = ({propsMenuInfo}: IProps) => {
             }
         });
         setAllChecked(e.target.checked);
-        dispatch(addTmpData({data:newStateMenuInfo, type:'MENU'}));
+        setStateMenuInfo(newStateMenuInfo);
+        dispatch(changeTmpData({data:newStateMenuInfo, type:'MENU'}));
     }
 
     const onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +100,8 @@ export const ApplyMenu = ({propsMenuInfo}: IProps) => {
         });
         const isAllChecked = newStateMenuInfo.some((menuInfo: IMenu) => !menuInfo.setup_flag );
         setAllChecked(!isAllChecked);
-        dispatch(addTmpData({data:newStateMenuInfo, type:'MENU'}));
+        setStateMenuInfo(newStateMenuInfo);
+        dispatch(changeTmpData({data:newStateMenuInfo, type:'MENU'}));
     }
 
     
@@ -108,7 +125,8 @@ export const ApplyMenu = ({propsMenuInfo}: IProps) => {
             }
             return menuGroup;
         });
-        dispatch(addTmpData({data:newStateMenuInfo, type:'MENU'}));
+        setStateMenuInfo(newStateMenuInfo);
+        dispatch(changeTmpData({data:newStateMenuInfo, type:'MENU'}));
     }
 
     return (

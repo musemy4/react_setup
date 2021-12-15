@@ -47,7 +47,6 @@ export interface ISetupBody {
     message?: string;
     response: ISetupData
     responseTime?: string;
-    loading?: boolean;
 }
 
 export interface ISetupData {

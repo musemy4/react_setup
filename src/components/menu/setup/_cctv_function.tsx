@@ -1,13 +1,13 @@
 // React
 import _ from 'lodash';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 // react-redux lib
 import { useDispatch, useSelector } from 'react-redux';
 // confirm, toast
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 // fetch
-import { addTmpData } from '../../../store/setup/tmpSetup';
+import { initTmpData, changeTmpData  } from '../../../store/setup/tmpSetup';
 // Interfaces
 import { IFunc, ILayer } from './setup_interface';
 
@@ -27,40 +27,38 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
     // set
     const dispatch = useDispatch();
     
-    useEffect(() => {
-        // ** Cannot assign to read only property **
-        // const copyStateFuncInfo = JSON.parse(JSON.stringify(stateCctvFunctionInfo));
-        const newStateCctvFuncInfo = propsCctvFunctionInfo?.map((funcGroup: IFunc) => {
-            const findChildren = _.find(propsCctvFunctionInfo, { func_code: 'CCTV_FUNCTION' } );
-            if (findChildren) {
-                const cctvCtrlObj = findChildren.children[0];
-                setCctvFuncAllChecked(!_.some(cctvCtrlObj.children, { setup_flag: false })); 
-                cctvCtrlObj.setup_flag = _.some(cctvCtrlObj.children, { setup_flag: true });
-            }
-            return funcGroup;
-        });
+    // useEffect(() => {
+    //     // ** Cannot assign to read only property **
+    //     // const copyStateFuncInfo = JSON.parse(JSON.stringify(stateCctvFunctionInfo));
+    //     const newStateCctvFuncInfo = propsCctvFunctionInfo?.map((funcGroup: IFunc) => {
+    //         const findChildren = _.find(propsCctvFunctionInfo, { func_code: 'CCTV_FUNCTION' } );
+    //         if (findChildren) {
+    //             const cctvCtrlObj = findChildren.children[0];
+    //             setCctvFuncAllChecked(!_.some(cctvCtrlObj.children, { setup_flag: false })); 
+    //             cctvCtrlObj.setup_flag = _.some(cctvCtrlObj.children, { setup_flag: true });
+    //         }
+    //         return funcGroup;
+    //     });
     
-        dispatch(addTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
-        dispatch(addTmpData({data:propLayerInfo, type:'LAYER'}));
-        setStateCctvFunctionInfo(funcInfo);
-        setStateLayerInfo(layerInfo);
-    }, []);
+    //     dispatch(addTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
+    //     dispatch(addTmpData({data:propLayerInfo, type:'LAYER'}));
+    // }, []);
 
-    useEffect(() => {
-        if(funcInfo && funcInfo.length === 0) {
-            dispatch(addTmpData({data:propsCctvFunctionInfo, type:'FUNC'}));
-        } else {
-            setStateCctvFunctionInfo(funcInfo);
-        }
-    }, [funcInfo]);
+    // useEffect(() => {
+    //     if(funcInfo && funcInfo.length === 0) {
+    //         dispatch(addTmpData({data:propsCctvFunctionInfo, type:'FUNC'}));
+    //     } else {
+    //         setStateCctvFunctionInfo(funcInfo);
+    //     }
+    // }, [funcInfo]);
     
-    useEffect(() => {
-        if(funcInfo && funcInfo.length === 0) {
-            dispatch(addTmpData({data:propLayerInfo, type:'LAYER'}));
-        } else {
-            setStateLayerInfo(layerInfo);
-        }
-    }, [layerInfo]);
+    // useEffect(() => {
+    //     if(funcInfo && funcInfo.length === 0) {
+    //         dispatch(addTmpData({data:propLayerInfo, type:'LAYER'}));
+    //     } else {
+    //         setStateLayerInfo(layerInfo);
+    //     }
+    // }, [layerInfo]);
 
 
 
@@ -90,7 +88,7 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
             setCctvFuncAllChecked(check);
         }
 
-        dispatch(addTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
+        dispatch(changeTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
     }
 
     const onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,7 +121,7 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
             return funcGroup;
         });
 
-        dispatch(addTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
+        dispatch(changeTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
     }
 
     const onCheckboxLayerChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,7 +148,7 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
                             }
                             return layer;
                         })
-                        dispatch(addTmpData({data:copyStateLayerInfo, type:'LAYER'}));
+                        dispatch(changeTmpData({data:copyStateLayerInfo, type:'LAYER'}));
                     }) }
                 ],
             });
@@ -166,7 +164,7 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
                 }
                 return layer;
             })
-            dispatch(addTmpData({data:copyStateLayerInfo, type:'LAYER'}));
+            dispatch(changeTmpData({data:copyStateLayerInfo, type:'LAYER'}));
         }
     }
 

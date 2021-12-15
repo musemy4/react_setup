@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, combineReducers } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const REQUEST_URL = '/vurix-dms/api/v1';
@@ -22,7 +22,6 @@ export const postLogin = createAsyncThunk(
     async(params: ILoginParams) => {
         try {
             const response = await axios.post(`${REQUEST_URL}/auth/setupLogin`, params);
-            console.log(response);
             if (response.status === 200) {
                 return 'SUCCESS';
             }
@@ -31,7 +30,7 @@ export const postLogin = createAsyncThunk(
             }
             return 'FAILURE';
         } catch(error) {
-            console.log('login rejected::', error);
+            console.log(error);
         }
         return 'FAILURE';
     }

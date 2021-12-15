@@ -1,12 +1,10 @@
 // React
-import _ from 'lodash';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 // react-redux lib
 import { useDispatch, useSelector } from 'react-redux';
 // fetch
-import { addTmpData } from '../../../store/setup/tmpSetup';
+import { initTmpData, changeTmpData } from '../../../store/setup/tmpSetup';
 
-// import { addPartsData } from '../../store/setup/setup';
 // Interfaces
 import { IEvent } from './setup_interface';
 
@@ -25,23 +23,18 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
     // set
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
-        setStateEventInfo(eventInfo);
-    }, []);
+    // useEffect(() => {
+    //     dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
+    // }, []);
 
-    useEffect(() => {
-        if(eventInfo && eventInfo.length === 0) {
-            dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
-        } else {
-            setStateEventInfo(eventInfo);
-        }
-    }, [eventInfo]);
+    // useEffect(() => {
+    //     if(eventInfo && eventInfo.length === 0) {
+    //         dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
+    //     } else {
+    //         setStateEventInfo(eventInfo);
+    //     }
+    // }, [eventInfo]);
    
-    useEffect(() => {
-        setStateEventInfo(eventInfo);
-    })
-
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const check = e.target.checked;
         const newStateEventInfo = stateEventInfo?.map((eventInfo: IEvent) => {
@@ -52,7 +45,7 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
             }
         });
         setAllChecked(check);
-        dispatch(addTmpData({data:newStateEventInfo, type:'EVENT'}));
+        dispatch(changeTmpData({data:newStateEventInfo, type:'EVENT'}));
     }
 
     const onCheckboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +65,7 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
 
         const isAllChecked = newStateEventInfo?.some((eventInfo: any) => !eventInfo.setup_flag );
         setAllChecked(!isAllChecked);
-        dispatch(addTmpData({data:newStateEventInfo, type:'EVENT'}));
+        dispatch(changeTmpData({data:newStateEventInfo, type:'EVENT'}));
     }
 
     return (

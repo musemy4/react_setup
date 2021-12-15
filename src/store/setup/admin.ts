@@ -1,6 +1,5 @@
-import { createSlice, createAsyncThunk, combineReducers } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
 
 const REQUEST_URL = '/vurix-dms/api/v1';
 export interface IAdmin {
@@ -19,13 +18,12 @@ export const setupCreateID = createAsyncThunk( // init시 호출
     async() => {
         try {
             const response = await axios.post(`${REQUEST_URL}/auth/setupCreateID`);
-            console.log("***", response);
             if (response.status === 200) {
                 return 'SUCCESS';
             }
             return 'FAILURE';
-        } catch(error) {
-            console.log('login rejected::', error);
+        } catch(error: any) {
+            console.log(error);
             if (error.response?.data.code === 500 && error.response?.data.message.indexOf('unique')) {
                 return 'DUPLICATE';
             }
@@ -39,12 +37,11 @@ export const setupResetRole = createAsyncThunk( // init시 호출
     async() => {
         try {
             const response = await axios.put(`${REQUEST_URL}/auth/setupResetRole`);
-            console.log(response);
             if (response.status === 200) {
                 return 'SUCCESS';
             }
         } catch(error) {
-            console.log('login rejected::', error);
+            console.log(error);
         }
         return 'FAILURE';
     }
@@ -55,12 +52,11 @@ export const setupResetPw = createAsyncThunk( // init시 호출
     async() => {
         try {
             const response = await axios.put(`${REQUEST_URL}/auth/setupResetPw`);
-            console.log(response);
             if (response.status === 200) {
                 return 'SUCCESS';
             }
         } catch(error) {
-            console.log('login rejected::', error);
+            console.log(error);
         }
         return 'FAILURE';
     }
@@ -79,12 +75,8 @@ const adminSlice = createSlice({
     extraReducers: (builder) => {
         // 1. setupCreateID
         builder.addCase(setupCreateID.fulfilled, (state, action) => { 
-            console.log(action.payload);
             state.type = 'create';
             state.status = action.payload;
-        })
-        .addCase(setupCreateID.pending, (state) => {
-            console.log(state);
         })
         .addCase(setupCreateID.rejected, (state) => {
             state.type = 'create';
@@ -95,9 +87,6 @@ const adminSlice = createSlice({
             state.type = 'auth';
             state.status = action.payload;
         })
-        .addCase(setupResetRole.pending, (state) => {
-            console.log(state);
-        })
         .addCase(setupResetRole.rejected, (state) => {
             state.type = 'auth';
             state.status = 'ERROR';
@@ -106,9 +95,6 @@ const adminSlice = createSlice({
          .addCase(setupResetPw.fulfilled, (state, action) => {
             state.type = 'pw';
             state.status = action.payload;
-        })
-        .addCase(setupResetPw.pending, (state) => {
-            console.log(state);
         })
         .addCase(setupResetPw.rejected, (state) => {
             state.type = 'pw';

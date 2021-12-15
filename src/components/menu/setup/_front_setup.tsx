@@ -1,13 +1,12 @@
 // React
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // External Lib
 import _ from 'lodash';
 // react-redux lib
 import { useDispatch, useSelector } from 'react-redux';
 // fetch
-import { addTmpData } from '../../../store/setup/tmpSetup';
-// import { addPartsData } from '../../store/setup/setup';
+import { initTmpData, changeTmpData } from '../../../store/setup/tmpSetup';
 // Interfaces
 import { ISetup } from './setup_interface';
 
@@ -24,17 +23,17 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
     const dispatch = useDispatch();
 
 
-    useEffect(() => {
-        dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
-    }, []);
+    // useEffect(() => {
+    //     dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
+    // }, []);
 
-    useEffect(() => {
-        if(setupInfo && setupInfo.length === 0) {
-            dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
-        } else {
-            setStateSetupInfo(setupInfo);
-        }
-    }, [setupInfo]);
+    // useEffect(() => {
+    //     if(setupInfo && setupInfo.length === 0) {
+    //         dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
+    //     } else {
+    //         setStateSetupInfo(setupInfo);
+    //     }
+    // }, [setupInfo]);
 
 
 
@@ -65,7 +64,7 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
             }
             return setupGroup;
         });
-        dispatch(addTmpData({data:newStateSetupInfo, type:'SETUP'}));
+        dispatch(changeTmpData({data:newStateSetupInfo, type:'SETUP'}));
     }
 
     const onRadioChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +86,7 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
             }
             return setupGroup;
         });
-        dispatch(addTmpData({data:newStateSetupInfo, type:'SETUP'}));
+        dispatch(changeTmpData({data:newStateSetupInfo, type:'SETUP'}));
     }
 
 

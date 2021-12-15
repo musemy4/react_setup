@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // interface
@@ -10,14 +10,14 @@ const REQUEST_URL = '/vurix-dms/api/v1';
 
 
 const initialState: ISetupBody = {
+    code: undefined,
     response: {
         menuInfo: [],
         eventInfo: [],
         funcInfo: [],
         setupInfo: [],
         layerInfo: []
-    },
-    loading: false
+    }
 }
 
 export const fetchSetupProps = createAsyncThunk( // init시 호출
@@ -29,7 +29,7 @@ export const fetchSetupProps = createAsyncThunk( // init시 호출
                 return response.data;
             }
         } catch(error) {
-            console.log('fetch rejected::', error);
+            console.log(error);
         }
         return null;
     }
@@ -43,6 +43,9 @@ const fetchSetupSlice = createSlice({
         resetFetchSetupStatus: () => { // initialState 로
             return initialState;
         },
+        afterPutSetup: (state) => {
+            state.code = -1;
+        }
     },
     extraReducers: {
         [fetchSetupProps.fulfilled.type]: (state, action) => {
@@ -50,17 +53,14 @@ const fetchSetupSlice = createSlice({
             state.message = action.payload.message;
             state.response = action.payload.response;
             state.responseTime = action.payload.responseTime;
-            state.loading = false; 
         },
-        [fetchSetupProps.pending.type]: (state) => {
-            state.loading = true; 
-        },
-        [fetchSetupProps.rejected.type]: (state, action: PayloadAction<{message: string; status: number}>) => {
-            // 실패시 return 되는 action의 type을 정해줄수 있어 이방법으로 하겠다
-            state.loading = false; 
-        },
+        // 이 방식의 extraReducer는 action의 type을 지정할수 있다(PayloadAction @redux/toolkit)
+        // [fetchSetupProps.rejected.type]: (state, action: PayloadAction<{message: string; status: number}>) => {
+        // [fetchSetupProps.rejected.type]: (state) => {
+        //     state.loading = false; 
+        // },
     }
 });
 
-export const {resetFetchSetupStatus} = fetchSetupSlice.actions;
+export const {resetFetchSetupStatus, afterPutSetup} = fetchSetupSlice.actions;
 export default fetchSetupSlice.reducer;
