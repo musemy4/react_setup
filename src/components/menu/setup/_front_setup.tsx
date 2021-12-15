@@ -1,5 +1,5 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // External Lib
 import _ from 'lodash';
@@ -15,7 +15,7 @@ interface IProps {
 }
 
 export const FrontSetup = ({propsSetupInfo}: IProps) => {
-    const [stateSetupInfo, setStateSetupInfo] = useState<Array<ISetup> | undefined | null>();
+    const [stateSetupInfo, setStateSetupInfo] = useState<Array<ISetup> | undefined | null>(propsSetupInfo);
 
     // get
     const { setupInfo }: IProps = useSelector((state:any)=> state.tmpSetup.response); // 정제된것 그냥 뿌린다
@@ -35,7 +35,33 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
     //     }
     // }, [setupInfo]);
 
+    useEffect(() => {
+        // _front_setup start
+        dispatch(initTmpData({data:propsSetupInfo, type:'SETUP'}));
+        // 컴포넌트가 꺼질때
+        return () => {
+            // _front_setup end
+        }
+    }, []);
 
+    const mounted = useRef(false);
+    useEffect(() => {
+        if(!mounted.current) {
+            mounted.current = true;
+        } else 
+            // 초기화 되어 menuInfo가 []이 되었을때 부모에서 온 props를 다시 셋팅
+            if(setupInfo && setupInfo.length === 0 || !setupInfo) {
+                setStateSetupInfo(propsSetupInfo);
+            }
+        
+    }, [setupInfo]);
+
+    useEffect(()=> {
+        if (setupInfo && setupInfo.length === 0 || !setupInfo) {
+            // TODO: 여기가 왜 4번 불리냐
+            setStateSetupInfo(propsSetupInfo);
+        }
+    }, [propsSetupInfo]);
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -64,6 +90,7 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
             }
             return setupGroup;
         });
+        setStateSetupInfo(newStateSetupInfo);
         dispatch(changeTmpData({data:newStateSetupInfo, type:'SETUP'}));
     }
 
@@ -86,6 +113,7 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
             }
             return setupGroup;
         });
+        setStateSetupInfo(newStateSetupInfo);
         dispatch(changeTmpData({data:newStateSetupInfo, type:'SETUP'}));
     }
 

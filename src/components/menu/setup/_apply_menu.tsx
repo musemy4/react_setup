@@ -45,7 +45,7 @@ export const ApplyMenu = ({propsMenuInfo}: IProps) => {
     }, [menuInfo]);
 
     useEffect(()=> {
-        if (menuInfo && menuInfo.length === 0) {
+        if (menuInfo && menuInfo.length === 0 || !menuInfo) {
             // TODO: 여기가 왜 4번 불리냐
             setStateMenuInfo(propsMenuInfo);
         }
