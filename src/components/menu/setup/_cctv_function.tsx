@@ -28,19 +28,8 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
     const dispatch = useDispatch();
     
     useEffect(() => {
-        // ** Cannot assign to read only property **
-        // const copyStateFuncInfo = JSON.parse(JSON.stringify(stateCctvFunctionInfo));
-        const newStateCctvFuncInfo = propsCctvFunctionInfo?.map((funcGroup: IFunc) => {
-            const findChildren = _.find(propsCctvFunctionInfo, { func_code: 'CCTV_FUNCTION' } );
-            if (findChildren) {
-                const cctvCtrlObj = findChildren.children[0];
-                setCctvFuncAllChecked(!_.some(cctvCtrlObj.children, { setup_flag: false })); 
-                cctvCtrlObj.setup_flag = _.some(cctvCtrlObj.children, { setup_flag: true });
-            }
-            return funcGroup;
-        });
-    
-        dispatch(initTmpData({data:newStateCctvFuncInfo, type:'FUNC'}));
+        const returnedInfo = destruct();
+        dispatch(initTmpData({data:returnedInfo, type:'FUNC'}));
         dispatch(initTmpData({data:propLayerInfo, type:'LAYER'}));
     }, []);
 
@@ -62,7 +51,32 @@ export const CctvFunction = ({propsCctvFunctionInfo, propLayerInfo}: IProps) => 
         }
     }, [layerInfo]);
 
+    useEffect(()=> {
+        if(funcInfo && funcInfo.length === 0 || !funcInfo) {
+            setStateCctvFunctionInfo(propsCctvFunctionInfo);
+        }
+    }, [propsCctvFunctionInfo]);
 
+    useEffect(()=> {
+        if(layerInfo && layerInfo.length === 0 || !layerInfo) {
+            setStateLayerInfo(propLayerInfo);
+        }
+    }, [propLayerInfo]);
+
+    const destruct = () => {
+        // ** Cannot assign to read only property **
+        // const copyStateFuncInfo = JSON.parse(JSON.stringify(stateCctvFunctionInfo));
+        const newStateCctvFuncInfo = propsCctvFunctionInfo?.map((funcGroup: IFunc) => {
+            const findChildren = _.find(propsCctvFunctionInfo, { func_code: 'CCTV_FUNCTION' } );
+            if (findChildren) {
+                const cctvCtrlObj = findChildren.children[0];
+                setCctvFuncAllChecked(!_.some(cctvCtrlObj.children, { setup_flag: false })); 
+                cctvCtrlObj.setup_flag = _.some(cctvCtrlObj.children, { setup_flag: true });
+            }
+            return funcGroup;
+        });
+        return newStateCctvFuncInfo
+    }
 
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id } = e.target;

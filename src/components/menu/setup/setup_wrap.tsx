@@ -1,6 +1,4 @@
-/* eslint-disable prefer-destructuring */
 // React
-import _ from 'lodash';
 import { useState, useEffect, useRef } from 'react';
 // confirm, toast
 import { confirmAlert } from 'react-confirm-alert';
@@ -16,10 +14,10 @@ import { resetAdminStatus, setupCreateID, setupResetRole, setupResetPw  } from '
 import { fetchSetupProps, resetFetchSetupStatus, afterPutSetup } from '../../../store/setup/fetchSetup';
 import { putTmpSetupProps, resetTmpSetupStatus } from '../../../store/setup/tmpSetup';
 // utils
-import { getConvertTreeData } from '../../../common/utils/convert-data';
+import { getConvertTreeData, getDeconvertTreeData } from '../../../common/utils/convert-data';
 import { dateFormat } from '../../../common/utils/date';
 // interface
-import { ISetupData, IPutSetupBody, IPutSetup } from './setup_interface';
+import { ISetupData } from './setup_interface';
 
 
 // Component
@@ -257,71 +255,8 @@ const SetupWrap = () => {
 
    
     const onPutSetup = () => {
-        const httpParam: IPutSetupBody = {
-            menu_info: [],
-            event_info: [],
-            func_info: [],
-            setup_info: [],
-            layer_info: []
-        };
-
-        const setupTypes: { [index: string]: {code: string, value: string, param: string}} = {
-            'MENU': { code: 'menu_code', value: 'setup_flag', param: 'menu_info' },
-            'EVENT': { code: 'event_code', value: 'setup_flag', param: 'event_info' },
-            'FUNC': { code: 'func_code', value: 'setup_flag', param: 'func_info' },
-            'SETUP': { code: 'config_code', value: 'setup_data', param: 'setup_info' },
-            'LAYER': { code: 'layer_id', value: 'setup_flag', param: 'layer_info' }
-        };
-
-        const setConvertPropsParam = (setupData: any, setupTypeInfo: {code: string, value: string, param: string}, setupType: string) => {
-            _.forEach(setupData, (info) => {
-                const infoObj: IPutSetup = {
-                    key: info[setupTypeInfo.code],
-                    value: info[setupTypeInfo.value],
-                }
-                if (info.area_flag) {
-                    infoObj.area_flag = info.area_flag
-                }
-                    httpParam[setupTypeInfo.param].push(infoObj)
-                if (info.children) {
-                    setConvertPropsParam(info.children, setupTypeInfo, setupType);
-                }
-            });
-        }
-
-        // ////////////////////////////////////////
-        const newSetupArr: any[] = [];
-        if(tmpSetup.response) {
-            const entries = Object.entries(tmpSetup.response);
-            entries.forEach((ele) => {
-                const obj: any = {type: '', data: []};
-                if (ele[0]==='menuInfo') {
-                    obj.type = 'MENU';
-                    obj.data = ele[1];
-                } else if (ele[0]==='eventInfo') {
-                    obj.type = 'EVENT';
-                    obj.data = ele[1];
-                } else if (ele[0]==='funcInfo') {
-                    obj.type = 'FUNC';
-                    obj.data = ele[1];
-                } else if (ele[0]==='setupInfo') {
-                    obj.type = 'SETUP';
-                    obj.data = ele[1];
-                } else if (ele[0]==='layerInfo') {
-                    obj.type = 'LAYER';
-                    obj.data = ele[1];
-                }
-                newSetupArr.push(obj);
-            });
-        }
-        // /////////////////////////////////////////
-        // console.log(newSetupArr);
-
-        _.forEach(newSetupArr, (setupGroup) => {
-            setConvertPropsParam(setupGroup.data, setupTypes[setupGroup.type], setupGroup.type);
-        })
-
-        dispatch(putTmpSetupProps(httpParam));
+        const httpParams = getDeconvertTreeData(tmpSetup);
+        dispatch(putTmpSetupProps(httpParams));
     }
 
     // [수정] 버튼

@@ -1,4 +1,6 @@
-import { IMenu, IFunc, ISetup } from '../../components/menu/setup/setup_interface';
+/* eslint-disable prefer-destructuring */
+import _ from 'lodash';
+import { IMenu, IFunc, ISetup, IPutSetupBody, IPutSetup } from '../../components/menu/setup/setup_interface';
 
 interface IMenuCode {
     [index: string]: string | boolean | number | Array<IMenuCode> | undefined;
@@ -54,4 +56,68 @@ export const getConvertTreeData =
             []
         )
         return filtered;
+}
+
+export const getDeconvertTreeData = (tmpSetup: IPutSetupBody) => {
+    const httpParam: IPutSetupBody = {
+        menu_info: [],
+        event_info: [],
+        func_info: [],
+        setup_info: [],
+        layer_info: []
+    };
+
+    const setupTypes: { [index: string]: {code: string, value: string, param: string}} = {
+        'MENU': { code: 'menu_code', value: 'setup_flag', param: 'menu_info' },
+        'EVENT': { code: 'event_code', value: 'setup_flag', param: 'event_info' },
+        'FUNC': { code: 'func_code', value: 'setup_flag', param: 'func_info' },
+        'SETUP': { code: 'config_code', value: 'setup_data', param: 'setup_info' },
+        'LAYER': { code: 'layer_id', value: 'setup_flag', param: 'layer_info' }
+    };
+
+    const setConvertPropsParam = (setupData: any, setupTypeInfo: {code: string, value: string, param: string}, setupType: string) => {
+        _.forEach(setupData, (info) => {
+            const infoObj: IPutSetup = {
+                key: info[setupTypeInfo.code],
+                value: info[setupTypeInfo.value],
+            }
+            if (info.area_flag) {
+                infoObj.area_flag = info.area_flag
+            }
+                httpParam[setupTypeInfo.param].push(infoObj)
+            if (info.children) {
+                setConvertPropsParam(info.children, setupTypeInfo, setupType);
+            }
+        });
+    }
+
+    // ////////////////////////////////////////
+    const newSetupArr: any[] = [];
+    if(tmpSetup.response) {
+        const entries = Object.entries(tmpSetup.response);
+        entries.forEach((ele) => {
+            const obj: any = {type: '', data: []};
+            if (ele[0]==='menuInfo') {
+                obj.type = 'MENU';
+            } else if (ele[0]==='eventInfo') {
+                obj.type = 'EVENT';
+            } else if (ele[0]==='funcInfo') {
+                obj.type = 'FUNC';
+            } else if (ele[0]==='setupInfo') {
+                obj.type = 'SETUP';
+            } else if (ele[0]==='layerInfo') {
+                obj.type = 'LAYER';
+            }
+            obj.data = ele[1];
+            newSetupArr.push(obj);
+        });
+    }
+    // /////////////////////////////////////////
+    // console.log(newSetupArr);
+
+    _.forEach(newSetupArr, (setupGroup) => {
+        setConvertPropsParam(setupGroup.data, setupTypes[setupGroup.type], setupGroup.type);
+    })
+
+    return httpParam;
 }
