@@ -1,5 +1,5 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // react-redux lib
 import { useDispatch, useSelector } from 'react-redux';
 // fetch
@@ -23,17 +23,34 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
     // set
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //     dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
-    // }, []);
+    useEffect(() => {
+        // _incoming_event start
+        dispatch(initTmpData({data:propsEventInfo, type:'EVENT'}));
+        // 컴포넌트가 꺼질때
+        return () => {
+            // _incoming_event end
+        }
+    }, []);
 
-    // useEffect(() => {
-    //     if(eventInfo && eventInfo.length === 0) {
-    //         dispatch(addTmpData({data:propsEventInfo, type:'EVENT'}));
-    //     } else {
-    //         setStateEventInfo(eventInfo);
-    //     }
-    // }, [eventInfo]);
+    const mounted = useRef(false);
+    useEffect(() => {
+        if(!mounted.current) {
+            mounted.current = true;
+        } else 
+            // 초기화 되어 menuInfo가 []이 되었을때 부모에서 온 props를 다시 셋팅
+            if(eventInfo && eventInfo.length === 0 || !eventInfo) {
+                setStateEventInfo(propsEventInfo);
+            }
+        
+    }, [eventInfo]);
+
+    useEffect(()=> {
+        if (eventInfo && eventInfo.length === 0) {
+            // TODO: 여기가 왜 4번 불리냐
+            setStateEventInfo(propsEventInfo);
+        }
+    }, [propsEventInfo]);
+
    
     const onCheckboxAllChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const check = e.target.checked;
@@ -45,6 +62,7 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
             }
         });
         setAllChecked(check);
+        setStateEventInfo(newStateEventInfo);
         dispatch(changeTmpData({data:newStateEventInfo, type:'EVENT'}));
     }
 
@@ -65,6 +83,7 @@ export const IncomingEvent = ({propsEventInfo}: IProps) => {
 
         const isAllChecked = newStateEventInfo?.some((eventInfo: any) => !eventInfo.setup_flag );
         setAllChecked(!isAllChecked);
+        setStateEventInfo(newStateEventInfo);
         dispatch(changeTmpData({data:newStateEventInfo, type:'EVENT'}));
     }
 
