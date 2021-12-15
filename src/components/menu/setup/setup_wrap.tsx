@@ -114,6 +114,7 @@ const SetupWrap = () => {
             updateState(); // fetch된 코드를 다시 반영하자
             setLoading(false);
         } else if (fetchSetup.code && fetchSetup.code === -1)  {
+            showAlert('셋업 설정이 수정되었습니다!', 'success');
             // code === -1 : afterputsetup fetchsetup reset
             dispatch(fetchSetupProps());
         } else if (fetchSetup.code && fetchSetup.code !== 200)  {
