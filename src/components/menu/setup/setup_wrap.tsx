@@ -298,7 +298,7 @@ const SetupWrap = () => {
                 loading ?
                     <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} /> 
                       :
-                    <div className="row h-95">
+                    <div className="row h-90">
                         {/* 1. 적용 메뉴 */}
                         <div className="apply-menu box">
                             <h2>적용메뉴</h2>

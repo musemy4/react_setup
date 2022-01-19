@@ -26,6 +26,9 @@ ol, ul { list-style: none; }
 .box-content::-webkit-scrollbar-thumb { background: transparent; border-radius: 3px; background-clip: padding-box; border: 1px solid transparent; }
 .box-content:hover::-webkit-scrollbar-thumb { background: #d8dce6; }
 
+/*  menu management */
+.menu-detail {width: calc(69% - 10px); margin-right: 10px;}
+
 /* props menu */
 .apply-menu { width: calc(31% - 10px); margin-right: 10px; }
 .incoming-event { width: calc(23% - 10px); margin-right: 10px; }

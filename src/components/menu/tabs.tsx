@@ -1,13 +1,13 @@
 // React
 export const TabType = {
     SETUP: "SETUP",
-    TAB2: "TAB2",
+    MENU: "MENU",
     TAB3: "TAB3",
 };
   
 export const TabLabel = {
     [TabType.SETUP]: "셋업 설정",
-    [TabType.TAB2]: "탭 2 - 미정",
+    [TabType.MENU]: "메뉴 관리",
     [TabType.TAB3]: "탭 3 - 미정",
 };
 
