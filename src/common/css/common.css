@@ -27,7 +27,7 @@ ol, ul { list-style: none; }
 .box-content:hover::-webkit-scrollbar-thumb { background: #d8dce6; }
 
 /*  menu management */
-.menu-detail {width: calc(69% - 10px); margin-right: 10px;}
+.menu-detail {width: calc(69% - 4px);}
 
 /* props menu */
 .apply-menu { width: calc(31% - 10px); margin-right: 10px; }

@@ -5,7 +5,9 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "@minoru/react-dnd-treeview": "^1.6.1",
     "@reduxjs/toolkit": "^1.6.2",
+    "@types/axios": "^0.14.0",
     "axios": "^0.21.1",
     "bootstrap": "^5.1.0",
     "connected-react-router": "^6.0.0",
@@ -16,6 +18,7 @@
     "react-bootstrap": "^2.0.0-beta.5",
     "react-confirm-alert": "^2.7.0",
     "react-dom": "^17.0.2",
+    "react-hook-tree": "0.0.1-beta.34",
     "react-redux": "^7.2.4",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",

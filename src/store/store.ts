@@ -13,6 +13,9 @@ import fetchSetupReducer from "./setup/fetchSetup";
 import tmpSetupReducer from "./setup/tmpSetup";
 import { ISetupBody } from '../components/menu/setup/setup_interface';
 
+// menu reducer
+import menuListReducer from './menu/getMenuList';
+
 
 interface rootState {
    admin: IAdmin | undefined;
@@ -26,7 +29,8 @@ const reducers = {
     admin: adminReducer,
     login: loginReducer,
     fetchSetup: fetchSetupReducer,
-    tmpSetup: tmpSetupReducer
+    tmpSetup: tmpSetupReducer,
+    menuList: menuListReducer
 };
 
 

@@ -26,6 +26,7 @@ export const fetchSetupProps = createAsyncThunk( // init시 호출
         try {
             const response = await axios.get(`${REQUEST_URL}/role/getSetupProp`);
             if (response.status === 200) {
+                console.log(response);
                 return response.data;
             }
         } catch(error) {

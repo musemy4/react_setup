@@ -23,7 +23,8 @@ const Login = (props: any) => {
         }
         if (loginState && loginState.status === 'SUCCESS') {
             sessionStorage.setItem('authorization', 'success');
-            props.history.push('/setup');
+            const {history} = props;
+            history.push('/setup');
         }
         if (loginState && loginState.status === 'FAILURE') {
             setError(true);

@@ -21,7 +21,7 @@ export const Tabs = ({ selectedTab = 'SETUP', onChange }: ITabProps) => {
 
     const handleTabClick = (tabType: string) => {
         // TODO TEMP:::TAB DISABLED
-        if (tabType === 'SETUP') {
+        if (tabType !== 'TAB3') {
             onChange(tabType)
         }
     }
@@ -32,7 +32,7 @@ export const Tabs = ({ selectedTab = 'SETUP', onChange }: ITabProps) => {
                 {Object.values(TabType).map((tabType) => (
                     <li
                         key={tabType}
-                        className={selectedTab === tabType ? "nav_item on" : "nav_item disabled"}
+                        className={selectedTab === tabType ? "nav_item on" : "nav_item"}
                         onKeyDown={()=>handleTabClick(tabType)}
                         onClick={()=>handleTabClick(tabType)}
                     >
