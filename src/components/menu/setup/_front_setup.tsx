@@ -22,19 +22,6 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
     // set 
     const dispatch = useDispatch();
 
-
-    // useEffect(() => {
-    //     dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
-    // }, []);
-
-    // useEffect(() => {
-    //     if(setupInfo && setupInfo.length === 0) {
-    //         dispatch(addTmpData({data:propsSetupInfo, type:'SETUP'}));
-    //     } else {
-    //         setStateSetupInfo(setupInfo);
-    //     }
-    // }, [setupInfo]);
-
     useEffect(() => {
         // _front_setup start
         dispatch(initTmpData({data:propsSetupInfo, type:'SETUP'}));

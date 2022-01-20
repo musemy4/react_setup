@@ -6,7 +6,6 @@ import { IMenu } from './menu_interface';
 
 export const MenuTree = ({menuClicked}: any) => {
     const [treeData, setTreeData] = useState([]);
-    const [clickedMenu, setClickedMenu] = useState('');
 
     const menuList = useSelector((state: any) => state.menuList);
 
@@ -17,9 +16,12 @@ export const MenuTree = ({menuClicked}: any) => {
 
     const handleClickMenu = (menu: string) => {
         // e.preventDefault();
-        console.log('!', menu);
-        menuClicked(menu);
-        // setClickedMenu()
+        const menus = menuList.response.results;
+        menus.forEach((m: IMenu) => {
+            if(m.menu_name === menu) {
+                menuClicked(m);
+            }
+        });
     }
 
 

@@ -7,6 +7,7 @@ import { css } from '@emotion/react';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { MenuDetail } from './menu_detail';
 import { MenuTree } from './menu_tree';
+import { IMenu } from './menu_interface';
 
 const override = css`
     display: block;
@@ -18,9 +19,9 @@ const override = css`
 
 export const MenuManWrap = () => {
     const [loading, setLoading] = useState(false);
-    const [menuSelected, setMenuSelected] =useState('');
+    const [menuSelected, setMenuSelected] =useState({});
 
-    const menuClicked = (menu: string) => {
+    const menuClicked = (menu: IMenu) => {
         console.log('wrap:::', menu);
         setMenuSelected(menu);
     }
@@ -32,10 +33,12 @@ export const MenuManWrap = () => {
                 loading ?
                     <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} /> 
                     :
-                    <div className="row h-90">
-                        <MenuTree menuClicked={menuClicked} />     
-                        <MenuDetail menuSelected={menuSelected}/>
-                    </div> 
+                    <>
+                        <div className="row h-90">
+                            <MenuTree menuClicked={menuClicked} />     
+                            <MenuDetail menuSelected={menuSelected}/>
+                        </div> 
+                    </>
             }
         </>
     );
