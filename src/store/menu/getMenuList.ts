@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { responseInterceptor } from 'http-proxy-middleware';
 
 
 const REQUEST_URL = '/vurix-dms/api/v1';
@@ -15,13 +16,12 @@ export const fetchMenuList = createAsyncThunk( // init시 호출
         try {
             const response = await axios.get(`${REQUEST_URL}/role/menuList`);
             if (response.status === 200) {
-                console.log(response);
                 return response.data;
             }
         } catch(error) {
             console.log(error);
         }
-        return null;
+        return undefined;
     }
 );
 
@@ -36,17 +36,15 @@ const fetchMenuSlice = createSlice({
     },
     extraReducers: {
         [fetchMenuList.fulfilled.type]: (state, action) => {
-            console.log(action);
             state.code = action.payload.code;
             state.response = action.payload.response;
         },
         // 이 방식의 extraReducer는 action의 type을 지정할수 있다(PayloadAction @redux/toolkit)
-        // [fetchSetupProps.rejected.type]: (state, action: PayloadAction<{message: string; status: number}>) => {
-        // [fetchSetupProps.rejected.type]: (state) => {
-        //     state.loading = false; 
+        // [fetchMenuList.pending.type]: () => {
+        //     console.log('pending:::');
         // },
     }
 });
 
-export const {resetMenulist} = fetchMenuSlice.actions;
+export const { resetMenulist } = fetchMenuSlice.actions;
 export default fetchMenuSlice.reducer;

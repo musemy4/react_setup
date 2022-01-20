@@ -18,6 +18,13 @@ const override = css`
 
 export const MenuManWrap = () => {
     const [loading, setLoading] = useState(false);
+    const [menuSelected, setMenuSelected] =useState('');
+
+    const menuClicked = (menu: string) => {
+        console.log('wrap:::', menu);
+        setMenuSelected(menu);
+    }
+
     return (
         <>
             <ClipLoader color="#0d6efd" loading={loading} css={override} size={50} />
@@ -26,8 +33,8 @@ export const MenuManWrap = () => {
                     <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} /> 
                     :
                     <div className="row h-90">
-                        <MenuTree />     
-                        <MenuDetail />
+                        <MenuTree menuClicked={menuClicked} />     
+                        <MenuDetail menuSelected={menuSelected}/>
                     </div> 
             }
         </>

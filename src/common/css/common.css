@@ -161,3 +161,13 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 .react-confirm-alert-overlay.success .react-confirm-alert-body::before {
     font-family: "Font Awesome 5 Free"; font-size: 30px; font-weight: 900; content: "\f058"; color: #28a745;
 }
+
+
+.scroll-wrap {overflow-y:auto; height:750px;margin-top:15px;}
+.scroll-wrap::-webkit-scrollbar {width: 5px;}
+.scroll-wrap::-webkit-scrollbar-thumb {background-color: white;border-radius: 5px;}
+.scroll-wrap::-webkit-scrollbar-track {background-color: grey;border-radius: 5px;box-shadow: inset 0px 0px 5px black;}
+.scroll-wrap ol, ul {padding-left:1rem}
+button {background-color: transparent;border:0; outline:0;color:white;cursor:pointer;}
+.menu-clicking .clicked{color:blue;}
+.can-open {display: inline-block; width:20px;font-size:13px;color:rgba(255,255,255,0.6)}

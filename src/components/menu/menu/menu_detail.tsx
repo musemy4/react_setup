@@ -1,4 +1,8 @@
-export const MenuDetail = () => {
+interface IMenuDetail {
+    menuSelected: string;
+}
+
+export const MenuDetail = ({menuSelected}: IMenuDetail) => {
 
 
     return (
