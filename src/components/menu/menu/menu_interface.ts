@@ -18,7 +18,7 @@ export interface IMenu {
 
 export interface IRefMenu {
     [index: string]: string | number | boolean | Array<IMenu> | undefined;
-    id: number;
+    id: number | string;
     parent: string; // p_menu_code
     droppable: boolean;
     text: string; // menu_name

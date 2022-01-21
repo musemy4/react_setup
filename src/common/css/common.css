@@ -5,6 +5,37 @@
 
 html, body, #root, #root > div { height: 100%; }
 body { margin: 0; padding: 0; font-family:'Noto Sans KR', "Malgun Gothic", sans-serif; }
+input[type=text]::-ms-clear{display:none;}
+
+.btn {display: inline-block;min-width: 60px;padding: 0px 16px; height:28px; line-height:26px; font-size: 14px !important; box-sizing: border-box;text-align: center;vertical-align: top;position: relative;border-radius:0;border: 1px solid #6E747A;color: #66C5FF;}
+.btn:hover {color:#99D8FF;background-color:rgba(40,172,252,.08);}
+.btn:disabled, .btn.disabled {color: #9DA2A6 !important;border-color: transparent !important; cursor: default;}
+.btn-container .btn:not(:last-child) {margin-right:10px;}
+/*기본 버튼 설정*/
+
+/*텍스트형 버튼 스타일*/
+.btn.text{border:none !important;}
+.btn.text:hover {background-color:transparent;}
+
+/*솔리드형 버튼 설정*/
+.btn.solid {background:#0F7ACB; border-color:#0F7ACB; color:#fff}
+.btn.solid:hover {background:#28ACFC; border-color: #28ACFC;}
+.btn.solid.sub {background:#00725B; border-color:#00725B;}
+.btn.solid.sub:hover {background:#00B38C; border-color:#00B38C;}
+.btn.solid.danger {background:#FD4547; border-color: #FD4547}
+.btn.solid.warning {background:#FFBB00; border-color: #FFBB00}
+.btn.solid.normal {background:#80BF26; border-color: #80BF26}
+.btn.solid.safe {background:#2471F2; border-color: #2471F2}
+
+
+.ui_input {outline: none; display:inline-block;margin-bottom: 10px;width:150px;height:28px;padding:0 8px;font-size:13px;box-sizing:border-box;background-color: #61666b;vertical-align:top;color:#fafafa;border:1px solid transparent;}
+.ui_input.disabled {background-color:#4A4F54;}
+.ui_input:active, .ui_input:focus{border-color:#28ACFC;}
+.ui_input:read-only {background-color:#4a4f54;color:#9DA2A6;}
+.ui_input:disabled {background-color:#4a4f54;color:#9DA2A6;}
+.ui_input:disabled:active, .ui_input:disabled:focus{border-color:#9DA2A6;}
+.ui_input.full{width:100%;}
+
 #root { background-color: #3b3b3b; color: #fff; }
 ol, ul { list-style: none; }
 .h-95 { height: 95%; }
@@ -27,6 +58,7 @@ ol, ul { list-style: none; }
 .box-content:hover::-webkit-scrollbar-thumb { background: #d8dce6; }
 
 /*  menu management */
+.menu-tree { width: calc(31% - 10px); margin-right: 10px; }
 .menu-detail {width: calc(69% - 4px);}
 
 /* props menu */
@@ -46,7 +78,8 @@ ol, ul { list-style: none; }
 
 /* bottom btn bar */
 .bottom { padding: 0 10px 10px 10px; display: flex; justify-content: space-between; align-items: center; }
-
+.btn-left{float:left;}
+.btn-right{float:right;}
 /* table */
 .tableArea { box-sizing:border-box; overflow:auto; }
 .tableArea table { width: 100%; border-spacing: 0; border-bottom: 1px solid rgba(0, 0, 0, 0.15); }
@@ -171,3 +204,21 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 button {background-color: transparent;border:0; outline:0;color:white;cursor:pointer;}
 .menu-clicking .clicked{color:blue;}
 .can-open {display: inline-block; width:20px;font-size:13px;color:rgba(255,255,255,0.6)}
+
+.menu-tree { width: calc(31% - 10px); margin-right: 10px; }
+
+.btn-container {position:absolute;width:100%;bottom:0;right:0;}
+.menu-detail .menu-content-wrap {height: 750px;position:relative;}
+.menu-detail .menu-content-wrap h3 { height:16px; margin: 16px 12px 8px 12px;font-size:13px; position:relative; box-sizing: border-box; padding-left:15px; }
+.menu-detail .menu-content-wrap h3:before {content:'';display:inline-block;width:8px;height:8px;border-radius:4px; background:#fff;position:absolute;top:50%;left:0px;margin-top:-4px;}
+.menu-detail li { margin: 0 10px 20px 10px; }
+.menu-detail li p {font-size:13px; padding: 5px 5px; margin-bottom: 5px; }
+.menu-detail .radio_area { text-align:right;margin-bottom:10px; position:relative; height:25px; } 
+.menu-detail .radio_area input[type="radio"] { vertical-align: middle; margin-top: -4px; } 
+.menu-detail .st1:before {content:'장애등록 : '; display:inline-block; position:absolute; top:0; left:5px; font-size:13px; }
+.menu-detail .st2:before {content:'업무관리 : '; display:inline-block; position:absolute; top:0; left:5px; font-size:13px; }
+
+.content-box .ui_input.half {width: calc((100% - 12px)/2);}
+.content-box .ui_input.half:first-child {margin-right:10px;}
+
+.w-bg-box {background-color:rgba(255,255,255,0.075);padding:8px;margin-bottom:10px;}

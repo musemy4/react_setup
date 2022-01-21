@@ -121,7 +121,7 @@ export const FrontSetup = ({propsSetupInfo}: IProps) => {
                                             return (
                                                 <div key={ setupChildren.config_code }>
                                                     <p>- {setupChildren.config_name}</p>
-                                                    <input onChange={ onInputChange } className="input_t1 w_full" id={ setupChildren.config_code } value={ setupChildren.setup_data } />
+                                                    <input onChange={ onInputChange } className="ui_input w_full" id={ setupChildren.config_code } value={ setupChildren.setup_data } />
                                                 </div>
                                             )
                                         })

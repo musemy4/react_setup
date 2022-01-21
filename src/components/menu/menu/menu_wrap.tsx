@@ -5,8 +5,8 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 // spinner
 import { css } from '@emotion/react';
 import ClipLoader from 'react-spinners/ClipLoader';
-import { MenuDetail } from './menu_detail';
-import { MenuTree } from './menu_tree';
+import { MenuDetail } from './_menu_detail';
+import { MenuTree } from './_menu_tree';
 import { IMenu } from './menu_interface';
 
 const override = css`

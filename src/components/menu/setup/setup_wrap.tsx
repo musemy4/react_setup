@@ -356,19 +356,19 @@ const SetupWrap = () => {
                     </div> 
             }
 
-            <div className="bottom h-5">
+            <div className="bottom h-5 btn-container">
                 <div className="btn-left">
-                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('admin') }>관리자 계정 생성</button>
-                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('auth') }>관리자 권한 초기화</button>
-                    <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ () => onClickAdminAction('pw') }>관리자 비밀번호 초기화</button>
+                    <button type="button" className="btn" onClick={ () => onClickAdminAction('admin') }>관리자 계정 생성</button>
+                    <button type="button" className="btn" onClick={ () => onClickAdminAction('auth') }>관리자 권한 초기화</button>
+                    <button type="button" className="btn" onClick={ () => onClickAdminAction('pw') }>관리자 비밀번호 초기화</button>
                 </div>
                 <div className="btn-right">
                     <form>
-                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ onDownloadSetupFile } >백업(JSON)</button>
-                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ showOpenFileDialog } >복원(JSON)</button>
+                        <button type="button" className="btn" onClick={ onDownloadSetupFile } >백업(JSON)</button>
+                        <button type="button" className="btn" onClick={ showOpenFileDialog } >복원(JSON)</button>
                         <input type="file" ref={inputFile} onChange={onChangeFile} accept=".json" style={{ display: 'none' }} />
-                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ onModifySetup } >수정</button>
-                        <button type="button" className="btn btn-primary btn-sm mr-10" onClick={ onResetSetup } >초기화</button>
+                        <button type="button" className="btn" onClick={ onResetSetup } >초기화</button>
+                        <button type="button" className="btn solid" onClick={ onModifySetup } >수정</button>
                     </form>
                 </div>
             </div>
