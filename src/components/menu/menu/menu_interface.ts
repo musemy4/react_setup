@@ -37,3 +37,8 @@ export interface IRefMenu {
     setup_flag: boolean;
     upd_date: string;
 }
+
+export interface IMode {
+    mode: 'default'|'BigAdd'|'SmlAdd'|'BigMod'|'SmlMod';
+    result: 'default' |'succeed'|'failure';
+}

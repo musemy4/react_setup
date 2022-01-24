@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { responseInterceptor } from 'http-proxy-middleware';
 
 
 const REQUEST_URL = '/vurix-dms/api/v1';
