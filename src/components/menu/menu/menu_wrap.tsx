@@ -21,18 +21,13 @@ const override = css`
 
 export const MenuManWrap = () => {
     const [loading, setLoading] = useState(false);
-    const [mode, setMode] = useState<'default'|'BigAdd'|'SmlAdd'|'BigMod'|'SmlMod'>('default');
     const [menuSelected, setMenuSelected] =useState<IMenu>();
 
     const menuClicked = (menu: IMenu) => {
         console.log('wrap:::', menu);
         setMenuSelected(menu);
     }
-    const getMode = (mode: 'default'|'BigAdd'|'SmlAdd'|'BigMod'|'SmlMod') => {
-        console.log(mode);
-        setMode(mode);
-    }
-
+ 
     return (
         <>
             <ClipLoader color="#0d6efd" loading={loading} css={override} size={50} />
@@ -42,8 +37,8 @@ export const MenuManWrap = () => {
                     :
                     <>
                         <div className="row h-90">
-                            <MenuTree menuClicked={menuClicked} getMode={getMode} />     
-                            <MenuDetail menuSelected={menuSelected} mode={mode}/>
+                            <MenuTree />     
+                            <MenuDetail />
                         </div> 
                     </>
             }
