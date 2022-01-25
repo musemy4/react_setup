@@ -41,7 +41,7 @@ export const MenuTree = () => {
 
     const dispatch = useDispatch();
 
-    const handleDrop = (newTreeData: any) => setTreeDataForDraw(newTreeData);
+    const handleDrop = () => { console.log('공갈');};
 
 
     // 처음 시작될때
@@ -105,13 +105,13 @@ export const MenuTree = () => {
         const refined = fetchMenus.response.results.map((ele: IMenu) => ({
             id: ele.menu_code,
             parent: ele.p_menu_code,
-            droppable: true, // TMP
+            droppable: false, // TMP
             text: ele.menu_name,
         }));
         const defaultTreeData = [{
             id: 'root',
             parent: 0,
-            droppable: true,
+            droppable: false,
             text: 'root',
         }];
         
@@ -126,6 +126,7 @@ export const MenuTree = () => {
 
 
     const handleClickMenu = (menu_name: string) => {
+        if(menu_name === 'root') return
         console.log('=== handleClickMenu! ===');
         console.log(treeData);
         console.log(menu_name);
@@ -148,21 +149,49 @@ export const MenuTree = () => {
         console.log(treeData);
         treeData.forEach((m: any) => {
             if(m.menu_name === menu_name) {
-                dispatch(setMenu(m));
-                if(m.p_menu_code === 'root') {
-                    dispatch(setMode('SmlAdd'))
-                } else {
+                console.log(m);
+                if(m.menu_code === 'root') { // 대메뉴
+                    dispatch(setMenu({
+                        admin_auth_enable: false,
+                        area_flag: false,
+                        download_enable: false,
+                        gis_enable: false,
+                        icon: '',
+                        menu_code: '',
+                        menu_id: '',
+                        menu_name: '',
+                        menu_page: m.menu_page,
+                        ordering: -1,
+                        p_menu_code: 'root',
+                        reg_date: '',
+                        setup_flag: false,
+                        upd_date: ''
+                    }));
                     dispatch(setMode('BigAdd'))
+                } else { // 소메뉴
+                    dispatch(setMenu({
+                        admin_auth_enable: false,
+                        area_flag: false,
+                        download_enable: false,
+                        gis_enable: false,
+                        icon: '',
+                        menu_code: '',
+                        menu_id: '',
+                        menu_name: '',
+                        menu_page: m.menu_page,
+                        ordering: 0,
+                        p_menu_code: m.menu_name,
+                        reg_date: '',
+                        setup_flag: false,
+                        upd_date: ''
+                    }));
+                    dispatch(setMode('SmlAdd'))
                 }
             }
         });
     }
 
           
-    const handleChangeOpen = () => {
-        console.log('handleChangeOpen');
-    }
-
     return (
         <div className="menu-tree box">
             <h2>메뉴 목록</h2>
@@ -187,15 +216,12 @@ export const MenuTree = () => {
                                 onClick={() => handleClickMenu(node.text)}>
                                 {node.text}
                             </button>
-                            {hasChild && (
+                            {(node.parent === 0 || node.parent === 'root') && (
                                 <button type='button' onClick={() => handleAddMenu(node.text)}>
                                     <i className="fas fa-plus" />
                                 </button>
                             )}        
                         </div>
-                    )}
-                    dragPreviewRender = {(monitorProps) => (
-                        <div>{monitorProps.item.text}</div>
                     )}
                     onDrop={handleDrop}
                     initialOpen

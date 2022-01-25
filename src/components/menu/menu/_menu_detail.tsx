@@ -3,7 +3,7 @@ import {useState, useEffect, useRef} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export const MenuDetail = () => {
-
+    const [chkSpecs, setChkSpecs]=useState<boolean[]>([false,false,false]);
 
 
     // redux
@@ -20,6 +20,11 @@ export const MenuDetail = () => {
     useEffect(() => {
         console.log('+++ 메뉴 변경 감지!+++');
         console.log(menu);
+        const chklist = [];
+        chklist.push(menu.admin_auth_enable);
+        chklist.push(menu.download_enable);
+        chklist.push(menu.gis_enable);
+        setChkSpecs(chklist);
     }, [menu])
 
     useEffect(() => {
@@ -37,12 +42,17 @@ export const MenuDetail = () => {
     }
 
     const onCheckboxHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target);
+        const id = Number(e.target.id[3]);
+        const chklist = chkSpecs;
+        chklist[id] = !chklist[id];
+        setChkSpecs(chklist);
     }
+
+    const refresh = String(new Date());
 
     return (
         <>
-            <div className="menu-detail box" key={menu?.menu_code}>
+            <div className="menu-detail box" key={menu?.menu_code + refresh}>
 
                 { menuMode === 'default' ? (
                             <div>
@@ -61,10 +71,12 @@ export const MenuDetail = () => {
                     
 
                 <div className="menu-content-wrap">
+                        
                         <h3>부모 메뉴</h3>
                         <div className="content-box">
                             <input disabled className="ui_input w_full" defaultValue={ menu?.p_menu_code } />
                         </div>
+
                         <h3 className='half'>메뉴 이름</h3>
                         <h3 className='half'>메뉴 코드</h3>
                         <div className='content-box w_full'>
@@ -77,7 +89,7 @@ export const MenuDetail = () => {
                             <>
                                 <h3 className='half'>순서</h3>
                                 <div className='content-box w_full'>
-                                    <input onChange={ onInputChange } className="ui_input w_full" defaultValue={ menu?.ordering } />
+                                    <input disabled onChange={ onInputChange } className="ui_input w_full" defaultValue={ menu?.ordering } />
                                 </div>
                             </>
                             ):(
@@ -86,7 +98,7 @@ export const MenuDetail = () => {
                                 <h3 className='half'>순서</h3>
                                 <div className='content-box w_full'>
                                     <input onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.icon } />
-                                    <input onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.ordering } />
+                                    <input disabled onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.ordering } />
                                 </div>
                             </> 
                             )
@@ -98,8 +110,7 @@ export const MenuDetail = () => {
                                 <span className="menu_title">
                                     <span className="checkbox_wrap">
                                         <input className="form-check-input" type="checkbox"
-                                            onChange={ onCheckboxHandler }  
-                                            checked={ menu?.admin_auth_enable === 'true'}/>
+                                            onChange={(e) => onCheckboxHandler(e)} id="chk0" defaultChecked={chkSpecs[0]} />
                                         <label className="form-check-label">관리 권한 셋업 여부</label>
                                     </span>
                                 </span>
@@ -108,8 +119,7 @@ export const MenuDetail = () => {
                                 <span className="menu_title">
                                     <span className="checkbox_wrap">
                                         <input className="form-check-input" type="checkbox"
-                                            onChange={ onCheckboxHandler } 
-                                            checked={ menu?.download_enable === 'true'} />
+                                            onChange={(e) => onCheckboxHandler(e)} id="chk1" defaultChecked={chkSpecs[1]} />
                                         <label className="form-check-label">다운로드 권한 셋업 여부</label>
                                     </span>
                                 </span>
@@ -119,8 +129,7 @@ export const MenuDetail = () => {
                                     <span className="menu_title">
                                         <span className="checkbox_wrap">
                                             <input className="form-check-input" type="checkbox"
-                                                onChange={ onCheckboxHandler }  
-                                                checked={ menu?.download_enable === 'true'}/>
+                                                onChange={(e) => onCheckboxHandler(e)} id="chk2" defaultChecked={chkSpecs[2]} />
                                             <label className="form-check-label">초기진입메뉴 1depth 여부</label>
                                         </span>
                                     </span>
@@ -133,7 +142,8 @@ export const MenuDetail = () => {
                             <div className="radio_area">
                                 <span className="radio_wrap">
                                     <label>
-                                        <input className="ml-5 mr-3" value="false" type="radio"
+                                        <input className="ml-5 mr-3" value="true" type="radio"
+                                            name='menu_path_grp'
                                             onChange={ onRadioChangeHandler } />
                                         기본 메뉴
                                     </label>
@@ -141,6 +151,7 @@ export const MenuDetail = () => {
                                 <span className="radio_wrap">
                                     <label>
                                         <input className="ml-5 mr-3" value="false" type="radio"
+                                            name='menu_path_grp'
                                             onChange={ onRadioChangeHandler } />
                                         외부 사이트 연계 메뉴
                                     </label>
@@ -149,6 +160,7 @@ export const MenuDetail = () => {
                                     <span className="radio_wrap">
                                     <label>
                                         <input className="ml-5 mr-3" value="false" type="radio" 
+                                            name='menu_path_grp'
                                             onChange={ onRadioChangeHandler } />
                                         서브메뉴 선택 시 사이드바 표출 메뉴
                                     </label>
