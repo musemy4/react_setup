@@ -66,12 +66,12 @@ export const MenuTree = () => {
 
     useEffect(() => {
         console.log('=== 메뉴 선택 변경! ===');
-       console.log(menu);
+        console.log(menu);
     }, [menu])
 
     useEffect(() => {
         console.log('=== 메뉴 모드 변경! ===');
-       console.log(menuMode);
+        console.log(menuMode);
     }, [menuMode])
 
     const initialSetting = () => {
@@ -127,11 +127,12 @@ export const MenuTree = () => {
         console.log(menu_name);
         treeData.forEach((m: IMenu) => {
             if(m.menu_name === menu_name) {
+                console.log(m);
                 dispatch(setMenu(m));
                 if(m.p_menu_code === 'root') {
-                    dispatch(setMode('SmlMod'))
-                } else {
                     dispatch(setMode('BigMod'))
+                } else {
+                    dispatch(setMode('SmlMod'))
                 }
             }
         });
@@ -143,7 +144,6 @@ export const MenuTree = () => {
         console.log(treeData);
         treeData.forEach((m: any) => {
             if(m.menu_name === menu_name) {
-                console.log(m);
                 dispatch(setMenu(m));
                 if(m.p_menu_code === 'root') {
                     dispatch(setMode('SmlAdd'))
@@ -182,11 +182,11 @@ export const MenuTree = () => {
                                 <span className="can-open sub-menu"> </span>        
                             )}
                             <button type="button" className={menu.menu_name === node.text ? "menu-clickuing clicked": "menu-clicking"}
-                                onClick={()=>handleClickMenu(node.text)}>
+                                onClick={() => handleClickMenu(node.text)}>
                                 {node.text}
                             </button>
                             {hasChild && (
-                                <button type='button' onClick={()=> handleAddMenu(node.text)}>
+                                <button type='button' onClick={() => handleAddMenu(node.text)}>
                                     <i className="fas fa-plus" />
                                 </button>
                             )}        

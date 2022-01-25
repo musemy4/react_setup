@@ -27,14 +27,14 @@ export const MenuDetail = () => {
         console.log(menuMode);
     }, [menuMode])
 
-    
+
     const onInputChange=() => {
         console.log('oninput');
     }
     
     return (
         <>
-            <div className="menu-detail box">
+            <div className="menu-detail box" key={menu?.menu_code}>
 
                 { menuMode === 'default' ? (
                             <div>
@@ -61,7 +61,7 @@ export const MenuDetail = () => {
                         <h3 className='half'>메뉴 코드</h3>
                         <div className='content-box w_full'>
                             <input onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.menu_name } />
-                            <input onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.menu_name } />
+                            <input onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.menu_code } />
                         </div>
 
 
