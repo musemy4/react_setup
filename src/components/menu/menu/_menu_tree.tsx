@@ -47,7 +47,11 @@ export const MenuTree = () => {
     // 처음 시작될때
     useEffect(() => {
         console.log('start menuTree');
-        dispatch(fetchMenuList());
+        if(fetchMenus.code === 200) {
+            initialSetting();
+        } else {
+            dispatch(fetchMenuList());
+        }
         // 컴포넌트가 꺼질때
         return () => {
             console.log('menuTree end');
@@ -159,8 +163,6 @@ export const MenuTree = () => {
         console.log('handleChangeOpen');
     }
 
-    // const refresh = String(new Date());
-   
     return (
         <div className="menu-tree box">
             <h2>메뉴 목록</h2>
@@ -179,7 +181,7 @@ export const MenuTree = () => {
                                 <span className="can-open"> </span>        
                             )}
                             {node.parent !== 'root' && node.parent !== 0 && (
-                                <span className="can-open sub-menu"> </span>        
+                                <span className="can-open sub-menu">-</span>        
                             )}
                             <button type="button" className={menu.menu_name === node.text ? "menu-clickuing clicked": "menu-clicking"}
                                 onClick={() => handleClickMenu(node.text)}>
@@ -195,9 +197,8 @@ export const MenuTree = () => {
                     dragPreviewRender = {(monitorProps) => (
                         <div>{monitorProps.item.text}</div>
                     )}
-                    onChangeOpen={handleChangeOpen}
                     onDrop={handleDrop}
-                    initialOpen ={false}
+                    initialOpen
                 /> 
             </div>
         </div>

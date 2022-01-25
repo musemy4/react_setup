@@ -32,6 +32,14 @@ export const MenuDetail = () => {
         console.log('oninput');
     }
     
+    const onRadioChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target);
+    }
+
+    const onCheckboxHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target);
+    }
+
     return (
         <>
             <div className="menu-detail box" key={menu?.menu_code}>
@@ -89,7 +97,9 @@ export const MenuDetail = () => {
                             <div className='menu_list'>
                                 <span className="menu_title">
                                     <span className="checkbox_wrap">
-                                        <input className="form-check-input" type="checkbox"/>
+                                        <input className="form-check-input" type="checkbox"
+                                            onChange={ onCheckboxHandler }  
+                                            checked={ menu?.admin_auth_enable === 'true'}/>
                                         <label className="form-check-label">관리 권한 셋업 여부</label>
                                     </span>
                                 </span>
@@ -97,7 +107,9 @@ export const MenuDetail = () => {
                             <div className='menu_list'>
                                 <span className="menu_title">
                                     <span className="checkbox_wrap">
-                                        <input className="form-check-input" type="checkbox"/>
+                                        <input className="form-check-input" type="checkbox"
+                                            onChange={ onCheckboxHandler } 
+                                            checked={ menu?.download_enable === 'true'} />
                                         <label className="form-check-label">다운로드 권한 셋업 여부</label>
                                     </span>
                                 </span>
@@ -106,7 +118,9 @@ export const MenuDetail = () => {
                                 <div className='menu_list'>
                                     <span className="menu_title">
                                         <span className="checkbox_wrap">
-                                            <input className="form-check-input" type="checkbox"/>
+                                            <input className="form-check-input" type="checkbox"
+                                                onChange={ onCheckboxHandler }  
+                                                checked={ menu?.download_enable === 'true'}/>
                                             <label className="form-check-label">초기진입메뉴 1depth 여부</label>
                                         </span>
                                     </span>
@@ -119,20 +133,23 @@ export const MenuDetail = () => {
                             <div className="radio_area">
                                 <span className="radio_wrap">
                                     <label>
-                                        <input className="ml-5 mr-3" value="true" type="radio" />
+                                        <input className="ml-5 mr-3" value="false" type="radio"
+                                            onChange={ onRadioChangeHandler } />
                                         기본 메뉴
                                     </label>
                                 </span>
                                 <span className="radio_wrap">
                                     <label>
-                                        <input className="ml-5 mr-3" value="false" type="radio" />
+                                        <input className="ml-5 mr-3" value="false" type="radio"
+                                            onChange={ onRadioChangeHandler } />
                                         외부 사이트 연계 메뉴
                                     </label>
                                 </span>
                                 { menuMode.substring(0,3) === 'Sml' &&(
                                     <span className="radio_wrap">
                                     <label>
-                                        <input className="ml-5 mr-3" value="false" type="radio" />
+                                        <input className="ml-5 mr-3" value="false" type="radio" 
+                                            onChange={ onRadioChangeHandler } />
                                         서브메뉴 선택 시 사이드바 표출 메뉴
                                     </label>
                                 </span>
