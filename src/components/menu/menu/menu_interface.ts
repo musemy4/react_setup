@@ -1,5 +1,5 @@
 export interface IMenu {
-    [index: string]: string | number | boolean | Array<IMenu> | undefined;
+    [index: string]: string | number | boolean | [] | undefined;
     admin_auth_enable: boolean;
     area_flag: boolean;
     download_enable: boolean;
@@ -17,24 +17,19 @@ export interface IMenu {
 }
 
 export interface IMenuForDraw {
-    [index: string]: string | number | boolean | Array<IMenu> | undefined;
+    [index: string]: string | number | boolean | undefined;
     id: string;
     parent: number | string;
     droppable: boolean;
     text: string;
-    // data: {
-    //     admin_auth_enable?: boolean;
-    //     area_flag?: boolean;
-    //     download_enable?: boolean;
-    //     gis_enable?: boolean;
-    //     icon?: string;
-    //     menu_id?: string;
-    //     menu_page?: string;
-    //     ordering?: number;
-    //     reg_date?: string;
-    //     setup_flag?: boolean;
-    //     upd_date?: string;
-    // }
+}
+
+export interface IPathObj {
+    [index: string]: string | number | boolean | [] | undefined;
+   mode: 'big'| 'sml'| undefined;
+   basic: [];
+   external: [];
+   side:[];
 }
 
 

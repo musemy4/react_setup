@@ -5,11 +5,17 @@ import { useDispatch, useSelector } from 'react-redux';
 // dispatch
 import { resetMode } from '../../../store/menu/menuMode';
 import { resetMenu } from '../../../store/menu/setMenu';
+import { IPathObj } from './menu_interface';
 
 export const MenuDetail = () => {
     const [chkSpecs, setChkSpecs]=useState<boolean[]>([false,false,false]);
-    const [pathMode, setPathMode]=useState<number>(0);
-    const [inputPath, setInputPath]=useState<string>('');
+    const [pathMode, setPathMode]=useState<'basic'|'external'|'side'>('basic');
+    const [inputPath, setInputPath]=useState<IPathObj>({
+        mode: undefined,
+        basic: [],
+        external: [],
+        side: []
+    });
     const [encodePath, setEncodePath]=useState<string>('');
     // redux
     const menuMode = useSelector((state: any) => state.menuMode.mode);
@@ -40,7 +46,7 @@ export const MenuDetail = () => {
 
     const initialSetting = () => {
         setChkSpecs([false,false,false]);
-        setPathMode(0);
+        setPathMode('basic');
     }
 
     const onInputChange=(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,8 +68,14 @@ export const MenuDetail = () => {
     }
     
     const onRadioChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const id = Number(e.target.id[3]);
-        setPathMode(id);
+        const id = e.target.id.substring(4);
+        if(id==='basic') {
+            setPathMode('basic');
+        } else if(id==="external"){
+            setPathMode('external');
+        } else {
+            setPathMode('side');
+        }
     }
 
     const onCheckboxHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,16 +182,16 @@ export const MenuDetail = () => {
                             <div className="radio_area">
                                 <span className="radio_wrap">
                                     <label>
-                                        <input className="ml-5 mr-3" id="rdo0" type="radio"
-                                            checked={pathMode === 0} name='menu_path_grp'
+                                        <input className="ml-5 mr-3" id="rdo_basic" type="radio"
+                                            checked={pathMode === 'basic'} name='menu_path_grp'
                                             onChange={ onRadioChangeHandler } />
                                         기본 메뉴
                                     </label>
                                 </span>
                                 <span className="radio_wrap">
                                     <label>
-                                        <input className="ml-5 mr-3" id="rdo1" type="radio"
-                                            checked={pathMode === 1} name='menu_path_grp'
+                                        <input className="ml-5 mr-3" id="rdo_external" type="radio"
+                                            checked={pathMode === 'external'} name='menu_path_grp'
                                             onChange={ onRadioChangeHandler } />
                                         외부 사이트 연계 메뉴
                                     </label>
@@ -187,8 +199,8 @@ export const MenuDetail = () => {
                                 { menuMode.substring(0,3) === 'Sml' &&(
                                     <span className="radio_wrap">
                                     <label>
-                                        <input className="ml-5 mr-3" id="rdo2" type="radio" 
-                                            checked={pathMode === 2} name='menu_path_grp'
+                                        <input className="ml-5 mr-3" id="rdo_side" type="radio" 
+                                            checked={pathMode === 'side'} name='menu_path_grp'
                                             onChange={ onRadioChangeHandler } />
                                         서브메뉴 선택 시 사이드바 표출 메뉴
                                     </label>
@@ -197,28 +209,28 @@ export const MenuDetail = () => {
                             </div>
                             <div className='content-box'>
                                 { menuMode.substring(0,3) === 'Big' ? 
-                                    pathMode === 0 && (
-                                        <input onChange={ onInputChange } className="ui_input w_full" defaultValue={ menu?.menu_page } />
-                                    ) || pathMode === 1 && (
+                                    pathMode === 'basic' && (
+                                        <input onChange={ onInputChange } className="ui_input w_full" id="big_path_mode0" defaultValue="/" />
+                                    ) || pathMode === 'external' && (
                                         <>
                                             <input disabled className="ui_input half" id="big_path_mode1_0" defaultValue="/external-page/" />
-                                            <input onChange={ (e)=> onInputChangeEncode(e) } className="ui_input half" id="big_path_mode1_1" value={inputPath}/>
-                                            <input disabled className="ui_input w_full" id="big_path_mode1_2" defaultValue={ encodePath }  value={encodePath}/>
+                                            <input onChange={onInputChange} className="ui_input half" id="big_path_mode1_1" defaultValue="/external-page/"/>
+                                            <input disabled className="ui_input w_full" id="big_path_mode1_2" defaultValue="/external-page/" />
                                         </>
                                     ) 
                                 :
-                                    pathMode === 0 && (
+                                    pathMode === 'basic' && (
                                         <>
-                                            <input disabled onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.menu_code } />
+                                            <input disabled onChange={ onInputChange } className="ui_input half" id="sml_path_mode1_0"defaultValue={ menu?.menu_code } />
                                             <input onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.menu_code } />
                                         </>
-                                    ) || pathMode === 1 && (
+                                    ) || pathMode === 'external' && (
                                         <>
                                             <input disabled onChange={ onInputChange } className="ui_input half" id="sml_path_mode1_0" defaultValue={ menu?.menu_code } />
                                             <input onChange={ onInputChange } className="ui_input half" id="sml_path_mode1_1" defaultValue={ menu?.menu_code } />
                                             <input disabled onChange={ onInputChange } className="ui_input w_full" id="sml_path_mode1_2" defaultValue={ menu?.menu_code } />
                                         </>
-                                    ) || pathMode === 2 && (
+                                    ) || pathMode === 'side' && (
                                         <input disabled onChange={ onInputChange } className="ui_input w_full" defaultValue={ menu?.menu_page } />
                                     )
                                 }
