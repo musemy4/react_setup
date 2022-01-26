@@ -6,7 +6,7 @@ import { IMenu, IMenuForDraw } from './menu_interface';
 
 
 // dispatch
-import { resetMode, setMode, defaultMode } from '../../../store/menu/menuMode';
+import { setMode, defaultMode } from '../../../store/menu/menuMode';
 import { setMenu } from '../../../store/menu/setMenu';
 
 export const MenuTree = () => {
@@ -39,7 +39,7 @@ export const MenuTree = () => {
      // redux
     const fetchMenus = useSelector((state: any) => state.fetchMenuList);
     const menuMode = useSelector((state: any) => state.menuMode.mode);
-    const menu = useSelector((state: IMenu) => state.menu); // select menu
+    // const menu = useSelector((state: IMenu) => state.menu); // select menu
 
     const dispatch = useDispatch();
 
@@ -70,13 +70,12 @@ export const MenuTree = () => {
         }
     }, [fetchMenus.code])
 
-    useEffect(() => {
-        console.log('=== 메뉴 선택 변경! ===');
-    }, [menu])
+    // useEffect(() => {
+    //     console.log('=== 메뉴 선택 변경! ===');
+    // }, [menu])
 
     useEffect(() => {
-        console.log('=== 메뉴 모드 변경! ===');
-        console.log(menuMode);
+        // console.log('=== 메뉴 모드 변경! ===');
         if(menuMode === 'reset') {
             initTreeForDraw();
             dispatch(defaultMode());
@@ -84,6 +83,7 @@ export const MenuTree = () => {
     }, [menuMode])
 
     const setChosenMenu = (m: IMenu) => {
+
         dispatch(setMenu(m));
         setChosen(m);
     } 
@@ -93,6 +93,7 @@ export const MenuTree = () => {
     // }
 
     const initTreeForDraw = () => {
+        setChosen(undefined);
         const refined = fetchMenus.response.results.map((ele: IMenu) => ({
             id: ele.menu_code,
             parent: ele.p_menu_code,
@@ -183,7 +184,6 @@ export const MenuTree = () => {
         initTreeForDraw();
         treeData.forEach((m: IMenu) => {
             if(m.menu_code === menu_id) {
-                console.log(m);
                 setChosenMenu(m);
                 if(m.p_menu_code === 'root') {
                     dispatch(setMode('BigMod'))
