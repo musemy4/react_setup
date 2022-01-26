@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { Tree, useDragOver } from "@minoru/react-dnd-treeview";
+import { Tree, NodeModel, OpenHandler, TreeMethods } from "@minoru/react-dnd-treeview";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMenuList } from '../../../store/menu/getMenuList';
-import { IMenu } from './menu_interface';
+import { IMenu, IMenuForDraw } from './menu_interface';
 
 
 // dispatch
@@ -10,14 +10,14 @@ import { setMode } from '../../../store/menu/menuMode';
 import { setMenu } from '../../../store/menu/setMenu';
 
 export const MenuTree = () => {
-    const [treeDataForDraw, setTreeDataForDraw] = useState([{
+    const [treeDataForDraw, setTreeDataForDraw] = useState<IMenuForDraw[]>([{
         id: 'root',
         parent: 0,
         droppable: true,
         text: 'root',
     }]);
 
-    const [treeData, setTreeData] = useState([{
+    const [treeData, setTreeData] = useState<IMenu[]>([{
         admin_auth_enable: false,
         area_flag: false,
         download_enable: false,
@@ -37,13 +37,18 @@ export const MenuTree = () => {
      // redux
     const fetchMenus = useSelector((state: any) => state.fetchMenuList);
     const menuMode = useSelector((state: any) => state.menuMode.mode);
-    const menu = useSelector((state: any) => state.menu);
+    const menu = useSelector((state: IMenu) => state.menu);
 
     const dispatch = useDispatch();
 
-    const handleDrop = () => { console.log('공갈');};
-
-
+    // about tree handle
+    const handleDrop = () => { console.log('이동못하게 막음');};
+    const ref = useRef<TreeMethods>(null);
+    const handleOpenAll = () => {
+        console.log('handleOpenAll!');
+        console.log(ref);
+        ref.current?.open('root');
+    }
     // 처음 시작될때
     useEffect(() => {
         console.log('start menuTree');
@@ -76,6 +81,7 @@ export const MenuTree = () => {
     useEffect(() => {
         console.log('=== 메뉴 모드 변경! ===');
         console.log(menuMode);
+        handleOpenAll();
     }, [menuMode])
 
     const initialSetting = () => {
@@ -99,7 +105,6 @@ export const MenuTree = () => {
             initialData.push(fetchMenu);
         })
 
-        console.log(initialData);
         setTreeData(initialData);
         //
         const refined = fetchMenus.response.results.map((ele: IMenu) => ({
@@ -119,11 +124,33 @@ export const MenuTree = () => {
             defaultTreeData.push(ele);
         });
 
-        console.log(defaultTreeData);
         setTreeDataForDraw(defaultTreeData);
     }
 
 
+    const untitledTreeForAddMode = (mode: string, parent: string) => {
+        console.log(treeDataForDraw);
+        const tmpTree: IMenuForDraw[] = [];
+        if (mode === 'Big') {
+            tmpTree.push(treeDataForDraw[0]);
+            tmpTree.push({
+                id: 'untitled',
+                parent,
+                droppable: false,
+                text: 'untitled',
+            })    
+        } else {
+            tmpTree.push(treeDataForDraw[0]);
+            tmpTree.push({
+                id: 'root',
+                parent,
+                droppable: false,
+                text: 'root',
+            }) 
+        }
+        console.log(tmpTree);
+        setTreeDataForDraw(tmpTree);
+    }
 
     const handleClickMenu = (menu_name: string) => {
         if(menu_name === 'root') return
@@ -167,7 +194,8 @@ export const MenuTree = () => {
                         setup_flag: false,
                         upd_date: ''
                     }));
-                    dispatch(setMode('BigAdd'))
+                    dispatch(setMode('BigAdd'));
+                    untitledTreeForAddMode('Big','root');
                 } else { // 소메뉴
                     dispatch(setMenu({
                         admin_auth_enable: false,
@@ -185,7 +213,8 @@ export const MenuTree = () => {
                         setup_flag: false,
                         upd_date: ''
                     }));
-                    dispatch(setMode('SmlAdd'))
+                    dispatch(setMode('SmlAdd'));
+                    untitledTreeForAddMode('Sml', m.menu_name);
                 }
             }
         });
@@ -212,19 +241,19 @@ export const MenuTree = () => {
                             {node.parent !== 'root' && node.parent !== 0 && (
                                 <span className="can-open sub-menu">-</span>        
                             )}
-                            <button type="button" className={menu.menu_name === node.text ? "menu-clickuing clicked": "menu-clicking"}
+                            <button type="button" className="menu-clicking"
                                 onClick={() => handleClickMenu(node.text)}>
                                 {node.text}
                             </button>
-                            {(node.parent === 0 || node.parent === 'root') && (
+                            {(node.parent === 0 || node.parent === 'root') && (node.id !== 'untitled') && (
                                 <button type='button' onClick={() => handleAddMenu(node.text)}>
                                     <i className="fas fa-plus" />
                                 </button>
                             )}        
                         </div>
                     )}
+                    initialOpen={['root']}
                     onDrop={handleDrop}
-                    initialOpen
                 /> 
             </div>
         </div>

@@ -16,6 +16,14 @@ export interface IMenu {
     upd_date: string;
 }
 
+export interface IMenuForDraw {
+    [index: string]: string | number | boolean | Array<IMenu> | undefined;
+    id: string;
+    parent: number | string;
+    droppable: boolean;
+    text: string;
+}
+
 // export interface IRefMenu {
 //     [index: string]: string | number | boolean | Array<IMenu> | undefined;
 //     id: number | string;
