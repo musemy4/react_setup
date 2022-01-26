@@ -143,14 +143,14 @@ export const MenuTree = () => {
     }
 
 
-    const untitledTreeForAddMode = (mode: string, parent: string) => {
+    const untitledTreeForAddMode = (mode: string, parent_id: string | number) => {
         const tmpTreeForDraw: IMenuForDraw[] = [];
 
         if (mode === 'Big') { // 대메뉴 추가
             tmpTreeForDraw.push(treeDataForDraw[0]);
             tmpTreeForDraw.push({
                 id: '*untitled',
-                parent,
+                parent: parent_id,
                 droppable: false,
                 text: '*untitled',
             });
@@ -162,7 +162,7 @@ export const MenuTree = () => {
                 tmpTreeForDraw.push(ele);
             }) 
             treeData.forEach((ele)=> {
-                if(parent === ele.menu_name) {
+                if(parent_id === ele.menu_code) {
                     tmpTreeForDraw.push({
                         id: '*untitled',
                         parent: ele.menu_code,
@@ -178,11 +178,11 @@ export const MenuTree = () => {
         setTreeDataForDraw(tmpTreeForDraw);
     }
 
-    const handleClickMenu = (menu_name: string) => {
-        if(menu_name === 'root' || menu_name === "*untitled") return;
+    const handleClickMenu = (menu_id: string | number) => {
+        if(menu_id === 0 || menu_id === "*untitled") return;
         initTreeForDraw();
         treeData.forEach((m: IMenu) => {
-            if(m.menu_name === menu_name) {
+            if(m.menu_code === menu_id) {
                 console.log(m);
                 setChosenMenu(m);
                 if(m.p_menu_code === 'root') {
@@ -194,10 +194,10 @@ export const MenuTree = () => {
         });
     }
 
-    const handleAddMenu = (menu_name: string) => {
+    const handleAddMenu = (menu_id: string | number) => {
         if(menuMode.substring(3,6) === 'Add') return;
         treeData.forEach((m: any) => {
-            if(m.menu_name === menu_name) {
+            if(m.menu_code === menu_id) {
                 if(m.menu_code === 'root') { // 대메뉴
                     setChosenMenu({
                         admin_auth_enable: false,
@@ -216,7 +216,7 @@ export const MenuTree = () => {
                         upd_date: ''
                     });
                     dispatch(setMode('BigAdd'));
-                    untitledTreeForAddMode('Big','root');
+                    untitledTreeForAddMode('Big', 'root');
                 } else { // 소메뉴
                     setChosenMenu({
                         admin_auth_enable: false,
@@ -229,13 +229,13 @@ export const MenuTree = () => {
                         menu_name: '',
                         menu_page: m.menu_page,
                         ordering: 0,
-                        p_menu_code: m.menu_name,
+                        p_menu_code: m.menu_code,
                         reg_date: '',
                         setup_flag: false,
                         upd_date: ''
                     });
                     dispatch(setMode('SmlAdd'));
-                    untitledTreeForAddMode('Sml', m.menu_name);
+                    untitledTreeForAddMode('Sml', m.menu_code);
                 }
             }
         });
@@ -264,13 +264,13 @@ export const MenuTree = () => {
                             )}
 
                             <button type="button"
-                                className={node.text === "*untitled" || chosen?.menu_name === node.text? "menu-clicking clicked" : "menu-clicking" }
-                                onClick={() => handleClickMenu(node.text)}>
+                                className={node.id === "*untitled" || chosen?.menu_code === node.id? "menu-clicking clicked" : "menu-clicking" }
+                                onClick={() => handleClickMenu(node.id)}>
                                 {node.text}
                             </button>
 
                             {(node.parent === 0 || node.parent === 'root') && (node.id !== '*untitled') && (
-                                <button type='button' onClick={() => handleAddMenu(node.text)}>
+                                <button type='button' onClick={() => handleAddMenu(node.id)}>
                                     <i className="fas fa-plus" />
                                 </button>
                             )}        
