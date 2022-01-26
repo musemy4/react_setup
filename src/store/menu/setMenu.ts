@@ -43,7 +43,7 @@ const menuSlice = createSlice({
         resetMenu: () => { // initialState 로
             return initialState;
         },
-        setMenu: (state, action) => {
+        setMenu: (state: IMenu, action) => {
             console.log(state, action); 
             state = action.payload;
             return state;

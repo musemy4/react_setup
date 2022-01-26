@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { IMode } from '../../components/menu/menu/menu_interface';
 
 
@@ -27,10 +27,15 @@ const menuModeSlice = createSlice({
     name: 'fetchMenu',
     initialState,
     reducers: {
-        resetMode: () => { // initialState 로
-            return initialState;
+        resetMode: (state) => { // initialState 로
+            state.mode = 'reset';
+            return state;
         },
-        setMode: (state, action) => {
+        defaultMode: (state) => {
+            state.mode = 'default';
+            return state;
+        },
+        setMode: (state: IMode, action) => {
             console.log(state, action); 
             state.mode = action.payload;
         },
@@ -47,5 +52,5 @@ const menuModeSlice = createSlice({
     }
 });
 
-export const { resetMode, setMode } = menuModeSlice.actions;
+export const { resetMode, setMode, defaultMode } = menuModeSlice.actions;
 export default menuModeSlice.reducer;

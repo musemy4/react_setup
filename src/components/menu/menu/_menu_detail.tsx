@@ -2,6 +2,10 @@
 import {useState, useEffect, useRef} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+// dispatch
+import { resetMode } from '../../../store/menu/menuMode';
+import { resetMenu } from '../../../store/menu/setMenu';
+
 export const MenuDetail = () => {
     const [chkSpecs, setChkSpecs]=useState<boolean[]>([false,false,false]);
     const [pathMode, setPathMode]=useState<number>(0);
@@ -69,6 +73,11 @@ export const MenuDetail = () => {
         setChkSpecs(chklist);
     }
 
+    const cancelClicked = () => {
+        dispatch(resetMenu());
+        dispatch(resetMode());
+    }
+
     const refresh = String(new Date());
 
     return (
@@ -90,9 +99,7 @@ export const MenuDetail = () => {
                     })()
                 } 
                     
-
                 <div className="menu-content-wrap">
-                        
                         <h3>부모 메뉴</h3>
                         <div className="content-box">
                             <input disabled className="ui_input w_full" defaultValue={ menu?.p_menu_code } />
@@ -222,7 +229,7 @@ export const MenuDetail = () => {
             
                     <div className="btn-container">
                         <div className="btn-right">
-                            <button type="button" className="btn">취소</button>
+                            <button type="button" className="btn" onClick={cancelClicked}>취소</button>
     
                             {
                                 menuMode.substring(3) === 'Mod' ? (
