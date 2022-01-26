@@ -31,25 +31,14 @@ const menuModeSlice = createSlice({
             state.mode = 'reset';
             return state;
         },
-        defaultMode: (state) => {
-            state.mode = 'default';
-            return state;
+        defaultMode: () => {
+            return initialState;
         },
         setMode: (state: IMode, action) => {
-            console.log(state, action); 
             state.mode = action.payload;
         },
     },
-    extraReducers: {
-        // [fetchMenuList.fulfilled.type]: (state, action) => {
-        //     state.code = action.payload.code;
-        //     state.response = action.payload.response;
-        // },
-        // 이 방식의 extraReducer는 action의 type을 지정할수 있다(PayloadAction @redux/toolkit)
-        // [fetchMenuList.pending.type]: () => {
-        //     console.log('pending:::');
-        // },
-    }
+    extraReducers: {}
 });
 
 export const { resetMode, setMode, defaultMode } = menuModeSlice.actions;

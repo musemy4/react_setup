@@ -91,13 +91,13 @@ export const MenuDetail = () => {
                                     <span>선택한 메뉴가 없습니다</span>
                                 </div>
                             </div>
-                    ): (() => {
+                    ): (
 
-                        if(menuMode.substring(3,6) === 'Add') return (<h2>메뉴 추가</h2>);
-                        return (<h2>메뉴 상세</h2>);
+                        // if(menuMode.substring(3,6) === 'Add') return (<h2>메뉴 추가</h2>);
+                        // return (<h2>메뉴 상세</h2>);
 
-                    })()
-                } 
+                    
+                
                     
                 <div className="menu-content-wrap">
                         <h3>부모 메뉴</h3>
@@ -243,6 +243,7 @@ export const MenuDetail = () => {
                     </div>
                 
                 </div>
+                )} 
             </div>
             </>
     )

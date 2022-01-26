@@ -79,7 +79,7 @@ export const MenuTree = () => {
         console.log(menuMode);
         if(menuMode === 'reset') {
             initTreeForDraw();
-            dispatch(resetMode)
+            dispatch(defaultMode());
         }
     }, [menuMode])
 
@@ -109,6 +109,7 @@ export const MenuTree = () => {
         refined.forEach((ele: any) => {
             defaultTreeData.push(ele);
         });
+
         setTreeDataForDraw(defaultTreeData);
     }
 
