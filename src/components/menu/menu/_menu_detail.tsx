@@ -1,4 +1,5 @@
 
+import { stringify } from 'querystring';
 import { useState, useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -10,11 +11,11 @@ import { MenuDetailTitle } from './_menu_detail_title';
 export const MenuDetail = () => {
     const [chkSpecs, setChkSpecs]=useState<boolean[]>([false,false,false]);
     const [pathMode, setPathMode]=useState<'basic'|'external'|'side'>('basic');
-    const [inputPath, setInputPath]=useState<IPathObj>({
-        mode: undefined,
-        basic: [],
-        external: ['/external-page/', '', '/external-page/'],
-        side: []
+    const [menuPath, setMenuPath]=useState<IPathObj>({
+        mode: 'basic',
+        basic: ['/', '/'],
+        external: ['/', '/', '/'],
+        side: ['/'] // 소메뉴 시에만 있다. url 변경 없음
     });
     const [encodePath, setEncodePath]=useState<string>('');
     // redux
@@ -35,46 +36,150 @@ export const MenuDetail = () => {
         chklist.push(!!menu.download_enable);
         chklist.push(!!menu.gis_enable);
         setChkSpecs(chklist);
-        initialSetting();
+        if(menuMode !== 'default') {
+            console.log('initMenuForm::');
+            initMenuForm();
+        }
     }, [menu])
 
     useEffect(() => {
-        console.log('+++ 메뉴 모드 감지!+++');
+        console.log('+++ 메뉴 모드 감지! +++');
         console.log(menuMode);
     }, [menuMode])
 
     
     useEffect(() => {
-        console.log('+++ inputPath 변경 감지!+++');
-        console.log(inputPath);
-    }, [inputPath])
+        console.log('+++ inputPath 변경 감지! +++');
+        console.log(menuPath);
+    }, [menuPath])
 
-    const initialSetting = () => {
-        if(menuMode?.substring(0,3) === 'big')
-        setInputPath({...inputPath, mode: 'big'});
-        else if(menuMode?.substring(0,3) === 'sml')
-        setInputPath({...inputPath, mode: 'sml'});
 
-        setChkSpecs([false,false,false]);
-        setPathMode('basic');
+    // const eliminateExp = (str: string): string => {
+    //     if(str.includes("%3D")) {
+    //         str = str.replace(/%3D/g, '');
+    //         console.log(str);
+    //     } 
+    //     return str;
+    // }  
+
+
+    // const decode = (str: string) => {
+    //     console.log('str:: ', str);
+    //     str = eliminateExp(str);
+    //     console.log('result:', str)
+    //     const decode = window.atob(str);
+    //     console.log(decode);
+    //     const result = decodeURIComponent(decode);
+    //     console.log(result);
+    //     return result;
+    // }
+
+    const decode = (str: string) => {
+        // console.log('str:: ', str);
+        str = decodeURIComponent(str);
+        // console.log(str);
+        try {
+            str = atob(str);
+        } catch(error) {
+            console.log(error);
+        }
+        // console.log('result:', str)
+        return str;
+    }
+
+    // const encode = () => {
+
+    // }
+
+    const initMenuForm = () => {
+        const path_full = menu.menu_page;
+        const basic = [];
+        const external = [];
+        const side = [];
+        console.log(path_full);
+        console.log((path_full.match('/') || []).length);
+        console.log(path_full.includes("/external-page/"));
+        if(menuMode?.substring(3,6) === 'Mod') { // 상세일때 (내용이 이미 있음)
+            if(menuMode?.substring(0,3) === 'Big') { // 대메뉴시에
+                if(path_full.includes("/external-page/")) { // 외부페이지인 경우
+                    let afterExt = path_full.substr(15);
+                    afterExt = decode(afterExt);
+                    external.push('/external-page/');
+                    external.push(afterExt);
+                    external.push(path_full);
+                    setMenuPath({
+                        ...menuPath,
+                        mode: 'external',
+                        external,
+                    })
+                    setPathMode('external');
+                } else {
+                    basic.push(path_full);
+                    setMenuPath({
+                        ...menuPath,
+                        mode: 'basic',
+                        basic,
+                    });
+                    setPathMode('basic');
+                }
+            } else if(menuMode?.substring(0,3) === 'Sml') { // 소메뉴시
+                console.log('소메뉴선택');
+                // external
+                if(path_full.includes("/external-sub-page/")) {
+                    const pathArr = path_full.split('/external-sub-page/');
+                    console.log(pathArr);
+                    const afterExt = decode(pathArr[1]);
+                    external.push(`${pathArr[0]}/external-sub-page/`);
+                    external.push(afterExt);
+                    external.push(path_full);
+                    setMenuPath({
+                        ...menuPath,
+                        mode: 'external',
+                        external,
+                    })
+                    setPathMode('external');
+                // side                    
+                } else if((path_full.match('/') || []).length === 1) {
+                    side.push(path_full);
+                    setMenuPath({
+                        ...menuPath,
+                        mode: 'side',
+                        side,
+                    });
+                    setPathMode('side');
+                // basic    
+                } else {
+                    basic.push(path_full);
+                    setMenuPath({
+                        ...menuPath,
+                        mode: 'basic',
+                        basic,
+                    });
+                    setPathMode('basic');
+                }
+            }
+        }
+        if(menuPath.mode === 'basic') {
+            setChkSpecs([true,false,false]);
+        } else if(menuPath.mode === 'external') {
+            setChkSpecs([false, true,false]);
+        } else {
+            setChkSpecs([false, false, true]);
+        }
+        
     }
 
     const onInputChange=(e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target.id);
         console.log(e.target.value);
-        // if(e.target.id.substring(0,3)==='big') {
-        //     console.log('대메뉴');
-        //     const encoded = btoa(inputValue);
-        //     console.log(encoded);
-        //     const fullUrl = `/external-page/${encoded}`;
-        //     console.log(fullUrl);
-        //     setEncodePath(fullUrl);
-        // } else { // 소메뉴
-        //     console.log('소메뉴');
-        // }
     }
 
     const onInputChangeEncode=(e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target.id);
         console.log(e.target.value);
+        setMenuPath({
+            ...menuPath,
+        })
     }
     
     const onRadioChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -214,28 +319,28 @@ export const MenuDetail = () => {
                                 <div className='content-box'>
                                     { menuMode.substring(0,3) === 'Big' ? 
                                         pathMode === 'basic' && (
-                                            <input onChange={ onInputChange } className="ui_input w_full" id="big_path_basic" value={inputPath.basic[0]} defaultValue={ menu?.menu_page } />
+                                            <input onChange={ onInputChange } className="ui_input w_full" id="big_path_basic" value={menuPath.basic[0]} />
                                         ) || pathMode === 'external' && (
                                             <>
-                                                <input disabled className="ui_input half" id="big_path_external_0" value={inputPath.external[0]} defaultValue="/external-page/" />
-                                                <input onChange={onInputChange} className="ui_input half" id="big_path_external_1" value={inputPath.external[1]} defaultValue="/external-page/"/>
-                                                <input disabled className="ui_input w_full" id="big_path_external_2" value={inputPath.external[2]} defaultValue="/external-page/" />
+                                                <input disabled className="ui_input half" id="big_path_external_0" value={menuPath.external[0]} />
+                                                <input onChange={onInputChangeEncode} className="ui_input half" id="big_path_external_1" value={menuPath.external[1]} />
+                                                <input disabled className="ui_input w_full" id="big_path_external_2" value={menuPath.external[2]} />
                                             </>
                                         ) 
                                     :
                                         pathMode === 'basic' && (
                                             <>
-                                                <input disabled onChange={ onInputChange } className="ui_input half" id="sml_path_basic_0" value={inputPath.basic[0]} defaultValue={ menu?.menu_code } />
-                                                <input onChange={ onInputChange } className="ui_input half" id="sml_path_basic_1" value={inputPath.basic[1]} defaultValue={ menu?.menu_code } />
+                                                <input disabled className="ui_input half" id="sml_path_basic_0" defaultValue={menuPath.basic[0]} />
+                                                <input onChange={ onInputChange } className="ui_input half" id="sml_path_basic_1" defaultValue={menuPath.basic[1]} />
                                             </>
                                         ) || pathMode === 'external' && (
                                             <>
-                                                <input disabled onChange={ onInputChange } className="ui_input half" id="sml_path_external_0" value={inputPath.external[0]} defaultValue={ menu?.menu_code } />
-                                                <input onChange={ onInputChange } className="ui_input half" id="sml_path_external_1" value={inputPath.external[1]} defaultValue={ menu?.menu_code } />
-                                                <input disabled onChange={ onInputChange } className="ui_input w_full" id="sml_path_external_2" value={inputPath.external[2]} defaultValue={ menu?.menu_code } />
+                                                <input disabled className="ui_input half" id="sml_path_external_0" defaultValue={menuPath.external[0]} />
+                                                <input onChange={ onInputChange } className="ui_input half" id="sml_path_external_1" defaultValue={menuPath.external[1]} />
+                                                <input disabled className="ui_input w_full" id="sml_path_external_2" defaultValue={menuPath.external[2]} />
                                             </>
                                         ) || pathMode === 'side' && (
-                                            <input disabled onChange={ onInputChange } className="ui_input w_full" id="sml_path_side_0" value={inputPath.side[0]} defaultValue={ menu?.menu_page } />
+                                            <input disabled className="ui_input w_full" id="sml_path_side_0" defaultValue={menuPath.side[0]} />
                                         )
                                     }
                                     

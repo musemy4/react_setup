@@ -45,7 +45,6 @@ export const MenuTree = () => {
 
     // about tree handle
     const handleDrop = () => { console.log('이동못하게 막음');};
-    const ref = useRef<TreeMethods>(null);
     // 처음 시작될때
     useEffect(() => {
         if(fetchMenus.code === 200) {
@@ -159,7 +158,7 @@ export const MenuTree = () => {
                 if(idx!==0)tmpTreeForDraw.push(ele);
             })  
         } else {
-            treeDataForDraw.forEach((ele, idx)=> {
+            treeDataForDraw.forEach((ele)=> {
                 tmpTreeForDraw.push(ele);
             }) 
             treeData.forEach((ele)=> {
@@ -180,7 +179,7 @@ export const MenuTree = () => {
     }
 
     const handleClickMenu = (menu_id: string | number) => {
-        if(menu_id === 0 || menu_id === "*untitled") return;
+        if(menu_id === 'root' || menu_id === "*untitled") return;
         initTreeForDraw();
         treeData.forEach((m: IMenu) => {
             if(m.menu_code === menu_id) {

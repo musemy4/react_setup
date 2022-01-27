@@ -26,7 +26,7 @@ export interface IMenuForDraw {
 
 export interface IPathObj {
     [index: string]: string | number | boolean | string[] | undefined;
-   mode: 'big'| 'sml'| undefined;
+   mode: 'basic' | 'external' | 'side'
    basic: string[];
    external: string[];
    side:string[];
