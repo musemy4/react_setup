@@ -1,6 +1,7 @@
 
-import { stringify } from 'querystring';
-import { useState, useEffect} from 'react';
+import { identity } from 'lodash';
+import { encode, stringify } from 'querystring';
+import { useState, useEffect, useRef} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // dispatch
@@ -29,16 +30,18 @@ export const MenuDetail = () => {
     }, [])
 
     useEffect(() => {
-        console.log('+++ 메뉴 변경 감지!+++');
+        console.log('+++ 선택된 메뉴 변경 감지!+++');
         console.log(menu);
-        const chklist = [];
-        chklist.push(!!menu.admin_auth_enable);
-        chklist.push(!!menu.download_enable);
-        chklist.push(!!menu.gis_enable);
-        setChkSpecs(chklist);
-        if(menuMode !== 'default') {
-            console.log('initMenuForm::');
-            initMenuForm();
+        if(menu.menu_id !== ''){
+            const chklist = [];
+            chklist.push(!!menu.admin_auth_enable);
+            chklist.push(!!menu.download_enable);
+            chklist.push(!!menu.gis_enable);
+            setChkSpecs(chklist);
+            if(menuMode !== 'default') {
+                console.log('initMenuForm::');
+                initMenuForm();
+            }
         }
     }, [menu])
 
@@ -87,9 +90,15 @@ export const MenuDetail = () => {
         return str;
     }
 
-    // const encode = () => {
-
-    // }
+    const encode = (str: string) => {
+        try{
+            str = btoa(str);
+        } catch(error) {
+            console.log(error);
+        }
+        str = encodeURIComponent(str);
+        return str;
+    }
 
     const initMenuForm = () => {
         const path_full = menu.menu_page;
@@ -108,17 +117,19 @@ export const MenuDetail = () => {
                     external.push(afterExt);
                     external.push(path_full);
                     setMenuPath({
-                        ...menuPath,
                         mode: 'external',
+                        basic: ['',''],
                         external,
+                        side: ['']
                     })
                     setPathMode('external');
                 } else {
                     basic.push(path_full);
                     setMenuPath({
-                        ...menuPath,
                         mode: 'basic',
                         basic,
+                        external: ['','',''],
+                        side: ['']
                     });
                     setPathMode('basic');
                 }
@@ -129,21 +140,24 @@ export const MenuDetail = () => {
                     const pathArr = path_full.split('/external-sub-page/');
                     console.log(pathArr);
                     const afterExt = decode(pathArr[1]);
-                    external.push(`${pathArr[0]}/external-sub-page/`);
+                    const beforeExt = `${pathArr[0]}/external-sub-page/`;
+                    external.push(beforeExt);
                     external.push(afterExt);
                     external.push(path_full);
                     setMenuPath({
-                        ...menuPath,
                         mode: 'external',
+                        basic: ['',''],
                         external,
+                        side: ['']    
                     })
                     setPathMode('external');
                 // side                    
                 } else if((path_full.match('/') || []).length === 1) {
                     side.push(path_full);
                     setMenuPath({
-                        ...menuPath,
                         mode: 'side',
+                        basic: ['',''],
+                        external:['','',''],
                         side,
                     });
                     setPathMode('side');
@@ -151,17 +165,19 @@ export const MenuDetail = () => {
                 } else {
                     basic.push(path_full);
                     setMenuPath({
-                        ...menuPath,
                         mode: 'basic',
                         basic,
+                        external:['','',''],
+                        side:['']
                     });
                     setPathMode('basic');
                 }
             }
         }
-        if(menuPath.mode === 'basic') {
+
+        if(pathMode === 'basic') {
             setChkSpecs([true,false,false]);
-        } else if(menuPath.mode === 'external') {
+        } else if(pathMode === 'external') {
             setChkSpecs([false, true,false]);
         } else {
             setChkSpecs([false, false, true]);
@@ -170,18 +186,25 @@ export const MenuDetail = () => {
     }
 
     const onInputChange=(e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
         console.log(e.target.id);
         console.log(e.target.value);
+        console.log(e.target.id);
+        if(e.target.id.split('_')[0] === 'external') {
+            const extArr = menuPath.external;
+            extArr[1] = e.target.value;
+            console.log(extArr[0]+encode(extArr[1]));
+            extArr[2]=extArr[0]+encode(extArr[1]);
+            setMenuPath({
+                mode: 'external',
+                basic: ['',''],
+                external: menuPath.external,
+                side: ['']    
+            });
+            console.log(menuPath.external);
+        }
     }
 
-    const onInputChangeEncode=(e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.id);
-        console.log(e.target.value);
-        setMenuPath({
-            ...menuPath,
-        })
-    }
-    
     const onRadioChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const id = e.target.id.substring(4);
         if(id==='basic') {
@@ -206,7 +229,7 @@ export const MenuDetail = () => {
 
     return (
         <>
-            <div className="menu-detail box" key={menu?.menu_code + refresh}>
+            <div className="menu-detail box" key={menu.menu_id}>
 
                 { menuMode === 'default' ? (
                             <div>
@@ -238,7 +261,7 @@ export const MenuDetail = () => {
                                 <>
                                     <h3 className='half'>순서</h3>
                                     <div className='content-box w_full'>
-                                        <input disabled onChange={ onInputChange } className="ui_input w_full" defaultValue={ menu?.ordering } />
+                                        <input disabled className="ui_input w_full" defaultValue={ menu?.ordering } />
                                     </div>
                                 </>
                                 ):(
@@ -247,7 +270,7 @@ export const MenuDetail = () => {
                                     <h3 className='half'>순서</h3>
                                     <div className='content-box w_full'>
                                         <input onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.icon } />
-                                        <input disabled onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.ordering } />
+                                        <input disabled className="ui_input half" defaultValue={ menu?.ordering } />
                                     </div>
                                 </> 
                                 )
@@ -319,12 +342,13 @@ export const MenuDetail = () => {
                                 <div className='content-box'>
                                     { menuMode.substring(0,3) === 'Big' ? 
                                         pathMode === 'basic' && (
-                                            <input onChange={ onInputChange } className="ui_input w_full" id="big_path_basic" value={menuPath.basic[0]} />
+                                            <input onChange={ onInputChange } className="ui_input w_full" id="path_basic" defaultValue={menuPath.basic[0]} />
                                         ) || pathMode === 'external' && (
                                             <>
-                                                <input disabled className="ui_input half" id="big_path_external_0" value={menuPath.external[0]} />
-                                                <input onChange={onInputChangeEncode} className="ui_input half" id="big_path_external_1" value={menuPath.external[1]} />
-                                                <input disabled className="ui_input w_full" id="big_path_external_2" value={menuPath.external[2]} />
+                                                <input disabled className="ui_input half" value={menuPath.external[0]} />
+                                                <input onChange={onInputChange} className="ui_input half" id="external_1" defaultValue={menuPath.external[1]} />
+                                                <div className="ui_input w_full">{menuPath.external[2]}</div>
+                                                {/* <input disabled className="ui_input w_full" defaultValue={menuPath.external[2]} /> */}
                                             </>
                                         ) 
                                     :
