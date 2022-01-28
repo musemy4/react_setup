@@ -1,8 +1,6 @@
 
-import { identity } from 'lodash';
-import { encode, stringify } from 'querystring';
-import { useState, useEffect, useRef} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 // dispatch
 import { IPathObj } from './menu_interface';
@@ -14,11 +12,11 @@ export const MenuDetail = () => {
     const [pathMode, setPathMode]=useState<'basic'|'external'|'side'>('basic');
     const [menuPath, setMenuPath]=useState<IPathObj>({
         mode: 'basic',
+        menuId: '0',
         basic: ['/', '/'],
         external: ['/', '/', '/'],
         side: ['/'] // 소메뉴 시에만 있다. url 변경 없음
     });
-    const [encodePath, setEncodePath]=useState<string>('');
     // redux
     const menuMode = useSelector((state: any) => state.menuMode.mode);
     const menu = useSelector((state: any) => state.menu);
@@ -117,6 +115,7 @@ export const MenuDetail = () => {
                     external.push(afterExt);
                     external.push(path_full);
                     setMenuPath({
+                        menuId: getRefresh(),
                         mode: 'external',
                         basic: ['',''],
                         external,
@@ -127,6 +126,7 @@ export const MenuDetail = () => {
                     basic.push(path_full);
                     setMenuPath({
                         mode: 'basic',
+                        menuId: getRefresh(),
                         basic,
                         external: ['','',''],
                         side: ['']
@@ -146,6 +146,7 @@ export const MenuDetail = () => {
                     external.push(path_full);
                     setMenuPath({
                         mode: 'external',
+                        menuId: getRefresh(),
                         basic: ['',''],
                         external,
                         side: ['']    
@@ -156,6 +157,7 @@ export const MenuDetail = () => {
                     side.push(path_full);
                     setMenuPath({
                         mode: 'side',
+                        menuId: getRefresh(),
                         basic: ['',''],
                         external:['','',''],
                         side,
@@ -166,6 +168,7 @@ export const MenuDetail = () => {
                     basic.push(path_full);
                     setMenuPath({
                         mode: 'basic',
+                        menuId: getRefresh(),
                         basic,
                         external:['','',''],
                         side:['']
@@ -196,6 +199,7 @@ export const MenuDetail = () => {
             console.log(extArr[0]+encode(extArr[1]));
             extArr[2]=extArr[0]+encode(extArr[1]);
             setMenuPath({
+                ...menuPath,
                 mode: 'external',
                 basic: ['',''],
                 external: menuPath.external,
@@ -225,11 +229,15 @@ export const MenuDetail = () => {
 
   
 
-    const refresh = String(new Date());
+    const getRefresh = () => {
+        return String(new Date());
+    }
+
+
 
     return (
         <>
-            <div className="menu-detail box" key={menu.menu_id}>
+            <div className="menu-detail box" key={menu.menu_id+menuPath.menuId}>
 
                 { menuMode === 'default' ? (
                             <div>
@@ -348,7 +356,6 @@ export const MenuDetail = () => {
                                                 <input disabled className="ui_input half" value={menuPath.external[0]} />
                                                 <input onChange={onInputChange} className="ui_input half" id="external_1" defaultValue={menuPath.external[1]} />
                                                 <div className="ui_input w_full">{menuPath.external[2]}</div>
-                                                {/* <input disabled className="ui_input w_full" defaultValue={menuPath.external[2]} /> */}
                                             </>
                                         ) 
                                     :
