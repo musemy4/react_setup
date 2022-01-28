@@ -1,8 +1,8 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 // dispatch
-import { resetMode } from '../../../store/menu/menuMode';
-import { resetMenu } from '../../../store/menu/setMenu';
+import { resetMode } from '../../../../store/menu/menuMode';
+import { resetMenu } from '../../../../store/menu/setMenu';
 
 export const MenuDetailBtnArea = () => {
     // redux

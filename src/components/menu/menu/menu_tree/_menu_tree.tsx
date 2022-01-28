@@ -1,13 +1,13 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { Tree, TreeMethods } from "@minoru/react-dnd-treeview";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMenuList } from '../../../store/menu/getMenuList';
-import { IMenu, IMenuForDraw } from './menu_interface';
+import { fetchMenuList } from '../../../../store/menu/getMenuList';
+import { IMenu, IMenuForDraw } from '../menu_interface';
 
 
 // dispatch
-import { setMode, defaultMode } from '../../../store/menu/menuMode';
-import { setMenu } from '../../../store/menu/setMenu';
+import { setMode, defaultMode } from '../../../../store/menu/menuMode';
+import { setMenu } from '../../../../store/menu/setMenu';
 
 export const MenuTree = () => {
     const [chosen, setChosen] = useState<IMenu | undefined>(undefined);

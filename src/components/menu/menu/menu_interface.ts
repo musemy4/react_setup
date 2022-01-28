@@ -27,7 +27,7 @@ export interface IMenuForDraw {
 export interface IPathObj {
     [index: string]: string | number | boolean | string[] | undefined;
    mode: 'basic' | 'external' | 'side';
-   menuId: string;
+   initialId: string;
    basic: string[];
    external: string[];
    side:string[];
