@@ -223,8 +223,10 @@ button {background-color: transparent;border:0; outline:0;color:white;cursor:poi
 .menu-detail .st1:before {content:'장애등록 : '; display:inline-block; position:absolute; top:0; left:5px; font-size:13px; }
 .menu-detail .st2:before {content:'업무관리 : '; display:inline-block; position:absolute; top:0; left:5px; font-size:13px; }
 
+
 .content-box .ui_input.half {width: calc((100% - 12px)/2);}
 .content-box .ui_input.half:first-child {margin-right:10px;}
+.content-box .ui_input.quarter {width: calc((100% - 12px)/4);}
 
 .w-bg-box {background-color:rgba(255,255,255,0.075);padding:8px;margin-bottom:10px;}
 
