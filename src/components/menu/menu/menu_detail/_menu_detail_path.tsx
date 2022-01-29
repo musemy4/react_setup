@@ -25,6 +25,8 @@ export const MenuDetailPath = () => {
             console.log('initPathForm:::', menu);
             initPathForm();
         }
+        setPathRadio('basic');
+        console.log(menu);
     }, [menu])
 
 
@@ -39,9 +41,7 @@ export const MenuDetailPath = () => {
     }
 
     const initPathForm = () => {
-        console.log(menuMode);
         const path_full = menu.menu_page;
-        console.log(path_full);
         let basic: string[] = [];
         let external: string[] = [];
         let side: string[] = ['/'];
@@ -50,6 +50,7 @@ export const MenuDetailPath = () => {
 
         if(menuMode.substring(0,3) === 'Big') { // 대메뉴시에
             if(path_full.includes("/external-page/")) { // 외부페이지인 경우
+                console.log('1');
                 let afterExt = path_full.substr(15);
                 afterExt = urlDecode(afterExt);
                 
@@ -57,6 +58,7 @@ export const MenuDetailPath = () => {
                 basic = ['/', '/'];
                 external = ['/external-page/', afterExt, path_full];
             } else {
+                console.log('2');
                 mode = 'basic';
                 basic= [path_full, ''];
                 external = ['/external-page/', '', '/external-page/']
@@ -64,6 +66,7 @@ export const MenuDetailPath = () => {
         } else if(menuMode.substring(0,3) === 'Sml') { // 소메뉴시
             // external
             if(path_full.includes("/external-sub-page/")) {
+                console.log('3');
                 const pathArr = path_full.split('/external-sub-page/');
                 mode = 'external';
                 
@@ -72,13 +75,15 @@ export const MenuDetailPath = () => {
                 side = [pathArr[0]];
                 // side                    
             } else if(isSide(path_full)) {
-                mode = 'side'
+                console.log('4');
+                mode = 'side';
                 
                 basic = [path_full, ''];
                 external = [`${path_full}/external-sub-page/`,'',`${path_full}/external-sub-page/`]
                 side=[path_full];
             // basic    
             } else {
+                console.log('5');
                 const splitArr = path_full.split('/');
                 mode = 'basic';
                 
@@ -155,8 +160,6 @@ export const MenuDetailPath = () => {
 
     const onRadioChangeHandler = (mode: 'basic' | 'external' | 'side') => {
         setPathRadio(mode);
-        console.log(menuPath);
-        console.log(pathRadio);
     }
 
     
