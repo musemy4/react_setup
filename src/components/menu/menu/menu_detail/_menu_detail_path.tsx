@@ -2,8 +2,6 @@ import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { IPathObj } from '../menu_interface';
 
-
-
 export const MenuDetailPath = () => {
     const [pathRadio, setPathRadio]=useState<'basic'|'external'|'side'>('basic');
     // redux
@@ -18,98 +16,87 @@ export const MenuDetailPath = () => {
         side: ['/'] // 소메뉴 시에만 있다. url 변경 없음
     });
 
+    //  USEEFFECT 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
+
     useEffect(() => {
         if(menu.menu_id !== '' && menuMode !== 'default') {
-            console.log(menu);
+            console.log('initPathForm:::', menu);
             initPathForm();
         }
     }, [menu])
+
+
+    //  FUNCTION 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
+
+
 
     const getRefresh = () => {
         return String(new Date());
     }
 
     const initPathForm = () => {
+        console.log(menuMode);
         const path_full = menu.menu_page;
+        console.log(path_full);
         let basic: string[] = [];
         let external: string[] = [];
-        let side: string[] = [];
+        let side: string[] = ['/'];
         let mode: 'basic' | 'external' | 'side' = 'basic';
         const initialId = getRefresh();
 
         if(menuMode.substring(0,3) === 'Big') { // 대메뉴시에
             if(path_full.includes("/external-page/")) { // 외부페이지인 경우
-                mode = 'external';
                 let afterExt = path_full.substr(15);
                 afterExt = urlDecode(afterExt);
+                
+                mode = 'external';
+                basic = ['/', '/'];
                 external = ['/external-page/', afterExt, path_full];
             } else {
                 mode = 'basic';
                 basic= [path_full, ''];
+                external = ['/external-page/', '', '/external-page/']
             }
         } else if(menuMode.substring(0,3) === 'Sml') { // 소메뉴시
-            side =[`/${menu.p_menu_code}`]
             // external
             if(path_full.includes("/external-sub-page/")) {
                 const pathArr = path_full.split('/external-sub-page/');
-                external = [`${pathArr[0]}/external-sub-page/`, urlDecode(pathArr[1]), path_full];
                 mode = 'external';
+                
+                basic= [pathArr[0], '']
+                external = [`${pathArr[0]}/external-sub-page/`, urlDecode(pathArr[1]), path_full];
+                side = [pathArr[0]];
                 // side                    
             } else if(isSide(path_full)) {
                 mode = 'side'
-                side.push(path_full);
+                
+                basic = [path_full, ''];
+                external = [`${path_full}/external-sub-page/`,'',`${path_full}/external-sub-page/`]
+                side=[path_full];
             // basic    
             } else {
                 const splitArr = path_full.split('/');
                 mode = 'basic';
+                
                 basic = [`/${splitArr[1]}`, `/${splitArr[2]}`]
+                external = [`/${splitArr[1]}/external-sub-page/`,'',`/${splitArr[1]}/external-sub-page/`]
+                side=[`/${splitArr[1]}`];
             }
-
-            setPathRadio(mode);
-            setMenuPath({
-                ...menuPath,
-                mode,
-                initialId,
-                basic,
-                external,
-                side,
-            });
         }
-    }
 
-    const onPathInputChange=(e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        if(e.target.id.split('_')[0] === 'external') {
-            const extArr = menuPath.external;
-            extArr[1] = e.target.value;
-            extArr[2]=extArr[0]+urlEncode(extArr[1]);
-            setMenuPath({
-                ...menuPath,
-                mode: 'external',
-                basic: ['',''],
-                external: menuPath.external,
-                side: ['']    
-            });
-        }
-    }
-
-
-    const onRadioChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const id = e.target.id.substring(4);
-        console.log('바꾼다리', id);
-        const path_full = menu.menu_page;
-        const basic = [];
-        const external = [];
-        const side = [];
-
-        if(id==='basic') {
-            setPathRadio('basic');
-        } else if(id==="external"){
-            setPathRadio('external');
-        } else {
-            setPathRadio('side');
-        }
-        console.log(menuPath);
+        setPathRadio(mode);
+        setMenuPath({
+            ...menuPath,
+            mode,
+            initialId,
+            basic,
+            external,
+            side,
+        });
     }
 
     const urlDecode = (str: string) => {
@@ -145,8 +132,38 @@ export const MenuDetailPath = () => {
     }
 
 
+    //  HANDLER 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
+
+    const onPathInputChange=(e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if(e.target.id.includes('external')) {
+            const extArr = menuPath.external;
+            extArr[1] = e.target.value;
+            extArr[2] = extArr[0] + urlEncode(extArr[1]);
+            setMenuPath({
+                ...menuPath,
+                mode: 'external',
+                basic: ['',''],
+                external: menuPath.external,
+                side: ['']    
+            });
+        }
+    }
+
+
+    const onRadioChangeHandler = (mode: 'basic' | 'external' | 'side') => {
+        setPathRadio(mode);
+        console.log(menuPath);
+        console.log(pathRadio);
+    }
+
+    
+
+
     return (
-        <div key={menuPath.initialId}>    
+        <div key={menuPath.initialId+pathRadio}>    
             <h3>메뉴 경로 설정</h3>
             <div className="w-bg-box">
                 <div className="radio_area">
@@ -154,7 +171,7 @@ export const MenuDetailPath = () => {
                         <label>
                             <input className="ml-5 mr-3" id="rdo_basic" type="radio"
                                 checked={pathRadio === 'basic'} name='menu_path_grp'
-                                onChange={ onRadioChangeHandler } />
+                                onChange={()=> onRadioChangeHandler('basic') } />
                             기본 메뉴
                         </label>
                     </span>
@@ -162,7 +179,7 @@ export const MenuDetailPath = () => {
                         <label>
                             <input className="ml-5 mr-3" id="rdo_external" type="radio"
                                 checked={pathRadio === 'external'} name='menu_path_grp'
-                                onChange={ onRadioChangeHandler } />
+                                onChange={ () => onRadioChangeHandler('external')} />
                             외부 사이트 연계 메뉴
                         </label>
                     </span>
@@ -171,7 +188,7 @@ export const MenuDetailPath = () => {
                         <label>
                             <input className="ml-5 mr-3" id="rdo_side" type="radio" 
                                 checked={pathRadio === 'side'} name='menu_path_grp'
-                                onChange={ onRadioChangeHandler } />
+                                onChange={ () => onRadioChangeHandler('side') } />
                             서브메뉴 선택 시 사이드바 표출 메뉴
                         </label>
                     </span>
@@ -183,7 +200,7 @@ export const MenuDetailPath = () => {
                             <input onChange={ onPathInputChange } className="ui_input w_full" id="big_basic" defaultValue={menuPath.basic[0]} />
                         ) || pathRadio === 'external' && (
                             <>
-                                <input disabled className="ui_input half" value={menuPath.external[0]} />
+                                <input disabled className="ui_input half" defaultValue={menuPath.external[0]} />
                                 <input onChange={onPathInputChange} className="ui_input half" id="big_external" defaultValue={menuPath.external[1]} />
                                 <div className="ui_input w_full">{menuPath.external[2]}</div>
                             </>
@@ -191,17 +208,17 @@ export const MenuDetailPath = () => {
                     :
                         pathRadio === 'basic' && (
                             <>
-                                <input disabled className="ui_input half" defaultValue={menuPath.basic[0]} />
+                                <div className="ui_input half">{menuPath.basic[0]}</div>
                                 <input onChange={ onPathInputChange } className="ui_input half" id="sml_basic" defaultValue={menuPath.basic[1]} />
                             </>
                         ) || pathRadio === 'external' && (
                             <>
                                 <input disabled className="ui_input half" id="sml_path_external_0" defaultValue={menuPath.external[0]} />
                                 <input onChange={ onPathInputChange } className="ui_input half" id="sml_external" defaultValue={menuPath.external[1]} />
-                                <div className="ui_input w_full" defaultValue={menuPath.external[2]} />
+                                <div className="ui_input w_full">{menuPath.external[2]}</div>
                             </>
                         ) || pathRadio === 'side' && (
-                            <input disabled className="ui_input w_full" id="sml_side" defaultValue={menuPath.side[0]} />
+                            <div className="ui_input w_full">{menuPath.side[0]}</div>
                         )
                     }
                     

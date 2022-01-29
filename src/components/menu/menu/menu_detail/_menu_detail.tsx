@@ -13,7 +13,6 @@ import { MenuDetailBtnArea } from './_menu_detail_btn_area';
 export const MenuDetail = () => {
     // redux
     const menuMode = useSelector((state: any) => state.menuMode.mode);
-    const menu = useSelector((state: any) => state.menu);
 
 
     // const eliminateExp = (str: string): string => {
