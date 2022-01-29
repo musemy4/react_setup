@@ -19,11 +19,9 @@ export const MenuDetailPath = () => {
     });
 
     useEffect(() => {
-        if(menu.menu_id !== ''){
-            console.log('+++ 선택된 메뉴가 있음');
-            if(menuMode !== 'default') {
-                initPathForm();
-            }
+        if(menu.menu_id !== '' && menuMode !== 'default') {
+            console.log(menu);
+            initPathForm();
         }
     }, [menu])
 
@@ -31,71 +29,51 @@ export const MenuDetailPath = () => {
         return String(new Date());
     }
 
-
     const initPathForm = () => {
         const path_full = menu.menu_page;
-        let basic = [];
-        let external = [];
-        const side = [];
+        let basic: string[] = [];
+        let external: string[] = [];
+        let side: string[] = [];
+        let mode: 'basic' | 'external' | 'side' = 'basic';
         const initialId = getRefresh();
 
         if(menuMode.substring(0,3) === 'Big') { // 대메뉴시에
             if(path_full.includes("/external-page/")) { // 외부페이지인 경우
+                mode = 'external';
                 let afterExt = path_full.substr(15);
                 afterExt = urlDecode(afterExt);
                 external = ['/external-page/', afterExt, path_full];
-                setMenuPath({
-                    ...menuPath,
-                    initialId,
-                    mode: 'external',
-                    external,
-                })
-                setPathRadio('external');
             } else {
-                basic.push(path_full);
-                setMenuPath({
-                    ...menuPath,
-                    initialId,
-                    mode: 'basic',
-                    basic,
-                });
-                setPathRadio('basic');
+                mode = 'basic';
+                basic= [path_full, ''];
             }
         } else if(menuMode.substring(0,3) === 'Sml') { // 소메뉴시
+            side =[`/${menu.p_menu_code}`]
             // external
             if(path_full.includes("/external-sub-page/")) {
                 const pathArr = path_full.split('/external-sub-page/');
                 external = [`${pathArr[0]}/external-sub-page/`, urlDecode(pathArr[1]), path_full];
-                setMenuPath({
-                    ...menuPath,
-                    initialId,
-                    mode: 'external',
-                    external,  
-                })
-                setPathRadio('external');
+                mode = 'external';
                 // side                    
             } else if(isSide(path_full)) {
-                console.log('소메뉴_side');
+                mode = 'side'
                 side.push(path_full);
-                setMenuPath({
-                    ...menuPath,
-                    mode: 'side',
-                    initialId,
-                    side,
-                });
-                setPathRadio('side');
             // basic    
             } else {
                 const splitArr = path_full.split('/');
+                mode = 'basic';
                 basic = [`/${splitArr[1]}`, `/${splitArr[2]}`]
-                setMenuPath({
-                    ...menuPath,
-                    mode: 'basic',
-                    initialId,
-                    basic,
-                });
-                setPathRadio('basic');
             }
+
+            setPathRadio(mode);
+            setMenuPath({
+                ...menuPath,
+                mode,
+                initialId,
+                basic,
+                external,
+                side,
+            });
         }
     }
 
@@ -104,7 +82,6 @@ export const MenuDetailPath = () => {
         if(e.target.id.split('_')[0] === 'external') {
             const extArr = menuPath.external;
             extArr[1] = e.target.value;
-            console.log(extArr[0]+urlEncode(extArr[1]));
             extArr[2]=extArr[0]+urlEncode(extArr[1]);
             setMenuPath({
                 ...menuPath,
@@ -113,7 +90,6 @@ export const MenuDetailPath = () => {
                 external: menuPath.external,
                 side: ['']    
             });
-            console.log(menuPath.external);
         }
     }
 
