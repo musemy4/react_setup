@@ -232,7 +232,7 @@ button {background-color: transparent;border:0; outline:0;color:white;cursor:poi
 .content-box .ui_input.half:first-child {margin-right:10px;}
 .content-box .ui_input.forPreview {width: calc((100% - 12px)/16*7);}
 
-.content-box .preview {position:absolute;top:-30px;right:10px;display:flex;font-size:60px; background-color: transparent;justify-content: center;width:60px;height:60px;}
+.content-box .preview {position:absolute;top:-25px;right:10px;display:flex;font-size:50px; background-color: transparent;justify-content: center;width:60px;height:60px;}
 
 .w-bg-box {background-color:rgba(255,255,255,0.075);padding:8px;margin-bottom:10px;}
 
