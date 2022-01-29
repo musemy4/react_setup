@@ -1,9 +1,12 @@
 import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
+import { IPreview } from '../menu_interface';
 
 export const MenuDetailInfo = () => {
     const [chkSpecs, setChkSpecs]=useState<boolean[]>([false,false,false]);
     const [render, setRender] = useState<string>('');
+    const [preview, setPreview] = useState<IPreview>({code: ''});
+    
     // redux
     const menuMode = useSelector((state: any) => state.menuMode.mode);
     const menu = useSelector((state: any) => state.menu);
@@ -21,6 +24,9 @@ export const MenuDetailInfo = () => {
             chklist= [false, false, false];
         }
         setChkSpecs(chklist);
+        setPreview({
+            code: menu.icon,
+        })
         setRender(getRefresh());
     }, [menu])
     
@@ -38,6 +44,11 @@ export const MenuDetailInfo = () => {
         console.log(e.target.value);
     }
 
+    const onFontInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPreview({
+            code: e.target.value
+        });
+    }
 
     const getRefresh = () => {
         return String(new Date());
@@ -67,11 +78,15 @@ export const MenuDetailInfo = () => {
                 </>
                 ):(
                     <>
-                    <h3 className='half'>아이콘 (Font Awesome 5)</h3>
                     <h3 className='half'>순서</h3>
-                    <div className='content-box w_full'>
-                        <input onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.icon } />
+                    <h3 className='half'>아이콘 (Font Awesome 5)</h3>
+                    <div className='content-box w_full' style={{position: 'relative'}}>
                         <input disabled className="ui_input half" defaultValue={ menu?.ordering } />
+                        
+                        <input onChange={ onFontInputChange } className="ui_input forPreview mr-10" defaultValue={ menu?.icon } />
+                        <span className='preview'>
+                            <i className={preview.code}> </i>
+                        </span>
                     </div>
                 </> 
                 )

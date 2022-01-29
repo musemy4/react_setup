@@ -37,3 +37,7 @@ export interface IPathObj {
 export interface IMode {
     mode: 'default'|'BigAdd'|'SmlAdd'|'BigMod'|'SmlMod'|'reset';
 }
+
+export interface IPreview {
+    code : string;
+}

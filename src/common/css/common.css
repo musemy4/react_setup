@@ -7,6 +7,10 @@ html, body, #root, #root > div { height: 100%; }
 body { margin: 0; padding: 0; font-family:'Noto Sans KR', "Malgun Gothic", sans-serif; }
 input[type=text]::-ms-clear{display:none;}
 
+
+
+
+
 .btn {display: inline-block;min-width: 60px;padding: 0px 16px; height:28px; line-height:26px; font-size: 14px !important; box-sizing: border-box;text-align: center;vertical-align: top;position: relative;border-radius:0;border: 1px solid #6E747A;color: #66C5FF;}
 .btn:hover {color:#99D8FF;background-color:rgba(40,172,252,.08);}
 .btn:disabled, .btn.disabled {color: #9DA2A6 !important;border-color: transparent !important; cursor: default;}
@@ -226,7 +230,9 @@ button {background-color: transparent;border:0; outline:0;color:white;cursor:poi
 
 .content-box .ui_input.half {width: calc((100% - 12px)/2);}
 .content-box .ui_input.half:first-child {margin-right:10px;}
-.content-box .ui_input.quarter {width: calc((100% - 12px)/4);}
+.content-box .ui_input.forPreview {width: calc((100% - 12px)/16*7);}
+
+.content-box .preview {position:absolute;top:-30px;right:10px;display:flex;font-size:60px; background-color: transparent;justify-content: center;width:60px;height:60px;}
 
 .w-bg-box {background-color:rgba(255,255,255,0.075);padding:8px;margin-bottom:10px;}
 
