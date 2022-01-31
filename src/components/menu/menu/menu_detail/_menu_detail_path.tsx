@@ -21,11 +21,10 @@ export const MenuDetailPath = () => {
     // /////////////////////////////////////////////////////////////
 
     useEffect(() => {
-        if(menu.menu_id !== '' && menuMode !== 'default') {
+        if(menuMode !== 'default') { // add or mod mode
             console.log('initPathForm:::', menu);
             initPathForm();
         }
-        setPathRadio('basic');
         console.log(menu);
     }, [menu])
 
@@ -50,7 +49,6 @@ export const MenuDetailPath = () => {
 
         if(menuMode.substring(0,3) === 'Big') { // 대메뉴시에
             if(path_full.includes("/external-page/")) { // 외부페이지인 경우
-                console.log('1');
                 let afterExt = path_full.substr(15);
                 afterExt = urlDecode(afterExt);
                 
@@ -58,38 +56,42 @@ export const MenuDetailPath = () => {
                 basic = ['/', '/'];
                 external = ['/external-page/', afterExt, path_full];
             } else {
-                console.log('2');
                 mode = 'basic';
-                basic= [path_full, ''];
+                basic= [path_full, '/'];
                 external = ['/external-page/', '', '/external-page/']
             }
         } else if(menuMode.substring(0,3) === 'Sml') { // 소메뉴시
-            // external
-            if(path_full.includes("/external-sub-page/")) {
-                console.log('3');
-                const pathArr = path_full.split('/external-sub-page/');
-                mode = 'external';
-                
-                basic= [pathArr[0], '']
-                external = [`${pathArr[0]}/external-sub-page/`, urlDecode(pathArr[1]), path_full];
-                side = [pathArr[0]];
-                // side                    
-            } else if(isSide(path_full)) {
-                console.log('4');
-                mode = 'side';
-                
-                basic = [path_full, ''];
-                external = [`${path_full}/external-sub-page/`,'',`${path_full}/external-sub-page/`]
-                side=[path_full];
-            // basic    
-            } else {
-                console.log('5');
-                const splitArr = path_full.split('/');
+            if(menuMode.substring(3,6) === 'Add') {
                 mode = 'basic';
-                
-                basic = [`/${splitArr[1]}`, `/${splitArr[2]}`]
-                external = [`/${splitArr[1]}/external-sub-page/`,'',`/${splitArr[1]}/external-sub-page/`]
-                side=[`/${splitArr[1]}`];
+
+                basic= [path_full, '']
+                external = [`${path_full}/external-sub-page/`, '', `${path_full}/external-sub-page/`];
+                side = [path_full];
+            } else if(menuMode.substring(3,6) === 'Mod') {    
+                // external
+                if(path_full.includes("/external-sub-page/")) {
+                    const pathArr = path_full.split('/external-sub-page/');
+                    mode = 'external';
+                    
+                    basic= [pathArr[0], '']
+                    external = [`${pathArr[0]}/external-sub-page/`, urlDecode(pathArr[1]), path_full];
+                    side = [pathArr[0]];
+                    // side                    
+                } else if(isSide(path_full)) {
+                    mode = 'side';
+                    
+                    basic = [path_full, ''];
+                    external = [`${path_full}/external-sub-page/`,'',`${path_full}/external-sub-page/`]
+                    side=[path_full];
+                // basic    
+                } else {
+                    const splitArr = path_full.split('/');
+                    mode = 'basic';
+                    
+                    basic = [`/${splitArr[1]}`, `/${splitArr[2]}`]
+                    external = [`/${splitArr[1]}/external-sub-page/`,'',`/${splitArr[1]}/external-sub-page/`]
+                    side=[`/${splitArr[1]}`];
+                }
             }
         }
 
@@ -156,7 +158,6 @@ export const MenuDetailPath = () => {
             });
         }
     }
-
 
     const onRadioChangeHandler = (mode: 'basic' | 'external' | 'side') => {
         setPathRadio(mode);
