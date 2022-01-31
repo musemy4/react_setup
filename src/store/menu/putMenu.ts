@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
+import axios from 'axios';
 import { IMenu } from '../../components/menu/menu/menu_interface';
+
+
+
+const REQUEST_URL = '/vurix-dms/api/v1/role';
 
 
 
@@ -22,47 +26,60 @@ const initialState: IMenu = {
 }
 
 
-export const modifyMenu = createAsyncThunk( // 메뉴 수정
-    'menu/modifyMenu',
-    async() => {
-        // try {
-        //     const response = await axios.get(`${REQUEST_URL}/role/menuList`);
-        //     if (response.status === 200) {
-        //         return response.data;
-        //     }
-        // } catch(error) {
-        //     console.log(error);
-        // }
+// /**
+// 	 * 이벤트 코드 수정
+// 	 * @param event_code
+// 	 * @param params
+// 	 */
+//  putEventCode(event_code: string, params: any): Observable<any> {
+//     const url = `${API_URL}/putEvent/${event_code}`;
+//     return from(this.httpUtils.PUT(url, params));
+// }
+
+export const postMenu = createAsyncThunk( // 메뉴 등록
+    'menu/postMenu',
+    async(params: string) => {
+        try {
+            const response = await axios.put(`${REQUEST_URL}/postMenu`, params);
+            if (response.status === 200) {
+                console.log(response);
+                return response.data; // fulfilled
+            }
+        } catch(error) {
+            console.log(error);
+        }
         return undefined;
     }
 );
 
-export const deleteMenu = createAsyncThunk( // 메뉴 삭제
+export const putMenu = createAsyncThunk( // 메뉴 삭제
+    'menu/putMenu',
+    async(menu_code: string, params: any) => {
+        try {
+            const response = await axios.get(`${REQUEST_URL}/putMenu/${menu_code}`, params);
+            if (response.status === 200) {
+                console.log(response);
+                return response.data; // fulfilled
+            }
+        } catch(error) {
+            console.log(error);
+        }
+        return undefined;
+    }
+);
+
+export const deleteMenu = createAsyncThunk( // 메뉴 추가
     'menu/deleteMenu',
-    async() => {
-        // try {
-        //     const response = await axios.get(`${REQUEST_URL}/role/menuList`);
-        //     if (response.status === 200) {
-        //         return response.data;
-        //     }
-        // } catch(error) {
-        //     console.log(error);
-        // }
-        return undefined;
-    }
-);
-
-export const addMenu = createAsyncThunk( // 메뉴 추가
-    'menu/addMenu',
-    async() => {
-        // try {
-        //     const response = await axios.get(`${REQUEST_URL}/role/menuList`);
-        //     if (response.status === 200) {
-        //         return response.data;
-        //     }
-        // } catch(error) {
-        //     console.log(error);
-        // }
+    async(menu_code: string) => {
+        try {
+            const response = await axios.get(`${REQUEST_URL}/deleteMenu/${menu_code}`);
+            if (response.status === 200) {
+                console.log(response);
+                return response.data; // fulfilled
+            }
+        } catch(error) {
+            console.log(error);
+        }
         return undefined;
     }
 );
@@ -74,15 +91,24 @@ const putMenuSlice = createSlice({
     name: 'putMenu',
     initialState,
     reducers: {
-        resetMode: (state) => { // initialState 로
-            state.mode = 'reset';
-            return state;
-        },
         // defaultMode: () => {
         //     return initialState;
         // },
     },
-    extraReducers: {}
+    extraReducers: {
+        [postMenu.fulfilled.type]: (state, action) => {
+            console.log(state, action);
+        },
+        [putMenu.fulfilled.type]: (state, action) => {
+            console.log(state, action);
+        },
+
+        [deleteMenu.fulfilled.type]: (state, action) => {
+            console.log(state, action);
+        },
+
+
+    }
 });
 
 // export const { resetMode, setMode, defaultMode } = putMenuSlice.actions;
