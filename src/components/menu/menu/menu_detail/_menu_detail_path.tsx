@@ -22,10 +22,9 @@ export const MenuDetailPath = () => {
 
     useEffect(() => {
         if(menuMode !== 'default') { // add or mod mode
-            console.log('initPathForm:::', menu);
+            // console.log('initPathForm:::', menu);
             initPathForm();
         }
-        console.log(menu);
     }, [menu])
 
 

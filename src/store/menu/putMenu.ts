@@ -97,6 +97,12 @@ const putMenuSlice = createSlice({
         getReadyPutMenu: (state) => {
             return { ...state, mode: 'ready'}
         },
+        setMenuInfo: (state, action) => {
+            console.log(state);
+        },
+        setMenuPath: (state, action) => {
+            console.log(state);
+        },
         resetPutMenu: () => {
             return initialState;
         },
@@ -117,5 +123,5 @@ const putMenuSlice = createSlice({
     }
 });
 
-export const { getReadyPutMenu, resetPutMenu } = putMenuSlice.actions;
+export const { getReadyPutMenu, resetPutMenu, setMenuInfo, setMenuPath } = putMenuSlice.actions;
 export default putMenuSlice.reducer;

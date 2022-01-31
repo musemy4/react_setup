@@ -1,7 +1,6 @@
 export interface IMenu {
     [index: string]: string | number | boolean | [] | undefined;
     admin_auth_enable: boolean;
-    area_flag: boolean;
     download_enable: boolean;
     gis_enable: boolean;
     icon: string;
@@ -11,9 +10,6 @@ export interface IMenu {
     menu_page: string;
     ordering: number;
     p_menu_code: string;
-    reg_date: string;
-    setup_flag: boolean;
-    upd_date: string;
 }
 
 export interface IMenuForDraw {

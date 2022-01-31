@@ -1,12 +1,27 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
-import { IPreview } from '../menu_interface';
+import { IPreview, IMenu } from '../menu_interface';
+import { setPutMenu } from '../../../../store/menu/putMenu';
 
 export const MenuDetailInfo = () => {
     const [chkSpecs, setChkSpecs]=useState<boolean[]>([false,false,false]);
     const [render, setRender] = useState<string>('');
     const [preview, setPreview] = useState<IPreview>({code: ''});
-    
+    const [menuInfo, setMenuInfo] = useState<IMenu>({
+            admin_auth_enable: false,
+            area_flag: false,
+            download_enable: false,
+            gis_enable: false,
+            icon: '',
+            menu_code: 'root',
+            menu_id: '',
+            menu_name: 'root',
+            menu_page: '',
+            ordering: -1,
+            p_menu_code: '',
+            setup_flag: false,
+    });
+    const dispatch = useDispatch();
     // redux
     const menuMode = useSelector((state: any) => state.menuMode.mode);
     const menu = useSelector((state: any) => state.menu);
@@ -31,6 +46,9 @@ export const MenuDetailInfo = () => {
     
     useEffect(() => {
         console.log(putMenu);
+        if(putMenu.mode === 'ready') {
+            dispatch(setPutMenu({}));
+        }
     }, [putMenu])
 
 

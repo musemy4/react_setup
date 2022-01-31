@@ -21,7 +21,6 @@ export const MenuTree = () => {
 
     const [treeData, setTreeData] = useState<IMenu[]>([{
         admin_auth_enable: false,
-        area_flag: false,
         download_enable: false,
         gis_enable: false,
         icon: '',
@@ -31,9 +30,6 @@ export const MenuTree = () => {
         menu_page: '',
         ordering: -1,
         p_menu_code: '',
-        reg_date: '',
-        setup_flag: false,
-        upd_date: ''
     }])
 
      // redux
@@ -116,7 +112,6 @@ export const MenuTree = () => {
     const initTree = () => {
         const initialData = [{
             admin_auth_enable: false,
-            area_flag: false,
             download_enable: false,
             gis_enable: false,
             icon: '',
@@ -126,9 +121,6 @@ export const MenuTree = () => {
             menu_page: '',
             ordering: -1,
             p_menu_code: '',
-            reg_date: '',
-            setup_flag: false,
-            upd_date: ''
         }];
         fetchMenus.response.results.forEach((fetchMenu: IMenu)=> {
             initialData.push(fetchMenu);
@@ -223,9 +215,7 @@ export const MenuTree = () => {
                         menu_page: m.menu_page,
                         ordering: -1,
                         p_menu_code: 'root',
-                        reg_date: '',
                         setup_flag: false,
-                        upd_date: ''
                     });
                     dispatch(setMode('BigAdd'));
                     untitledTreeForAddMode('Big', 'root');
@@ -242,9 +232,7 @@ export const MenuTree = () => {
                         menu_page: m.menu_page,
                         ordering: 0,
                         p_menu_code: m.menu_code,
-                        reg_date: '',
                         setup_flag: false,
-                        upd_date: ''
                     });
                     dispatch(setMode('SmlAdd'));
                     untitledTreeForAddMode('Sml', m.menu_code);
@@ -256,10 +244,10 @@ export const MenuTree = () => {
     return (
         <div className="menu-tree box">
             <h2>메뉴 목록</h2>
-            <div className="scroll-wrap" key={ treeDataForDraw.length+openArr.length}>
+            <div className="scroll-wrap" key={ treeDataForDraw.length+openArr.length+menuMode}>
                 <div className='fr'>
-                    <button type="button" className='btn' onClick={() => openAll()}>openAll</button>
-                    <button type="button" className='btn' onClick={() => closeAll()}>closeAll</button>
+                    <button disabled={menuMode.substring(3,6)==='Add'}  type="button" className='btn' onClick={() => openAll()}>openAll</button>
+                    <button disabled={menuMode.substring(3,6)==='Add'} type="button" className='btn' onClick={() => closeAll()}>closeAll</button>
                 </div>
                 <Tree
                     tree={treeDataForDraw}
