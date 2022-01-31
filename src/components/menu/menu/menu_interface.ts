@@ -24,6 +24,12 @@ export interface IMenuForDraw {
     text: string;
 }
 
+export interface IPutMenu {
+    mode : 'default' | 'ready' | 'put' | 'post' | 'delete'
+    menu : IMenu
+}
+
+
 export interface IPathObj {
     [index: string]: string | number | boolean | string[] | undefined;
    mode: 'basic' | 'external' | 'side';

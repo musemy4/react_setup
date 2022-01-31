@@ -10,13 +10,12 @@ export const MenuDetailInfo = () => {
     // redux
     const menuMode = useSelector((state: any) => state.menuMode.mode);
     const menu = useSelector((state: any) => state.menu);
+    const putMenu = useSelector((state: any) => state.putMenu);
     
     
     useEffect(() => {
-        console.log(menu);
         let chklist = [];
         if(menu.menu_id !== '') {
-            console.log('+++ 선택된 메뉴가 있음');
             chklist.push(!!menu.admin_auth_enable);
             chklist.push(!!menu.download_enable);
             chklist.push(!!menu.gis_enable);
@@ -30,6 +29,12 @@ export const MenuDetailInfo = () => {
         setRender(getRefresh());
     }, [menu])
     
+    useEffect(() => {
+        console.log(putMenu);
+    }, [putMenu])
+
+
+
     const onCheckboxHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const id = Number(e.target.id[3]);
         const chklist = chkSpecs;

@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
-import { Tree, TreeMethods } from "@minoru/react-dnd-treeview";
+import {useState, useEffect, useRef} from 'react';
+import { Tree } from "@minoru/react-dnd-treeview";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMenuList } from '../../../../store/menu/getMenuList';
 import { IMenu, IMenuForDraw } from '../menu_interface';
@@ -142,6 +142,19 @@ export const MenuTree = () => {
         initTreeForDraw();
     }
 
+    const openAll = () => {
+        const parents: any[] = [];
+        treeDataForDraw.forEach((ele) => {
+            if(ele.parents !== 0 && !parents.includes(ele.parent)) {
+                parents.push(ele.parent);
+            }
+        })
+        setOpenArr(parents);
+    }
+
+    const closeAll = () => {
+        setOpenArr([]);
+    }
 
     const untitledTreeForAddMode = (mode: string, parent_id: string | number) => {
         const tmpTreeForDraw: IMenuForDraw[] = [];
@@ -240,11 +253,14 @@ export const MenuTree = () => {
         });
     }
 
-    const refresh = String(new Date());
     return (
         <div className="menu-tree box">
             <h2>메뉴 목록</h2>
-            <div className="scroll-wrap" key={ treeDataForDraw.length }>
+            <div className="scroll-wrap" key={ treeDataForDraw.length+openArr.length}>
+                <div className='fr'>
+                    <button type="button" className='btn' onClick={() => openAll()}>openAll</button>
+                    <button type="button" className='btn' onClick={() => closeAll()}>closeAll</button>
+                </div>
                 <Tree
                     tree={treeDataForDraw}
                     rootId= {0}

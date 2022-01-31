@@ -6,6 +6,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 // dispatch
 import { resetMode } from '../../../../store/menu/menuMode';
 import { resetMenu } from '../../../../store/menu/setMenu';
+import { getReadyPutMenu, resetPutMenu } from '../../../../store/menu/putMenu';
 
 export const MenuDetailBtnArea = () => {
     // redux
@@ -20,11 +21,12 @@ export const MenuDetailBtnArea = () => {
 
     // [추가] 버튼
     const onAddBtnClicked = () => {
+        dispatch(getReadyPutMenu());
         confirmAlert({
             title: '[메뉴 추가]',
             message: '메뉴를 추가 하시겠습니까?',
             buttons: [
-                { label: '취소', onClick: () => null },
+                { label: '취소', onClick: () => dispatch(resetPutMenu()) },
                 { label: '추가', onClick: () => {
                     
                     // dispatch(resetTmpSetupStatus());
@@ -36,11 +38,12 @@ export const MenuDetailBtnArea = () => {
 
     // [수정] 버튼
     const onModiBtnClicked = () => {
+        dispatch(getReadyPutMenu());
         confirmAlert({
             title: '[메뉴 수정]',
             message: '메뉴를 수정 하시겠습니까?',
             buttons: [
-                { label: '취소', onClick: () => null },
+                { label: '취소', onClick: () => dispatch(resetPutMenu()) },
                 { label: '수정', onClick: () => {
                     // 
                 } }

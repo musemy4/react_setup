@@ -32,9 +32,9 @@ const MenuWrap = () => {
             {selectedTab === TabType.MENU && (
                 <MenuManWrap />
             )}
-            {selectedTab === TabType.TAB3 && (
+            {/* {selectedTab === TabType.TAB3 && (
                 <Tabs3 />
-            )}
+            )} */}
         </div>
     );
 }

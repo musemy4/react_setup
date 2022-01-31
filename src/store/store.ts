@@ -17,6 +17,8 @@ import { ISetupBody } from '../components/menu/setup/setup_interface';
 import menuListReducer from './menu/getMenuList';
 import menuModeReducer from './menu/menuMode';
 import menuReducer from './menu/setMenu';
+import putMenuReducer from './menu/putMenu';
+import { IMenu, IMode, IPutMenu } from '../components/menu/menu/menu_interface';
 
 
 interface rootState {
@@ -24,9 +26,10 @@ interface rootState {
    login: ILogin | undefined;
    fetchSetup: ISetupBody | undefined;
    tmpSetup: ISetupBody | undefined;
-   menuList: any;
-   menuMode: any;
-   menu: any;
+   fetchMenuList: any | undefined;
+   menuMode: IMode | undefined;
+   menu: IMenu | undefined;
+   putMenu: IPutMenu | undefined;
 }
 
 
@@ -37,7 +40,8 @@ const reducers = {
     tmpSetup: tmpSetupReducer,
     fetchMenuList: menuListReducer,
     menuMode: menuModeReducer,
-    menu: menuReducer
+    menu: menuReducer,
+    putMenu: putMenuReducer,
 };
 
 

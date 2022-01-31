@@ -29,7 +29,7 @@ export const MenuManWrap = () => {
                     <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.8)', zIndex: 99999 }} /> 
                     :
                     <>
-                        <div className="row h-90">
+                        <div className="row h-95">
                             <MenuTree />     
                             <MenuDetail />
                         </div> 

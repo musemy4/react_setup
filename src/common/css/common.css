@@ -8,13 +8,15 @@ body { margin: 0; padding: 0; font-family:'Noto Sans KR', "Malgun Gothic", sans-
 input[type=text]::-ms-clear{display:none;}
 
 
+.fr {float:right}
 
+
+.btn+.btn{margin-left:10px;}
 
 
 .btn {display: inline-block;min-width: 60px;padding: 0px 16px; height:28px; line-height:26px; font-size: 14px !important; box-sizing: border-box;text-align: center;vertical-align: top;position: relative;border-radius:0;border: 1px solid #6E747A;color: #66C5FF;}
 .btn:hover {color:#99D8FF;background-color:rgba(40,172,252,.08);}
 .btn:disabled, .btn.disabled {color: #9DA2A6 !important;border-color: transparent !important; cursor: default;}
-.btn-container .btn:not(:last-child) {margin-right:10px;}
 /*기본 버튼 설정*/
 
 /*텍스트형 버튼 스타일*/

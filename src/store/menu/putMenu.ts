@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { IMenu } from '../../components/menu/menu/menu_interface';
+import { IPutMenu } from '../../components/menu/menu/menu_interface';
 
 
 
@@ -8,21 +8,24 @@ const REQUEST_URL = '/vurix-dms/api/v1/role';
 
 
 
-const initialState: IMenu = {
-    admin_auth_enable: false,
-    area_flag: false,
-    download_enable: false,
-    gis_enable: false,
-    icon: '',
-    menu_code: '',
-    menu_id: '',
-    menu_name: '',
-    menu_page: '',
-    ordering: 0,
-    p_menu_code: '',
-    reg_date: '',
-    setup_flag: false,
-    upd_date: '',
+const initialState: IPutMenu = {
+    mode: 'default',
+    menu: {
+        admin_auth_enable: false,
+        area_flag: false,
+        download_enable: false,
+        gis_enable: false,
+        icon: '',
+        menu_code: '',
+        menu_id: '',
+        menu_name: '',
+        menu_page: '',
+        ordering: 0,
+        p_menu_code: '',
+        reg_date: '',
+        setup_flag: false,
+        upd_date: '',
+    }
 }
 
 
@@ -91,9 +94,12 @@ const putMenuSlice = createSlice({
     name: 'putMenu',
     initialState,
     reducers: {
-        // defaultMode: () => {
-        //     return initialState;
-        // },
+        getReadyPutMenu: (state) => {
+            return { ...state, mode: 'ready'}
+        },
+        resetPutMenu: () => {
+            return initialState;
+        },
     },
     extraReducers: {
         [postMenu.fulfilled.type]: (state, action) => {
@@ -111,5 +117,5 @@ const putMenuSlice = createSlice({
     }
 });
 
-// export const { resetMode, setMode, defaultMode } = putMenuSlice.actions;
+export const { getReadyPutMenu, resetPutMenu } = putMenuSlice.actions;
 export default putMenuSlice.reducer;
