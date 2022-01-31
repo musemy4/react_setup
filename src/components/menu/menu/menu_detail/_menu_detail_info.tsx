@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { IPreview, IMenu } from '../menu_interface';
-import { setPutMenu } from '../../../../store/menu/putMenu';
+import { setMenuInfo } from '../../../../store/menu/putMenu';
 
 export const MenuDetailInfo = () => {
     const [chkSpecs, setChkSpecs]=useState<boolean[]>([false,false,false]);
@@ -47,7 +47,20 @@ export const MenuDetailInfo = () => {
     useEffect(() => {
         console.log(putMenu);
         if(putMenu.mode === 'ready') {
-            dispatch(setPutMenu({}));
+            dispatch(setMenuInfo({
+                admin_auth_enable: false,
+                area_flag: false,
+                download_enable: false,
+                gis_enable: false,
+                icon: '',
+                menu_code: 'root',
+                menu_id: '',
+                menu_name: 'root',
+                menu_page: '',
+                ordering: -1,
+                p_menu_code: '',
+                setup_flag: false,
+            }));
         }
     }, [putMenu])
 
