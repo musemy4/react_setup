@@ -1,18 +1,23 @@
-import { useSelector } from 'react-redux';
+/* eslint-disable prefer-destructuring */
+import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { IPathObj } from '../menu_interface';
+import { setMenuPathPart } from '../../../../store/menu/putMenu';
+
 
 export const MenuDetailPath = () => {
     const [pathRadio, setPathRadio]=useState<'basic'|'external'|'side'>('basic');
     // redux
+    const dispatch = useDispatch();
     const menuMode = useSelector((state: any) => state.menuMode.mode);
     const menu = useSelector((state: any) => state.menu);
-
+    const putMenu = useSelector((state: any) => state.putMenu);
+    
     const [menuPath, setMenuPath]=useState<IPathObj>({
         mode: 'basic',
         initialId: '1',
-        basic: ['/', '/'],
-        external: ['/external-page/', '/', '/external-page/'],
+        basic: ['/', '/', '/'], // [2] : full_path
+        external: ['/external-page/', '/', '/external-page/'], // [2] : full_path
         side: ['/'] // 소메뉴 시에만 있다. url 변경 없음
     });
 
@@ -26,6 +31,22 @@ export const MenuDetailPath = () => {
             initPathForm();
         }
     }, [menu])
+
+    useEffect(() => {
+        console.log(putMenu);
+        if(putMenu.mode === 'readyInfo') {
+            let path = '';
+            if(pathRadio === 'basic') {
+                path = menuPath.basic[2];
+            } else if (pathRadio === 'external') {
+                path = menuPath.external[2];
+            } else {
+                path = menuPath.side[0];
+            }
+            dispatch(setMenuPathPart(path)); // mode: ready
+        }
+        console.log(putMenu);
+    }, [putMenu])
 
 
     //  FUNCTION 
@@ -150,11 +171,21 @@ export const MenuDetailPath = () => {
             extArr[2] = extArr[0] + urlEncode(extArr[1]);
             setMenuPath({
                 ...menuPath,
-                mode: 'external',
-                basic: ['',''],
                 external: menuPath.external,
-                side: ['']    
             });
+        } else if(e.target.id.includes('basic')) {
+            const inputValue = e.target.value;
+            if(e.target.id.substring(0,3) === 'sml') {
+                setMenuPath({
+                    ...menuPath,
+                    basic: [menuPath.basic[0], inputValue, menuPath.basic[0]+inputValue]
+                })
+            } else {
+                setMenuPath({
+                    ...menuPath,
+                    basic: [inputValue, '', inputValue]
+                })
+            }
         }
     }
 

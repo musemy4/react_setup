@@ -1,15 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
-import { IPreview, IMenu } from '../menu_interface';
-import { setMenuInfo } from '../../../../store/menu/putMenu';
+import { IMenu } from '../menu_interface';
+import { setMenuInfoPart } from '../../../../store/menu/putMenu';
 
 export const MenuDetailInfo = () => {
-    const [chkSpecs, setChkSpecs]=useState<boolean[]>([false,false,false]);
     const [render, setRender] = useState<string>('');
-    const [preview, setPreview] = useState<IPreview>({code: ''});
     const [menuInfo, setMenuInfo] = useState<IMenu>({
             admin_auth_enable: false,
-            area_flag: false,
             download_enable: false,
             gis_enable: false,
             icon: '',
@@ -19,7 +16,6 @@ export const MenuDetailInfo = () => {
             menu_page: '',
             ordering: -1,
             p_menu_code: '',
-            setup_flag: false,
     });
     const dispatch = useDispatch();
     // redux
@@ -29,61 +25,74 @@ export const MenuDetailInfo = () => {
     
     
     useEffect(() => {
-        let chklist = [];
-        if(menu.menu_id !== '') {
-            chklist.push(!!menu.admin_auth_enable);
-            chklist.push(!!menu.download_enable);
-            chklist.push(!!menu.gis_enable);
-        } else {
-            chklist= [false, false, false];
-        }
-        setChkSpecs(chklist);
-        setPreview({
-            code: menu.icon,
-        })
+        if(menu.menu_id !== '') { // add or modi
+            setMenuInfo({
+                ...menuInfo,
+                admin_auth_enable: !!menu.admin_auth_enable,
+                download_enable: !!menu.download_enable,
+                gis_enable: !!menu.gis_enable,
+                icon: menu.icon,
+                menu_code: menu.menu_code,
+                menu_id: menu.menu_id,
+                menu_name: menu.menu_name,
+                ordering: menu.ordering,
+                p_menu_code:menu.p_menu_code
+            });
+        } 
         setRender(getRefresh());
     }, [menu])
     
     useEffect(() => {
         console.log(putMenu);
-        if(putMenu.mode === 'ready') {
-            dispatch(setMenuInfo({
-                admin_auth_enable: false,
-                area_flag: false,
-                download_enable: false,
-                gis_enable: false,
-                icon: '',
-                menu_code: 'root',
-                menu_id: '',
-                menu_name: 'root',
-                menu_page: '',
-                ordering: -1,
-                p_menu_code: '',
-                setup_flag: false,
-            }));
+        if(putMenu.mode === 'beReady') {
+            dispatch(setMenuInfoPart(menuInfo)); // mode: ready
         }
+        console.log(putMenu);
     }, [putMenu])
 
 
 
     const onCheckboxHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const id = Number(e.target.id[3]);
-        const chklist = chkSpecs;
-        chklist[id] = !chklist[id];
-        setChkSpecs(chklist);
+        const target = e.target.id.substring(4);
+        if(target === 'admin_auth_enable') {
+            setMenuInfo({
+                ...menuInfo,
+                admin_auth_enable: !menuInfo.admin_auth_enable
+            })
+        } else if(target === 'download_enable') {
+            setMenuInfo({
+                ...menuInfo,
+                download_enable: !menuInfo.download_enable
+            })
+        } else {
+            setMenuInfo({
+                ...menuInfo,
+                gis_enable: !menuInfo.gis_enable
+            })
+        }
     }
 
 
     const onInputChange=(e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        console.log(e.target.id);
-        console.log(e.target.value);
+        const {id} = e.target;
+        if(id === 'menu_name') {
+            setMenuInfo({
+                ...menuInfo,
+                menu_name: e.target.value
+            })
+        } else if (id === 'menu_code') {
+            setMenuInfo({
+                ...menuInfo,
+                menu_code: e.target.value
+            })
+        }
     }
 
     const onFontInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPreview({
-            code: e.target.value
-        });
+        setMenuInfo({
+            ...menuInfo,
+            icon: e.target.value
+        })
     }
 
     const getRefresh = () => {
@@ -94,14 +103,14 @@ export const MenuDetailInfo = () => {
         <div key={render}>
             <h3>부모 메뉴</h3>
             <div className="content-box">
-                <input disabled className="ui_input w_full" defaultValue={ menu?.p_menu_code } />
+                <input disabled className="ui_input w_full" id="p_menu_code" defaultValue={ menuInfo.p_menu_code } />
             </div>
 
             <h3 className='half'>메뉴 이름</h3>
             <h3 className='half'>메뉴 코드</h3>
             <div className='content-box w_full'>
-                <input onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.menu_name } />
-                <input onChange={ onInputChange } className="ui_input half" defaultValue={ menu?.menu_code } />
+                <input onChange={ onInputChange } className="ui_input half" id='menu_name' defaultValue={ menuInfo.menu_name } />
+                <input onChange={ onInputChange } className="ui_input half" id='menu_code' defaultValue={ menuInfo.menu_code } />
             </div>
 
 
@@ -109,7 +118,7 @@ export const MenuDetailInfo = () => {
                 <>
                     <h3 className='half'>순서</h3>
                     <div className='content-box w_full'>
-                        <input disabled className="ui_input w_full" defaultValue={ menu?.ordering } />
+                        <input disabled className="ui_input w_full" defaultValue={ menuInfo.ordering } />
                     </div>
                 </>
                 ):(
@@ -117,11 +126,11 @@ export const MenuDetailInfo = () => {
                     <h3 className='half'>순서</h3>
                     <h3 className='half'>아이콘 (Font Awesome 5)</h3>
                     <div className='content-box w_full' style={{position: 'relative'}}>
-                        <input disabled className="ui_input half" defaultValue={ menu?.ordering } />
+                        <input disabled className="ui_input half" defaultValue={ menuInfo.ordering } />
                         
-                        <input onChange={ onFontInputChange } className="ui_input forPreview mr-10" defaultValue={ menu?.icon } />
+                        <input onChange={ onFontInputChange } className="ui_input forPreview mr-10" defaultValue={ menuInfo.icon } />
                         <span className='preview'>
-                            <i className={preview.code}> </i>
+                            <i className={menuInfo.icon}> </i>
                         </span>
                     </div>
                 </> 
@@ -134,7 +143,7 @@ export const MenuDetailInfo = () => {
                     <span className="menu_title">
                         <span className="checkbox_wrap">
                             <input className="form-check-input" type="checkbox"
-                                onChange={(e) => onCheckboxHandler(e)} id="chk0" defaultChecked={chkSpecs[0]} />
+                                onChange={(e) => onCheckboxHandler(e)} id="chk_admin_auth_enable" defaultChecked={menuInfo.admin_auth_enable} />
                             <label className="form-check-label">관리 권한 셋업 여부</label>
                         </span>
                     </span>
@@ -143,7 +152,7 @@ export const MenuDetailInfo = () => {
                     <span className="menu_title">
                         <span className="checkbox_wrap">
                             <input className="form-check-input" type="checkbox"
-                                onChange={(e) => onCheckboxHandler(e)} id="chk1" defaultChecked={chkSpecs[1]} />
+                                onChange={(e) => onCheckboxHandler(e)} id="chk_download_enable" defaultChecked={menuInfo.download_enable} />
                             <label className="form-check-label">다운로드 권한 셋업 여부</label>
                         </span>
                     </span>
@@ -153,7 +162,7 @@ export const MenuDetailInfo = () => {
                         <span className="menu_title">
                             <span className="checkbox_wrap">
                                 <input className="form-check-input" type="checkbox"
-                                    onChange={(e) => onCheckboxHandler(e)} id="chk2" defaultChecked={chkSpecs[2]} />
+                                    onChange={(e) => onCheckboxHandler(e)} id="chk_gis_enable" defaultChecked={menuInfo.gis_enable} />
                                 <label className="form-check-label">초기진입메뉴 1depth 여부</label>
                             </span>
                         </span>

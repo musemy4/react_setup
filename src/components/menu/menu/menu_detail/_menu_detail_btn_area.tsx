@@ -1,17 +1,19 @@
 
 import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 // confirm, toast
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 // dispatch
 import { resetMode } from '../../../../store/menu/menuMode';
 import { resetMenu } from '../../../../store/menu/setMenu';
-import { getReadyPutMenu, resetPutMenu } from '../../../../store/menu/putMenu';
+import { getBeReadyPutMenu, resetPutMenu, modiMenu, postMenu, deleteMenu } from '../../../../store/menu/putMenu';
 
 export const MenuDetailBtnArea = () => {
     // redux
     const menuMode = useSelector((state: any) => state.menuMode.mode);
-   
+    const putMenu = useSelector((state: any) => state.putMenu);
+    
     const dispatch = useDispatch();
 
     const cancelBtnClicked = () => {
@@ -19,36 +21,57 @@ export const MenuDetailBtnArea = () => {
         dispatch(resetMode());
     }
 
+    useEffect(() => {
+        console.log(putMenu);
+        if(putMenu.mode === 'readyPath') {
+            console.log(putMenu.menu);
+            if(putMenu.menu.menu_id !== '') {
+                confirmAlert({
+                    title: '[메뉴 수정]',
+                    message: '메뉴를 수정 하시겠습니까?',
+                    buttons: [
+                        { label: '취소', onClick: () => dispatch(resetPutMenu())},
+                        { label: '수정', onClick: () => dispatch(modiMenu(putMenu.menu))} 
+                    ],
+                });
+            } else {
+                confirmAlert({
+                    title: '[메뉴 추가]',
+                    message: '메뉴를 추가 하시겠습니까?',
+                    buttons: [
+                        { label: '취소', onClick: () => dispatch(resetPutMenu()) },
+                        { label: '추가', onClick: () => dispatch(postMenu(putMenu.menu))}
+                    ],
+                });
+            }
+            // dispatch(setMenuPathPart(path)); // mode: ready
+        } else if(putMenu.mode.includes('success')) {
+            if(putMenu.mode.includes('Post')) {
+                showAlert('메뉴 생성에 성공하였습니다.', 'success');
+            } else if(putMenu.mode.includes('Put')) {
+                showAlert('메뉴 수정에 성공하였습니다.', 'success');
+            } else {
+                showAlert('메뉴 삭제에 성공하였습니다.', 'success');
+            }
+        } else if (putMenu.mode.includes('failure')) {
+            if(putMenu.mode.includes('Post')) {
+                showAlert('메뉴 생성에 실패하였습니다.', 'failure');
+            } else if(putMenu.mode.includes('Put')) {
+                showAlert('메뉴 수정에 실패하였습니다.', 'failure');
+            } else {
+                showAlert('메뉴 삭제에 실패하였습니다.', 'failure');
+            }
+        }
+    }, [putMenu])
+
     // [추가] 버튼
     const onAddBtnClicked = () => {
-        dispatch(getReadyPutMenu());
-        confirmAlert({
-            title: '[메뉴 추가]',
-            message: '메뉴를 추가 하시겠습니까?',
-            buttons: [
-                { label: '취소', onClick: () => dispatch(resetPutMenu()) },
-                { label: '추가', onClick: () => {
-                    
-                    // dispatch(resetTmpSetupStatus());
-                    // updateState();
-                }}
-            ],
-        });
+        dispatch(getBeReadyPutMenu());
     };
 
     // [수정] 버튼
     const onModiBtnClicked = () => {
-        dispatch(getReadyPutMenu());
-        confirmAlert({
-            title: '[메뉴 수정]',
-            message: '메뉴를 수정 하시겠습니까?',
-            buttons: [
-                { label: '취소', onClick: () => dispatch(resetPutMenu()) },
-                { label: '수정', onClick: () => {
-                    // 
-                } }
-            ],
-        });
+        dispatch(getBeReadyPutMenu());
     };
 
 
@@ -60,13 +83,26 @@ export const MenuDetailBtnArea = () => {
             buttons: [
                 { label: '취소', onClick: () => null },
                 { label: '삭제', onClick: () => {
-                    // dispatch(resetTmpSetupStatus());
+                    // dispatch(deleteMenu(menu));
                     // updateState();
                 }}
             ],
         });
     };
 
+    const showAlert = (message: string, status?: string) => {
+        confirmAlert({
+            title: '[알림]',
+            message,
+            buttons: [
+                {
+                    label: '닫기',
+                    onClick: (() => null)
+                }
+            ],
+            overlayClassName: `${status}`
+        });
+    }
 
     return (
         <div className="btn-container">

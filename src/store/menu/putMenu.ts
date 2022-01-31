@@ -12,7 +12,6 @@ const initialState: IPutMenu = {
     mode: 'default',
     menu: {
         admin_auth_enable: false,
-        area_flag: false,
         download_enable: false,
         gis_enable: false,
         icon: '',
@@ -22,22 +21,9 @@ const initialState: IPutMenu = {
         menu_page: '',
         ordering: 0,
         p_menu_code: '',
-        reg_date: '',
-        setup_flag: false,
-        upd_date: '',
     }
 }
 
-
-// /**
-// 	 * 이벤트 코드 수정
-// 	 * @param event_code
-// 	 * @param params
-// 	 */
-//  putEventCode(event_code: string, params: any): Observable<any> {
-//     const url = `${API_URL}/putEvent/${event_code}`;
-//     return from(this.httpUtils.PUT(url, params));
-// }
 
 export const postMenu = createAsyncThunk( // 메뉴 등록
     'menu/postMenu',
@@ -55,11 +41,13 @@ export const postMenu = createAsyncThunk( // 메뉴 등록
     }
 );
 
-export const putMenu = createAsyncThunk( // 메뉴 삭제
-    'menu/putMenu',
-    async(menu_code: string, params: any) => {
+export const modiMenu = createAsyncThunk( // 메뉴 수정
+    'menu/modiMenu',
+    async(params: any) => {
+        console.log(params);
         try {
-            const response = await axios.get(`${REQUEST_URL}/putMenu/${menu_code}`, params);
+            const response = await axios.get(`${REQUEST_URL}/putMenu/${params.menu_code}`, params);
+            console.log(response);
             if (response.status === 200) {
                 console.log(response);
                 return response.data; // fulfilled
@@ -71,7 +59,7 @@ export const putMenu = createAsyncThunk( // 메뉴 삭제
     }
 );
 
-export const deleteMenu = createAsyncThunk( // 메뉴 추가
+export const deleteMenu = createAsyncThunk( // 메뉴 삭제
     'menu/deleteMenu',
     async(menu_code: string) => {
         try {
@@ -94,14 +82,21 @@ const putMenuSlice = createSlice({
     name: 'putMenu',
     initialState,
     reducers: {
-        getReadyPutMenu: (state) => {
-            return { ...state, mode: 'ready'}
+        getBeReadyPutMenu: (state) => {
+            return { ...state, mode: 'beReady'}
         },
-        setMenuInfo: (state, action) => {
+        setMenuInfoPart: (state, action) => {
             console.log(state);
+            console.log(action);
+            state.mode = 'readyInfo';
+            state.menu = action.payload;
+            return state;
         },
-        setMenuPath: (state, action) => {
+        setMenuPathPart: (state, action) => {
             console.log(state);
+            state.mode = 'readyPath'
+            state.menu.menu_page = action.payload;
+            return state;
         },
         resetPutMenu: () => {
             return initialState;
@@ -111,7 +106,7 @@ const putMenuSlice = createSlice({
         [postMenu.fulfilled.type]: (state, action) => {
             console.log(state, action);
         },
-        [putMenu.fulfilled.type]: (state, action) => {
+        [modiMenu.fulfilled.type]: (state, action) => {
             console.log(state, action);
         },
 
@@ -123,5 +118,5 @@ const putMenuSlice = createSlice({
     }
 });
 
-export const { getReadyPutMenu, resetPutMenu, setMenuInfo, setMenuPath } = putMenuSlice.actions;
+export const { getBeReadyPutMenu, resetPutMenu, setMenuInfoPart, setMenuPathPart } = putMenuSlice.actions;
 export default putMenuSlice.reducer;

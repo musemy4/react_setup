@@ -21,7 +21,11 @@ export interface IMenuForDraw {
 }
 
 export interface IPutMenu {
-    mode : 'default' | 'ready' | 'put' | 'post' | 'delete'
+    mode : 'default' 
+    | 'beReady' 
+    | 'readyInfo' | 'readyPath'
+    | 'readyPut' | 'readyPost' | 'readyDel' 
+    | 'put' | 'post' | 'delete'  
     menu : IMenu
 }
 
@@ -38,8 +42,4 @@ export interface IPathObj {
 
 export interface IMode {
     mode: 'default'|'BigAdd'|'SmlAdd'|'BigMod'|'SmlMod'|'reset';
-}
-
-export interface IPreview {
-    code : string;
 }
