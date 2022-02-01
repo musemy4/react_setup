@@ -23,7 +23,12 @@ export const MenuDetailInfo = () => {
     const menu = useSelector((state: any) => state.menu);
     const putMenu = useSelector((state: any) => state.putMenu);
     
-    
+
+    //  USEEFFECT 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
+
+
     useEffect(() => {
         setMenuInfo(menu);
         setRender(getRefresh());
@@ -35,6 +40,11 @@ export const MenuDetailInfo = () => {
         }
     }, [putMenu])
 
+
+
+    //  HANDLER 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
 
 
     const onCheckboxHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,6 +89,12 @@ export const MenuDetailInfo = () => {
             icon: e.target.value
         })
     }
+
+    
+    //  FUNCTION 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
+
 
     const getRefresh = () => {
         return String(new Date());

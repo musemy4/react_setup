@@ -8,7 +8,6 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { resetMode } from '../../../../store/menu/menuMode';
 import { resetMenu } from '../../../../store/menu/setMenu';
 import { getBeReadyPutMenu, resetPutMenu, modiMenu, postMenu, deleteMenu } from '../../../../store/menu/putMenu';
-import { resetMenulist } from '../../../../store/menu/getMenuList';
 
 export const MenuDetailBtnArea = () => {
     // redux
@@ -18,10 +17,9 @@ export const MenuDetailBtnArea = () => {
     
     const dispatch = useDispatch();
 
-    const cancelBtnClicked = () => {
-        dispatch(resetMenu());
-        dispatch(resetMode());
-    }
+    //  USEEFFECT 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
 
     useEffect(() => {
         console.log(putMenu);
@@ -46,7 +44,6 @@ export const MenuDetailBtnArea = () => {
                     ],
                 });
             }
-            // dispatch(setMenuPathPart(path)); // mode: ready
         } else if(putMenu.mode.includes('success')) {
             if(putMenu.mode.includes('Post')) {
                 showAlert('메뉴 생성에 성공하였습니다.', 'success');
@@ -56,7 +53,7 @@ export const MenuDetailBtnArea = () => {
                 showAlert('메뉴 삭제에 성공하였습니다.', 'success');
             }
             dispatch(resetPutMenu());
-            dispatch(resetMode());
+            // dispatch(resetMode());
         } else if (putMenu.mode.includes('failure')) {
             if(putMenu.mode.includes('Post')) {
                 showAlert('메뉴 생성에 실패하였습니다.', 'failure');
@@ -68,6 +65,17 @@ export const MenuDetailBtnArea = () => {
             dispatch(resetPutMenu());
         }
     }, [putMenu])
+
+
+    //  HANDLER 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
+
+    
+    const cancelBtnClicked = () => {
+        dispatch(resetMenu());
+        dispatch(resetMode());
+    }
 
     // [추가] 버튼
     const onAddBtnClicked = () => {

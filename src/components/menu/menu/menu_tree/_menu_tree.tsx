@@ -45,6 +45,14 @@ export const MenuTree = () => {
 
     // about tree handle
     const handleDrop = () => { console.log('handle drop cancel');};
+    
+    
+    
+    //  USEEFFECT 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
+    
+    
     // 처음 시작될때
     useEffect(() => {
         if(fetchMenus.code === 200) {
@@ -66,15 +74,12 @@ export const MenuTree = () => {
         } else if(fetchMenus.code === 200) {
             init();
             dispatch(defaultMode());
+        } else if(fetchMenus.code === undefined) {
+            dispatch(fetchMenuList());
         }
     }, [fetchMenus.code])
 
-    // useEffect(() => {
-    //     console.log('=== 메뉴 선택 변경! ===');
-    // }, [menu])
-
     useEffect(() => {
-        // console.log('=== 메뉴 모드 변경! ===');
         if(menuMode === 'reset') {
             initTreeForDraw();
             dispatch(defaultMode());
@@ -82,22 +87,23 @@ export const MenuTree = () => {
     }, [menuMode])
 
     useEffect(() => {
-        // console.log('=== 메뉴 모드 변경! ===');
         if(putMenu.mode.includes('success')) {
-            console.log('tree_success');
-            dispatch(fetchMenuList());
-            // dispatch(resetMenulist());
+            dispatch(resetMenulist());
         }
     }, [putMenu])
+
+
+    //  FUNCTION 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
+
+
+
 
     const setChosenMenu = (m: IMenu) => {
         dispatch(setMenu(m));
         setChosen(m);
     } 
-
-    // const initOpenArr = () => {
-    //     setOpenArr(['root']);
-    // }
 
     const initTreeForDraw = () => {
         setChosen(undefined);
@@ -194,6 +200,13 @@ export const MenuTree = () => {
         }
         setTreeDataForDraw(tmpTreeForDraw);
     }
+
+
+    //  HANDLER 
+    //  ////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
+
+
 
     const handleClickMenu = (menu_id: string | number) => {
         if(menu_id === 'root' || menu_id === "*untitled") return;
