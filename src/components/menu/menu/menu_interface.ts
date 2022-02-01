@@ -24,8 +24,8 @@ export interface IPutMenu {
     mode : 'default' 
     | 'beReady' 
     | 'readyInfo' | 'readyPath'
-    | 'readyPut' | 'readyPost' | 'readyDel' 
-    | 'put' | 'post' | 'delete'  
+    | 'successPut' | 'successPost' | 'successDel' 
+    | 'failurePut' | 'failurePost' | 'failureDel' 
     menu : IMenu
 }
 

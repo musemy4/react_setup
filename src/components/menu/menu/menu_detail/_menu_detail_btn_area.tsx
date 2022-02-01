@@ -8,11 +8,13 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { resetMode } from '../../../../store/menu/menuMode';
 import { resetMenu } from '../../../../store/menu/setMenu';
 import { getBeReadyPutMenu, resetPutMenu, modiMenu, postMenu, deleteMenu } from '../../../../store/menu/putMenu';
+import { resetMenulist } from '../../../../store/menu/getMenuList';
 
 export const MenuDetailBtnArea = () => {
     // redux
     const menuMode = useSelector((state: any) => state.menuMode.mode);
     const putMenu = useSelector((state: any) => state.putMenu);
+    const menu = useSelector((state: any) => state.menu);
     
     const dispatch = useDispatch();
 
@@ -53,6 +55,8 @@ export const MenuDetailBtnArea = () => {
             } else {
                 showAlert('메뉴 삭제에 성공하였습니다.', 'success');
             }
+            dispatch(resetPutMenu());
+            dispatch(resetMode());
         } else if (putMenu.mode.includes('failure')) {
             if(putMenu.mode.includes('Post')) {
                 showAlert('메뉴 생성에 실패하였습니다.', 'failure');
@@ -61,6 +65,7 @@ export const MenuDetailBtnArea = () => {
             } else {
                 showAlert('메뉴 삭제에 실패하였습니다.', 'failure');
             }
+            dispatch(resetPutMenu());
         }
     }, [putMenu])
 
@@ -81,11 +86,8 @@ export const MenuDetailBtnArea = () => {
             title: '[메뉴 삭제]',
             message: '메뉴를 삭제 하시겠습니까?',
             buttons: [
-                { label: '취소', onClick: () => null },
-                { label: '삭제', onClick: () => {
-                    // dispatch(deleteMenu(menu));
-                    // updateState();
-                }}
+                { label: '취소', onClick: () => dispatch(resetPutMenu()) },
+                { label: '삭제', onClick: () => dispatch(deleteMenu(menu.menu_code)) }
             ],
         });
     };

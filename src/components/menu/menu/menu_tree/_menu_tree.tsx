@@ -1,13 +1,28 @@
 import {useState, useEffect, useRef} from 'react';
 import { Tree } from "@minoru/react-dnd-treeview";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMenuList } from '../../../../store/menu/getMenuList';
+import { fetchMenuList, resetMenulist } from '../../../../store/menu/getMenuList';
 import { IMenu, IMenuForDraw } from '../menu_interface';
 
 
 // dispatch
 import { setMode, defaultMode } from '../../../../store/menu/menuMode';
 import { setMenu } from '../../../../store/menu/setMenu';
+
+
+const initialMenu : IMenu = {
+    admin_auth_enable: false,
+    download_enable: false,
+    gis_enable: false,
+    icon: '',
+    menu_code: 'root',
+    menu_id: '',
+    menu_name: '',
+    menu_page: '',
+    ordering: -1,
+    p_menu_code: '',
+}
+
 
 export const MenuTree = () => {
     const [chosen, setChosen] = useState<IMenu | undefined>(undefined);
@@ -19,28 +34,17 @@ export const MenuTree = () => {
         text: 'root',
     }]);
 
-    const [treeData, setTreeData] = useState<IMenu[]>([{
-        admin_auth_enable: false,
-        download_enable: false,
-        gis_enable: false,
-        icon: '',
-        menu_code: 'root',
-        menu_id: '',
-        menu_name: '',
-        menu_page: '',
-        ordering: -1,
-        p_menu_code: '',
-    }])
+    const [treeData, setTreeData] = useState<IMenu[]>([initialMenu])
 
      // redux
     const fetchMenus = useSelector((state: any) => state.fetchMenuList);
     const menuMode = useSelector((state: any) => state.menuMode.mode);
-    // const menu = useSelector((state: IMenu) => state.menu); // select menu
-
+    const putMenu = useSelector((state: any) => state.putMenu);
+    
     const dispatch = useDispatch();
 
     // about tree handle
-    const handleDrop = () => { console.log('이동못하게 막음');};
+    const handleDrop = () => { console.log('handle drop cancel');};
     // 처음 시작될때
     useEffect(() => {
         if(fetchMenus.code === 200) {
@@ -77,8 +81,16 @@ export const MenuTree = () => {
         }
     }, [menuMode])
 
-    const setChosenMenu = (m: IMenu) => {
+    useEffect(() => {
+        // console.log('=== 메뉴 모드 변경! ===');
+        if(putMenu.mode.includes('success')) {
+            console.log('tree_success');
+            dispatch(fetchMenuList());
+            // dispatch(resetMenulist());
+        }
+    }, [putMenu])
 
+    const setChosenMenu = (m: IMenu) => {
         dispatch(setMenu(m));
         setChosen(m);
     } 
@@ -203,9 +215,10 @@ export const MenuTree = () => {
         treeData.forEach((m: any) => {
             if(m.menu_code === menu_id) {
                 if(m.menu_code === 'root') { // 대메뉴
+                    dispatch(setMode('BigAdd'));
+                    untitledTreeForAddMode('Big', 'root');
                     setChosenMenu({
                         admin_auth_enable: false,
-                        area_flag: false,
                         download_enable: false,
                         gis_enable: false,
                         icon: '',
@@ -215,14 +228,12 @@ export const MenuTree = () => {
                         menu_page: m.menu_page,
                         ordering: -1,
                         p_menu_code: 'root',
-                        setup_flag: false,
                     });
-                    dispatch(setMode('BigAdd'));
-                    untitledTreeForAddMode('Big', 'root');
                 } else { // 소메뉴
+                    dispatch(setMode('SmlAdd'));
+                    untitledTreeForAddMode('Sml', m.menu_code);
                     setChosenMenu({
                         admin_auth_enable: false,
-                        area_flag: false,
                         download_enable: false,
                         gis_enable: false,
                         icon: '',
@@ -230,12 +241,9 @@ export const MenuTree = () => {
                         menu_id: '',
                         menu_name: '',
                         menu_page: m.menu_page,
-                        ordering: 0,
+                        ordering: -1,
                         p_menu_code: m.menu_code,
-                        setup_flag: false,
                     });
-                    dispatch(setMode('SmlAdd'));
-                    untitledTreeForAddMode('Sml', m.menu_code);
                 }
             }
         });

@@ -19,7 +19,7 @@ const initialState: IPutMenu = {
         menu_id: '',
         menu_name: '',
         menu_page: '',
-        ordering: 0,
+        ordering: -1,
         p_menu_code: '',
     }
 }
@@ -27,13 +27,15 @@ const initialState: IPutMenu = {
 
 export const postMenu = createAsyncThunk( // 메뉴 등록
     'menu/postMenu',
-    async(params: string) => {
+    async(params: any) => {
+        console.log(params);
         try {
-            const response = await axios.put(`${REQUEST_URL}/postMenu`, params);
+            const response = await axios.post(`${REQUEST_URL}/postMenu`, params);
             if (response.status === 200) {
                 console.log(response);
-                return response.data; // fulfilled
+                return 'successPost'; // fulfilled
             }
+            return 'failurePost';
         } catch(error) {
             console.log(error);
         }
@@ -46,12 +48,13 @@ export const modiMenu = createAsyncThunk( // 메뉴 수정
     async(params: any) => {
         console.log(params);
         try {
-            const response = await axios.get(`${REQUEST_URL}/putMenu/${params.menu_code}`, params);
+            const response = await axios.put(`${REQUEST_URL}/putMenu/${params.menu_code}`, params);
             console.log(response);
             if (response.status === 200) {
                 console.log(response);
-                return response.data; // fulfilled
+                return 'successPut'; // fulfilled
             }
+            return 'failurePut';
         } catch(error) {
             console.log(error);
         }
@@ -63,11 +66,12 @@ export const deleteMenu = createAsyncThunk( // 메뉴 삭제
     'menu/deleteMenu',
     async(menu_code: string) => {
         try {
-            const response = await axios.get(`${REQUEST_URL}/deleteMenu/${menu_code}`);
+            const response = await axios.delete(`${REQUEST_URL}/deleteMenu/${menu_code}`);
             if (response.status === 200) {
                 console.log(response);
-                return response.data; // fulfilled
-            }
+                return 'successDel'; // fulfilled
+            } 
+            return 'failureDel';
         } catch(error) {
             console.log(error);
         }
@@ -105,13 +109,16 @@ const putMenuSlice = createSlice({
     extraReducers: {
         [postMenu.fulfilled.type]: (state, action) => {
             console.log(state, action);
+            state.mode = action.payload;
         },
         [modiMenu.fulfilled.type]: (state, action) => {
             console.log(state, action);
+            state.mode = action.payload;
         },
 
         [deleteMenu.fulfilled.type]: (state, action) => {
             console.log(state, action);
+            state.mode = action.payload;
         },
 
 

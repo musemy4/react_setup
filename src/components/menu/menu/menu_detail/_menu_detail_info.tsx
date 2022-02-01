@@ -25,29 +25,14 @@ export const MenuDetailInfo = () => {
     
     
     useEffect(() => {
-        if(menu.menu_id !== '') { // add or modi
-            setMenuInfo({
-                ...menuInfo,
-                admin_auth_enable: !!menu.admin_auth_enable,
-                download_enable: !!menu.download_enable,
-                gis_enable: !!menu.gis_enable,
-                icon: menu.icon,
-                menu_code: menu.menu_code,
-                menu_id: menu.menu_id,
-                menu_name: menu.menu_name,
-                ordering: menu.ordering,
-                p_menu_code:menu.p_menu_code
-            });
-        } 
+        setMenuInfo(menu);
         setRender(getRefresh());
     }, [menu])
     
     useEffect(() => {
-        console.log(putMenu);
         if(putMenu.mode === 'beReady') {
             dispatch(setMenuInfoPart(menuInfo)); // mode: ready
         }
-        console.log(putMenu);
     }, [putMenu])
 
 
