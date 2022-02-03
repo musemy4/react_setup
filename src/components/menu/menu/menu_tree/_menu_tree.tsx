@@ -286,12 +286,21 @@ export const MenuTree = () => {
                             {node.parent !== 'root' && node.parent !== 0 && (
                                 <span className="can-open sub-menu">-</span>        
                             )}
+                            {node.id==='root' ? (
+                                <button type="button"
+                                    className="menu-root">
+                                    {node.text}
+                                </button>
 
-                            <button type="button"
-                                className={node.id === "*untitled" || chosen?.menu_code === node.id? "menu-clicking clicked" : "menu-clicking" }
-                                onClick={() => handleClickMenu(node.id)}>
-                                {node.text}
-                            </button>
+                            ):(
+                                <button type="button"
+                                    className={node.id === "*untitled" || chosen?.menu_code === node.id? "menu-clicking clicked" : "menu-clicking" }
+                                    onClick={() => handleClickMenu(node.id)}>
+                                    {node.text}
+                                </button>
+                            )}    
+
+
 
                             {(node.parent === 0 || node.parent === 'root') && (node.id !== '*untitled') && (
                                 <button type='button' onClick={() => handleAddMenu(node.id)}>

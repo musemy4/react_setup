@@ -212,6 +212,8 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 .scroll-wrap::-webkit-scrollbar-track {background-color: grey;border-radius: 5px;box-shadow: inset 0px 0px 5px black;}
 .scroll-wrap ol, ul {padding-left:1rem}
 button {background-color: transparent;border:0; outline:0;color:white;cursor:pointer;}
+.menu-root{font-size:16px;}
+.menu-clicking{font-size:13px;}
 .menu-clicking.clicked{color:#3080d0;}
 .can-open {display: inline-block; width:20px;font-size:13px;color:rgba(255,255,255,0.6)}
 
