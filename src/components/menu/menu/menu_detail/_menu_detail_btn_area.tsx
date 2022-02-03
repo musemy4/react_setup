@@ -24,9 +24,9 @@ export const MenuDetailBtnArea = () => {
 
     useEffect(() => {
         console.log(putMenu);
-        if(putMenu.mode === 'readyPath') {
+        if(putMenu?.mode === 'readyPath') {
             console.log(putMenu.menu);
-            if(putMenu.menu.menu_id !== '') {
+            if(putMenu?.menu.menu_id !== '') {
                 confirmAlert({
                     title: '[메뉴 수정]',
                     message: '메뉴를 수정 하시겠습니까?',
@@ -45,19 +45,19 @@ export const MenuDetailBtnArea = () => {
                     ],
                 });
             }
-        } else if(putMenu.mode.includes('success')) {
-            if(putMenu.mode.includes('Post')) {
+        } else if(putMenu?.mode.includes('success')) {
+            if(putMenu?.mode.includes('Post')) {
                 showAlert('메뉴 생성에 성공하였습니다.', 'success');
-            } else if(putMenu.mode.includes('Put')) {
+            } else if(putMenu?.mode.includes('Put')) {
                 showAlert('메뉴 수정에 성공하였습니다.', 'success');
             } else {
                 showAlert('메뉴 삭제에 성공하였습니다.', 'success');
             }
             dispatch(resetPutMenu());
-        } else if (putMenu.mode.includes('failure')) {
-            if(putMenu.mode.includes('Post')) {
+        } else if (putMenu?.mode.includes('failure')) {
+            if(putMenu?.mode.includes('Post')) {
                 showAlert('메뉴 생성에 실패하였습니다.', 'failure');
-            } else if(putMenu.mode.includes('Put')) {
+            } else if(putMenu?.mode.includes('Put')) {
                 showAlert('메뉴 수정에 실패하였습니다.', 'failure');
             } else {
                 showAlert('메뉴 삭제에 실패하였습니다.', 'failure');

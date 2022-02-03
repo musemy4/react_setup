@@ -145,6 +145,8 @@ export const MenuDetailInfo = () => {
 
             <h3>메뉴 특수 기능 사용 여부</h3>
             <div className="w-bg-box content-box">
+            { menuMode.substring(0,3) === 'Sml' &&(
+                <>
                 <div className='menu_list'>
                     <span className="menu_title">
                         <span className="checkbox_wrap">
@@ -163,6 +165,8 @@ export const MenuDetailInfo = () => {
                         </span>
                     </span>
                 </div>
+                </>
+            )}
                 { menuMode.substring(0,3) === 'Big' &&(
                     <div className='menu_list'>
                         <span className="menu_title">
