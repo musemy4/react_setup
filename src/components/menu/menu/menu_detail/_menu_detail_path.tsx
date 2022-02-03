@@ -105,7 +105,7 @@ export const MenuDetailPath = () => {
                     const splitArr = path_full?.split('/');
                     mode = 'basic';
                     
-                    basic = [`/${splitArr[1]}`, `/${splitArr[2]}`]
+                    basic = [`/${splitArr[1]}/`, `${splitArr[2]}`]
                     external = [`/${splitArr[1]}/external-sub-page/`,'',`/${splitArr[1]}/external-sub-page/`]
                     side=[`/${splitArr[1]}`];
                 }

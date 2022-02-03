@@ -147,24 +147,24 @@ export const MenuDetailInfo = () => {
             <div className="w-bg-box content-box">
             { menuMode.substring(0,3) === 'Sml' &&(
                 <>
-                <div className='menu_list'>
-                    <span className="menu_title">
-                        <span className="checkbox_wrap">
-                            <input className="form-check-input" type="checkbox"
-                                onChange={(e) => onCheckboxHandler(e)} id="chk_admin_auth_enable" defaultChecked={menuInfo.admin_auth_enable} />
-                            <label className="form-check-label">관리 권한 셋업 여부</label>
+                    <div className='menu_list'>
+                        <span className="menu_title">
+                            <span className="checkbox_wrap">
+                                <input className="form-check-input" type="checkbox"
+                                    onChange={(e) => onCheckboxHandler(e)} id="chk_admin_auth_enable" defaultChecked={menuInfo.admin_auth_enable} />
+                                <label className="form-check-label">관리 권한 셋업 여부</label>
+                            </span>
                         </span>
-                    </span>
-                </div>
-                <div className='menu_list'>
-                    <span className="menu_title">
-                        <span className="checkbox_wrap">
-                            <input className="form-check-input" type="checkbox"
-                                onChange={(e) => onCheckboxHandler(e)} id="chk_download_enable" defaultChecked={menuInfo.download_enable} />
-                            <label className="form-check-label">다운로드 권한 셋업 여부</label>
+                    </div>
+                    <div className='menu_list'>
+                        <span className="menu_title">
+                            <span className="checkbox_wrap">
+                                <input className="form-check-input" type="checkbox"
+                                    onChange={(e) => onCheckboxHandler(e)} id="chk_download_enable" defaultChecked={menuInfo.download_enable} />
+                                <label className="form-check-label">다운로드 권한 셋업 여부</label>
+                            </span>
                         </span>
-                    </span>
-                </div>
+                    </div>
                 </>
             )}
                 { menuMode.substring(0,3) === 'Big' &&(
