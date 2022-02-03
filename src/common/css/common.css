@@ -18,8 +18,8 @@ input[type=text]::-ms-clear{display:none;}
 
 
 .tree-btn {position:absolute;top:5px;right:10px;}
-
 /*텍스트형 버튼 스타일*/
+.btn:focus {box-shadow:none;}
 .btn.text{border:none !important;}
 .btn.text:hover {background-color:transparent;}
 
