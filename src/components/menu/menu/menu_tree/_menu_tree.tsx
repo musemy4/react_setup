@@ -269,7 +269,7 @@ export const MenuTree = () => {
                     <button type="button" className='btn' onClick={() => openAll()}>openAll</button>
                     <button type="button" className='btn' onClick={() => closeAll()}>closeAll</button>
                 </div>
-            <div className="scroll-wrap" key={ treeDataForDraw.length+openArr.length+menuMode}>
+            <div className="scroll-wrap" key={ treeDataForDraw.length+openArr.length}>
                 <Tree
                     tree={treeDataForDraw}
                     rootId= {0}
