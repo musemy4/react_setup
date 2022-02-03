@@ -265,11 +265,11 @@ export const MenuTree = () => {
     return (
         <div className="menu-tree box">
             <h2>메뉴 목록</h2>
-            <div className="scroll-wrap" key={ treeDataForDraw.length+openArr.length+menuMode}>
-                <div className='fr'>
-                    <button disabled={menuMode.substring(3,6)==='Add'}  type="button" className='btn' onClick={() => openAll()}>openAll</button>
-                    <button disabled={menuMode.substring(3,6)==='Add'} type="button" className='btn' onClick={() => closeAll()}>closeAll</button>
+                <div className='tree-btn'>
+                    <button type="button" className='btn' onClick={() => openAll()}>openAll</button>
+                    <button type="button" className='btn' onClick={() => closeAll()}>closeAll</button>
                 </div>
+            <div className="scroll-wrap" key={ treeDataForDraw.length+openArr.length+menuMode}>
                 <Tree
                     tree={treeDataForDraw}
                     rootId= {0}

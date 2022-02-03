@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import { Tabs, TabType } from "./tabs"; // tabs
 import SetupWrap from './setup/setup_wrap';
 import { MenuManWrap } from './menu/menu_wrap';
-import { Tabs3 } from './tab3/tab3';
 
 const MenuWrap = () => {
     // TABS

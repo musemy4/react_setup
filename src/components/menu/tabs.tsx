@@ -22,7 +22,7 @@ export const Tabs = ({ selectedTab = 'SETUP', onChange }: ITabProps) => {
     const handleTabClick = (tabType: string) => {
         // TODO TEMP:::TAB DISABLED
         // if (tabType !== 'TAB3') {
-        //     onChange(tabType)
+        onChange(tabType)
         // }
     }
 

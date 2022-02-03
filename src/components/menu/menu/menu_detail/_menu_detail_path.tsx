@@ -239,7 +239,7 @@ export const MenuDetailPath = () => {
                     :
                         pathRadio === 'basic' && (
                             <>
-                                <div className="ui_input half">{menuPath.basic[0]}</div>
+                                <input disabled className="ui_input half" defaultValue={menuPath.basic[0]} />
                                 <input onChange={ onPathInputChange } className="ui_input half" id="sml_basic" defaultValue={menuPath.basic[1]} />
                             </>
                         ) || pathRadio === 'external' && (
