@@ -3,6 +3,7 @@ import { Tree } from "@minoru/react-dnd-treeview";
 import { useDispatch, useSelector } from 'react-redux';
 import { getMenuList, resetMenulist } from '../../../../store/menu/getMenuList';
 import { IMenu, IMenuForDraw } from '../menu_interface';
+import { showAlert } from '../../../../common/utils/alert';
 
 
 // dispatch
@@ -163,7 +164,7 @@ export const MenuTree = () => {
     }
 
     const closeAll = () => {
-        setOpenArr([]);
+        setOpenArr(['root']);
     }
 
     const untitledTreeForAddMode = (mode: string, parent_id: string | number) => {
@@ -243,6 +244,11 @@ export const MenuTree = () => {
                         p_menu_code: 'root',
                     });
                 } else { // 소메뉴
+                    if(m.menu_page.includes('external-page')) {
+                        showAlert(`외부페이지로 설정된 대메뉴는 
+                        하위메뉴를 만들수 없습니다`, 'failure');
+                        return;
+                    }
                     dispatch(setMode('SmlAdd'));
                     untitledTreeForAddMode('Sml', m.menu_code);
                     setChosenMenu({

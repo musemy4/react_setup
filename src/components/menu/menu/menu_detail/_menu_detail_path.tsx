@@ -65,7 +65,7 @@ export const MenuDetailPath = () => {
         const initialId = getRefresh();
 
         if(menuMode.substring(0,3) === 'Big') { // 대메뉴시에
-            if(path_full.includes("/external-page/")) { // 외부페이지인 경우
+            if(path_full?.includes("/external-page/")) { // 외부페이지인 경우
                 let afterExt = path_full.substr(15);
                 afterExt = urlDecode(afterExt);
                 
@@ -86,7 +86,7 @@ export const MenuDetailPath = () => {
                 side = [path_full];
             } else if(menuMode.substring(3,6) === 'Mod') {    
                 // external
-                if(path_full.includes("/external-sub-page/")) {
+                if(path_full?.includes('/external-sub-page/')) {
                     const pathArr = path_full.split('/external-sub-page/');
                     mode = 'external';
                     
@@ -102,7 +102,7 @@ export const MenuDetailPath = () => {
                     side=[path_full];
                 // basic    
                 } else {
-                    const splitArr = path_full.split('/');
+                    const splitArr = path_full?.split('/');
                     mode = 'basic';
                     
                     basic = [`/${splitArr[1]}`, `/${splitArr[2]}`]

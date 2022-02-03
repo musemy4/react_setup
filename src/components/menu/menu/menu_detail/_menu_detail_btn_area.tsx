@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 // confirm, toast
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { showAlert } from '../../../../common/utils/alert';
 // dispatch
 import { resetMode } from '../../../../store/menu/menuMode';
 import { resetMenu } from '../../../../store/menu/setMenu';
@@ -53,7 +54,6 @@ export const MenuDetailBtnArea = () => {
                 showAlert('메뉴 삭제에 성공하였습니다.', 'success');
             }
             dispatch(resetPutMenu());
-            // dispatch(resetMode());
         } else if (putMenu.mode.includes('failure')) {
             if(putMenu.mode.includes('Post')) {
                 showAlert('메뉴 생성에 실패하였습니다.', 'failure');
@@ -99,20 +99,6 @@ export const MenuDetailBtnArea = () => {
             ],
         });
     };
-
-    const showAlert = (message: string, status?: string) => {
-        confirmAlert({
-            title: '[알림]',
-            message,
-            buttons: [
-                {
-                    label: '닫기',
-                    onClick: (() => null)
-                }
-            ],
-            overlayClassName: `${status}`
-        });
-    }
 
     return (
         <div className="btn-container">
