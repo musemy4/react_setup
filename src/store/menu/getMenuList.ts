@@ -9,8 +9,8 @@ const initialState: any = {
     response: {}
 }
 
-export const fetchMenuList = createAsyncThunk( // init시 호출
-    'menu/fetchMenuList',
+export const getMenuList = createAsyncThunk( // init시 호출
+    'menu/getMenuList',
     async() => {
         try {
             const response = await axios.get(`${REQUEST_URL}/role/menuList`);
@@ -25,8 +25,8 @@ export const fetchMenuList = createAsyncThunk( // init시 호출
 );
 
 // http 전체 형태
-const fetchMenuSlice = createSlice({
-    name: 'fetchMenu',
+const getMenuSlice = createSlice({
+    name: 'getMenuList',
     initialState,
     reducers: {
         resetMenulist: () => { // initialState 로
@@ -34,7 +34,7 @@ const fetchMenuSlice = createSlice({
         },
     },
     extraReducers: {
-        [fetchMenuList.fulfilled.type]: (state, action) => {
+        [getMenuList.fulfilled.type]: (state, action) => {
             state.code = action.payload.code;
             state.response = action.payload.response;
         },
@@ -45,5 +45,5 @@ const fetchMenuSlice = createSlice({
     }
 });
 
-export const { resetMenulist } = fetchMenuSlice.actions;
-export default fetchMenuSlice.reducer;
+export const { resetMenulist } = getMenuSlice.actions;
+export default getMenuSlice.reducer;

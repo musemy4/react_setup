@@ -29,11 +29,10 @@ export interface IPutMenu {
     menu : IMenu
 }
 
-
 export interface IPathObj {
     [index: string]: string | number | boolean | string[] | undefined;
    mode: 'basic' | 'external' | 'side';
-   initialId: string;
+   initialId: string; // for rendering
    basic: string[];
    external: string[];
    side:string[];

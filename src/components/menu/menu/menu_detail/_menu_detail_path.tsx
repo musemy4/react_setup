@@ -27,13 +27,11 @@ export const MenuDetailPath = () => {
 
     useEffect(() => {
         if(menuMode !== 'default') { // add or mod mode
-            // console.log('initPathForm:::', menu);
             initPathForm();
         }
     }, [menu])
 
     useEffect(() => {
-        console.log(putMenu);
         if(putMenu.mode === 'readyInfo') {
             let path = '';
             if(pathRadio === 'basic') {
@@ -45,7 +43,6 @@ export const MenuDetailPath = () => {
             }
             dispatch(setMenuPathPart(path)); // mode: ready
         }
-        console.log(putMenu);
     }, [putMenu])
 
 
@@ -129,7 +126,7 @@ export const MenuDetailPath = () => {
     const urlDecode = (str: string) => {
         str = decodeURIComponent(str);
         try {
-            str = atob(str);
+            str = atob(str); // base64 decode
         } catch(error) {
             console.log(error);
         }
@@ -138,7 +135,7 @@ export const MenuDetailPath = () => {
 
     const urlEncode = (str: string) => {
         try{
-            str = btoa(str);
+            str = btoa(str); // base64 encode
         } catch(error) {
             console.log(error);
         }

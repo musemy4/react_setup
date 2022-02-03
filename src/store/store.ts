@@ -26,7 +26,7 @@ interface rootState {
    login: ILogin | undefined;
    fetchSetup: ISetupBody | undefined;
    tmpSetup: ISetupBody | undefined;
-   fetchMenuList: any | undefined;
+   getMenuList: any | undefined;
    menuMode: IMode | undefined;
    menu: IMenu | undefined;
    putMenu: IPutMenu | undefined;
@@ -38,7 +38,7 @@ const reducers = {
     login: loginReducer,
     fetchSetup: fetchSetupReducer,
     tmpSetup: tmpSetupReducer,
-    fetchMenuList: menuListReducer,
+    getMenuList: menuListReducer,
     menuMode: menuModeReducer,
     menu: menuReducer,
     putMenu: putMenuReducer,

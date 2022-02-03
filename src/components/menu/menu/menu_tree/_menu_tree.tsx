@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef} from 'react';
 import { Tree } from "@minoru/react-dnd-treeview";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMenuList, resetMenulist } from '../../../../store/menu/getMenuList';
+import { getMenuList, resetMenulist } from '../../../../store/menu/getMenuList';
 import { IMenu, IMenuForDraw } from '../menu_interface';
 
 
@@ -37,7 +37,7 @@ export const MenuTree = () => {
     const [treeData, setTreeData] = useState<IMenu[]>([initialMenu])
 
      // redux
-    const fetchMenus = useSelector((state: any) => state.fetchMenuList);
+    const menuList = useSelector((state: any) => state.getMenuList);
     const menuMode = useSelector((state: any) => state.menuMode.mode);
     const putMenu = useSelector((state: any) => state.putMenu);
     
@@ -55,10 +55,10 @@ export const MenuTree = () => {
     
     // 처음 시작될때
     useEffect(() => {
-        if(fetchMenus.code === 200) {
+        if(menuList.code === 200) {
             init();
         } else {
-            dispatch(fetchMenuList());
+            dispatch(getMenuList());
         }
         // 컴포넌트가 꺼질때
         return () => {
@@ -71,13 +71,13 @@ export const MenuTree = () => {
     useEffect(() => {
         if(!mounted.current) {
             mounted.current = true;
-        } else if(fetchMenus.code === 200) {
+        } else if(menuList.code === 200) {
             init();
             dispatch(defaultMode());
-        } else if(fetchMenus.code === undefined) {
-            dispatch(fetchMenuList());
+        } else if(menuList.code === undefined) {
+            dispatch(getMenuList());
         }
-    }, [fetchMenus.code])
+    }, [menuList.code])
 
     useEffect(() => {
         if(menuMode === 'reset') {
@@ -107,7 +107,7 @@ export const MenuTree = () => {
 
     const initTreeForDraw = () => {
         setChosen(undefined);
-        const refined = fetchMenus.response.results.map((ele: IMenu) => ({
+        const refined = menuList.response.results.map((ele: IMenu) => ({
             id: ele.menu_code,
             parent: ele.p_menu_code,
             droppable: false, // TMP
@@ -140,7 +140,7 @@ export const MenuTree = () => {
             ordering: -1,
             p_menu_code: '',
         }];
-        fetchMenus.response.results.forEach((fetchMenu: IMenu)=> {
+        menuList.response.results.forEach((fetchMenu: IMenu)=> {
             initialData.push(fetchMenu);
         })
 
