@@ -263,7 +263,7 @@ export const MenuTree = () => {
     }
 
     return (
-        <div className="menu-tree box">
+        <div className="menu-tree box" key={treeData.length}>
             <h2>메뉴 목록</h2>
                 <div className='tree-btn'>
                     <button type="button" className='btn' onClick={() => openAll()}>openAll</button>
@@ -286,6 +286,7 @@ export const MenuTree = () => {
                             {node.parent !== 'root' && node.parent !== 0 && (
                                 <span className="can-open sub-menu">-</span>        
                             )}
+
                             {node.id==='root' ? (
                                 <button type="button"
                                     className="menu-root">
@@ -299,8 +300,6 @@ export const MenuTree = () => {
                                     {node.text}
                                 </button>
                             )}    
-
-
 
                             {(node.parent === 0 || node.parent === 'root') && (node.id !== '*untitled') && (
                                 <button type='button' onClick={() => handleAddMenu(node.id)}>
