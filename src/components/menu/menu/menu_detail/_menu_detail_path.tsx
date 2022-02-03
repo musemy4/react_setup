@@ -74,14 +74,14 @@ export const MenuDetailPath = () => {
                 external = ['/external-page/', `${afterExt}`, path_full];
             } else {
                 mode = 'basic';
-                basic= [path_full===''?'/':path_full, '/'];
+                basic= [path_full===''?'/':path_full, ''];
                 external = ['/external-page/', '', '/external-page/']
             }
         } else if(menuMode.substring(0,3) === 'Sml') { // 소메뉴시
             if(menuMode.substring(3,6) === 'Add') {
                 mode = 'basic';
 
-                basic= [path_full, '/']
+                basic= [`${path_full}/`, '']
                 external = [`${path_full}/external-sub-page/`, '', `${path_full}/external-sub-page/`];
                 side = [path_full];
             } else if(menuMode.substring(3,6) === 'Mod') {    
@@ -90,14 +90,14 @@ export const MenuDetailPath = () => {
                     const pathArr = path_full.split('/external-sub-page/');
                     mode = 'external';
                     
-                    basic= [pathArr[0], '']
+                    basic= [`{pathArr[0]}/`, '']
                     external = [`${pathArr[0]}/external-sub-page/`, urlDecode(pathArr[1]), path_full];
                     side = [pathArr[0]];
                     // side                    
                 } else if(isSide(path_full)) {
                     mode = 'side';
                     
-                    basic = [path_full, ''];
+                    basic = [`${path_full}/`, ''];
                     external = [`${path_full}/external-sub-page/`,'',`${path_full}/external-sub-page/`]
                     side=[path_full];
                 // basic    
