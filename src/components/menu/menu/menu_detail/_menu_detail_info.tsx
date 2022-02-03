@@ -80,6 +80,11 @@ export const MenuDetailInfo = () => {
                 ...menuInfo,
                 menu_code: e.target.value
             })
+        } else if (id === 'ordering') {
+            setMenuInfo({
+                ...menuInfo,
+                ordering: Number(e.target.value)
+            })
         }
     }
 
@@ -104,7 +109,7 @@ export const MenuDetailInfo = () => {
         <div key={render}>
             <h3>부모 메뉴</h3>
             <div className="content-box">
-                <input disabled className="ui_input w_full" id="p_menu_code" defaultValue={ menuInfo.p_menu_code } />
+                <input disabled className='ui_input w_full' id='p_menu_code' defaultValue={ menuInfo.p_menu_code } />
             </div>
 
             <h3 className='half'>메뉴 이름</h3>
@@ -115,33 +120,26 @@ export const MenuDetailInfo = () => {
             </div>
 
 
-            { menuMode.substring(0,3) === 'Big' ? (
-                <>
-                    <h3 className='half'>순서</h3>
-                    <div className='content-box w_full'>
-                        <input disabled className="ui_input w_full" defaultValue={ menuInfo.ordering } />
-                    </div>
-                </>
-                ):(
+            <h3 className='half'>순서</h3>
+            {menuMode.substring(0,3) === 'Sml' && (
+                <h3 className='half'>
+                    아이콘 
+                    <button type='button' onClick={()=>window.open('https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free', '_blank')}>
+                        (Font Awesome 5)
+                    </button>
+                </h3>
+            )}
+            <div className='content-box w_full' style={{position: 'relative'}}>
+                <input className="ui_input half" id='ordering' onChange={ onInputChange } defaultValue={ menuInfo.ordering } />
+                {menuMode.substring(0,3) === 'Sml' && (
                     <>
-                    <h3 className='half'>순서</h3>
-                    <h3 className='half'>
-                        아이콘 
-                        <button type='button' onClick={()=>window.open('https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free', '_blank')}>
-                            (Font Awesome 5)
-                        </button>
-                    </h3>
-                    <div className='content-box w_full' style={{position: 'relative'}}>
-                        <input disabled className="ui_input half" defaultValue={ menuInfo.ordering } />
-                        
                         <input onChange={ onFontInputChange } className="ui_input forPreview mr-10" defaultValue={ menuInfo.icon } />
                         <span className='preview'>
                             <i className={menuInfo.icon}> </i>
                         </span>
-                    </div>
-                </> 
-                )
-            }
+                    </>
+                )}
+            </div>
 
             <h3>메뉴 특수 기능 사용 여부</h3>
             <div className="w-bg-box content-box">
