@@ -125,7 +125,12 @@ export const MenuDetailInfo = () => {
                 ):(
                     <>
                     <h3 className='half'>순서</h3>
-                    <h3 className='half'>아이콘 <button type='button' onClick={()=>window.open('https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free', '_blank')}>(Font Awesome 5)</button></h3>
+                    <h3 className='half'>
+                        아이콘 
+                        <button type='button' onClick={()=>window.open('https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free', '_blank')}>
+                            (Font Awesome 5)
+                        </button>
+                    </h3>
                     <div className='content-box w_full' style={{position: 'relative'}}>
                         <input disabled className="ui_input half" defaultValue={ menuInfo.ordering } />
                         
