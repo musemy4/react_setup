@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getMenuList, resetMenulist } from '../../../../store/menu/getMenuList';
 import { IMenu, IMenuForDraw } from '../menu_interface';
 import { showAlert } from '../../../../common/utils/alert';
-
+import styleTree from './tree.module.css';
 
 // dispatch
 import { setMode, defaultMode } from '../../../../store/menu/menuMode';
@@ -31,7 +31,7 @@ export const MenuTree = () => {
     const [treeDataForDraw, setTreeDataForDraw] = useState<IMenuForDraw[]>([{
         id: 'root',
         parent: 0,
-        droppable: true,
+        droppable: false,
         text: 'root',
     }]);
 
@@ -45,7 +45,10 @@ export const MenuTree = () => {
     const dispatch = useDispatch();
 
     // about tree handle
-    const handleDrop = () => { console.log('handle drop cancel');};
+    const handleDrop = (newTree: any[]) => { 
+        console.log('oldTree::', treeDataForDraw);
+        console.log('newTree::', newTree);
+    };
     
     
     
@@ -111,13 +114,13 @@ export const MenuTree = () => {
         const refined = menuList.response.results.map((ele: IMenu) => ({
             id: ele.menu_code,
             parent: ele.p_menu_code,
-            droppable: false, // TMP
+            droppable: true, // TMP
             text: ele.menu_name,
         }));
         const defaultTreeData = [{
             id: 'root',
             parent: 0,
-            droppable: false,
+            droppable: true,
             text: 'root',
         }];
         
@@ -317,6 +320,11 @@ export const MenuTree = () => {
                     sort={false}
                     initialOpen={openArr}
                     onDrop={handleDrop}
+                    classes={{
+                        root:styleTree.treeRoot,
+                        draggingSource: styleTree.draggingSource,
+                        dropTarget: styleTree.dropTarget
+                    }}
                 /> 
             </div>
         </div>
