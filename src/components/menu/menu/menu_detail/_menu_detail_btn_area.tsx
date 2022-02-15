@@ -23,9 +23,7 @@ export const MenuDetailBtnArea = () => {
     // /////////////////////////////////////////////////////////////
 
     useEffect(() => {
-        console.log(putMenu);
         if(putMenu?.mode === 'readyPath') {
-            console.log(putMenu.menu);
             if(putMenu?.menu.menu_id !== '') {
                 confirmAlert({
                     title: '[메뉴 수정]',

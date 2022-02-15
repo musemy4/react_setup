@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+import { VURIX_DMS } from '../../routes/common';
 
-const REQUEST_URL = '/vurix-dms/api/v1';
 
 const initialState: any = {
     code: undefined,
@@ -13,7 +13,7 @@ export const getMenuList = createAsyncThunk( // init시 호출
     'menu/getMenuList',
     async() => {
         try {
-            const response = await axios.get(`${REQUEST_URL}/role/menuList`);
+            const response = await axios.get(`${VURIX_DMS}/role/menuList`);
             if (response.status === 200) {
                 return response.data;
             }

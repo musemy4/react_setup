@@ -25,6 +25,7 @@ import { ApplyMenu } from './_apply_menu';
 import { IncomingEvent } from './_incoming_event';
 import { CctvFunction } from './_cctv_function';
 import { FrontSetup } from './_front_setup';
+import { createGeneralData, createCsaferData, resetTemplate } from '../../../store/setup/template';
 
 const override = css`
     display: block;
@@ -43,6 +44,7 @@ const SetupWrap = () => {
     const admin = useSelector((state: any) => state.admin);
     const fetchSetup = useSelector((state: any) => state.fetchSetup);
     const tmpSetup = useSelector((state: any)  => state.tmpSetup);
+    const template = useSelector((state: any) => state.template);
     // set
     const dispatch = useDispatch();
 
@@ -132,6 +134,32 @@ const SetupWrap = () => {
         }
     }, [tmpSetup.code])
 
+    useEffect(() => {
+        hideLoading();
+        if(template.type !== undefined) {
+            if(template.data.total === -1) {
+                showAlert(`템플릿 생성에 실패하였습니다. 
+                            관리자에게 문의하세요.`, 'failure');
+            } else if(template.type === 'generalData') {
+                showAlert(`기본 분석템플릿 생성이 완료되었습니다.
+                    전체 템플릿 : ${template.data.total},
+                    추가된 템플릿 : ${template.data.success},
+                    중복된 템플릿 : ${template.data.duplicate},
+                    실패 템플릿 :  ${template.data.fail}, 
+                `, 'success');
+            } else if(template.type === 'csaferData') {
+                showAlert(`영상반출 분석템플릿 생성이 생성되었습니다.
+                    전체 템플릿 : ${template.data.total},
+                    추가된 템플릿 : ${template.data.success},
+                    중복된 템플릿 : ${template.data.duplicate},
+                    실패 템플릿 :  ${template.data.fail},    
+                `, 'success');
+            }
+        }
+        
+        dispatch(resetTemplate());
+    }, [template])
+
 
     // /////////////////////////////////////////////////////////////////
     // FUNCTION
@@ -161,6 +189,43 @@ const SetupWrap = () => {
             overlayClassName: `${status}`
         });
     }
+
+    const onClickTemplateAction = (type: string) => {
+        switch(type) {
+            case 'createGeneralData' :
+                confirmAlert({
+                    title: '[기본 분석템플릿 생성]',
+                    message: `기본 분석템플릿을 생성하시겠습니까?`,
+                    buttons: [
+                        { label: '취소', onClick: () => null },
+                        { label: '생성', onClick: (() => {
+                            showLoading();
+                            dispatch(createGeneralData()); 
+                            })
+                        }
+                    ],
+                });
+            break;
+
+            case 'createCsaferData' :
+                confirmAlert({
+                    title: '[영상반출 분석템플릿 생성]',
+                    message: '영상반출 분석템플릿을 생성하시겠습니까?',
+                    buttons: [
+                        { label: '취소', onClick: () => null },
+                        { label: '생성', onClick: (() => {
+                            showLoading();
+                            dispatch(createCsaferData()); 
+                            })
+                        }
+                    ],
+                });
+            break;
+    
+            default: break;
+        }
+    }
+
 
     const onClickAdminAction = (type: string) => {
         switch(type) {
@@ -362,13 +427,17 @@ const SetupWrap = () => {
                     <button type="button" className="btn" onClick={ () => onClickAdminAction('auth') }>관리자 권한 초기화</button>
                     <button type="button" className="btn" onClick={ () => onClickAdminAction('pw') }>관리자 비밀번호 초기화</button>
                 </div>
+                <div className="btn-center">
+                    <button type="button" className="btn" onClick={ () => onClickTemplateAction('createGeneralData') }>기본 분석템플릿 생성</button>
+                    <button type="button" className="btn" onClick={ () => onClickTemplateAction('createCsaferData') }>영상반출 분석템플릿 생성</button>
+                </div>
                 <div className="btn-right">
                     <form>
                         <button type="button" className="btn" onClick={ onDownloadSetupFile } >백업(JSON)</button>
                         <button type="button" className="btn" onClick={ showOpenFileDialog } >복원(JSON)</button>
-                        <input type="file" ref={inputFile} onChange={onChangeFile} accept=".json" style={{ display: 'none' }} />
                         <button type="button" className="btn" onClick={ onResetSetup } >초기화</button>
                         <button type="button" className="btn solid" onClick={ onModifySetup } >수정</button>
+                        <input type="file" ref={inputFile} onChange={onChangeFile} accept=".json" style={{ display: 'none' }} />
                     </form>
                 </div>
             </div>

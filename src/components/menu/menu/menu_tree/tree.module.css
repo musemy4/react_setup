@@ -1,12 +1,25 @@
 .treeRoot {
-    height: 100%;
-  }
-  
-  .draggingSource {
-    opacity: 0.3;
-  }
-  
-  .dropTarget {
-    /* background-color: #e8f0fe; */
-    border-top: 2px solid #99D8FF;
-  }
+  height: 100%;
+}
+
+.draggingSource {
+  /* opacity: 0.3; */
+}
+
+.placeholderContainer {
+  position: relative;
+}
+
+.dropTarget {
+  background-color: #e8f0fe;
+}
+
+.root {
+  background-color: rgba(255,255,255,0.2);
+  height: 2px;
+  width: 200px;
+  position: absolute;
+  left: 0;
+  transform: translateY(-50%);
+  top: 0;
+}

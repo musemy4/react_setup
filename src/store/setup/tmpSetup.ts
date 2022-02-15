@@ -6,7 +6,7 @@ import {
     ISetupBody
 } from '../../components/menu/setup/setup_interface';
 
-const REQUEST_URL = '/vurix-dms/api/v1';
+import { VURIX_DMS } from '../../routes/common';
 
 
 const initialState: ISetupBody = {
@@ -24,9 +24,7 @@ export const putTmpSetupProps  = createAsyncThunk( // 수정
     'setup/putSetupProps',
     async(params: any) => {
         try {
-            const response = await axios.put(`${REQUEST_URL}/role/putSetupProp`, params);
-            // {data: {…}, status: 200, statusText: 'OK', headers: {…}, config: {…},…}
-            // console.log(response);
+            const response = await axios.put(`${VURIX_DMS}/role/putSetupProp`, params);
             if (response.status === 200) return response.data; 
             return response.data; // fulfilled
         } catch(error) {

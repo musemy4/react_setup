@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+import { VURIX_DMS } from '../../routes/common';
+
 // interface
 import {
     ISetupBody
 } from '../../components/menu/setup/setup_interface';
 
-const REQUEST_URL = '/vurix-dms/api/v1';
 
 
 const initialState: ISetupBody = {
@@ -24,9 +25,8 @@ export const fetchSetupProps = createAsyncThunk( // init시 호출
     'setup/fetchSetupProps',
     async() => {
         try {
-            const response = await axios.get(`${REQUEST_URL}/role/getSetupProp`);
+            const response = await axios.get(`${VURIX_DMS}/role/getSetupProp`);
             if (response.status === 200) {
-                console.log(response);
                 return response.data;
             }
         } catch(error) {
