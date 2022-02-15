@@ -29,6 +29,15 @@ export interface IPutMenu {
     menu : IMenu
 }
 
+export interface IPutOrdering {
+    mode : 'default' | 'beReady' | 'success' | 'failure';
+}
+
+export interface IPutOrderingEle {
+    menu_code: string;
+    ordering: number;
+}
+
 export interface IPathObj {
     [index: string]: string | number | boolean | string[] | undefined;
    mode: 'basic' | 'external' | 'side';

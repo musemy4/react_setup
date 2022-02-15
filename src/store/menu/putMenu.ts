@@ -2,9 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { IPutMenu } from '../../components/menu/menu/menu_interface';
 
+import { VURIX_DMS } from '../../routes/common';
 
-
-const REQUEST_URL = '/vurix-dms/api/v1/role';
 
 
 
@@ -30,7 +29,7 @@ export const postMenu = createAsyncThunk( // 메뉴 등록
     async(params: any) => {
         console.log(params);
         try {
-            const response = await axios.post(`${REQUEST_URL}/postMenu`, params);
+            const response = await axios.post(`${VURIX_DMS}/role/postMenu`, params);
             if (response.status === 200) {
                 console.log(response);
                 return 'successPost'; // fulfilled
@@ -48,7 +47,7 @@ export const modiMenu = createAsyncThunk( // 메뉴 수정
     async(params: any) => {
         console.log(params);
         try {
-            const response = await axios.put(`${REQUEST_URL}/putMenu/${params.menu_code}`, params);
+            const response = await axios.put(`${VURIX_DMS}/role/putMenu/${params.menu_code}`, params);
             console.log(response);
             if (response.status === 200) {
                 console.log(response);
@@ -66,7 +65,7 @@ export const deleteMenu = createAsyncThunk( // 메뉴 삭제
     'menu/deleteMenu',
     async(menu_code: string) => {
         try {
-            const response = await axios.delete(`${REQUEST_URL}/deleteMenu/${menu_code}`);
+            const response = await axios.delete(`${VURIX_DMS}/role/deleteMenu/${menu_code}`);
             if (response.status === 200) {
                 console.log(response);
                 return 'successDel'; // fulfilled
@@ -108,16 +107,12 @@ const putMenuSlice = createSlice({
     },
     extraReducers: {
         [postMenu.fulfilled.type]: (state, action) => {
-            console.log(state, action);
             state.mode = action.payload;
         },
         [modiMenu.fulfilled.type]: (state, action) => {
-            console.log(state, action);
             state.mode = action.payload;
         },
-
         [deleteMenu.fulfilled.type]: (state, action) => {
-            console.log(state, action);
             state.mode = action.payload;
         },
 

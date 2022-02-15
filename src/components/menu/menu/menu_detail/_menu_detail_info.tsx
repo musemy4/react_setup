@@ -5,6 +5,7 @@ import { setMenuInfoPart } from '../../../../store/menu/putMenu';
 
 export const MenuDetailInfo = () => {
     const [render, setRender] = useState<string>('');
+    const [menuIdNow, setMenuId] = useState<string | undefined>(undefined);
     const [menuInfo, setMenuInfo] = useState<IMenu>({
             admin_auth_enable: false,
             download_enable: false,
@@ -30,8 +31,12 @@ export const MenuDetailInfo = () => {
 
 
     useEffect(() => {
-        setMenuInfo(menu);
-        setRender(getRefresh());
+        if(!menuIdNow || menu.menu_id !== menuIdNow) {
+            setMenuId(menu.menu_id);
+            setMenuInfo(menu);
+            const time = getRefresh();
+            setRender(time);
+        }
     }, [menu])
     
     useEffect(() => {
@@ -106,7 +111,7 @@ export const MenuDetailInfo = () => {
     }
 
     return (
-        <div key={render}>
+        <div key={render + menuIdNow}>
             <h3>부모 메뉴</h3>
             <div className="content-box">
                 <input disabled className='ui_input w_full' id='p_menu_code' defaultValue={ menuInfo.p_menu_code } />
@@ -130,7 +135,7 @@ export const MenuDetailInfo = () => {
                 </h3>
             )}
             <div className='content-box w_full' style={{position: 'relative'}}>
-                <input className="ui_input half" id='ordering' onChange={ onInputChange } defaultValue={ menuInfo.ordering } />
+                <input disabled className="ui_input half" id='ordering' onChange={ onInputChange } defaultValue={ menuInfo.ordering } />
                 {menuMode.substring(0,3) === 'Sml' && (
                     <>
                         <input onChange={ onFontInputChange } className="ui_input forPreview mr-10" defaultValue={ menuInfo.icon } />

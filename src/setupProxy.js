@@ -7,4 +7,10 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
+  app.use(
+    createProxyMiddleware('/tms-decision', {
+      target: 'http://docs-172-16-36-180.vurix.kr/',
+      changeOrigin: true,
+    })
+  );
 }

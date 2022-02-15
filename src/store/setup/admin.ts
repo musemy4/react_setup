@@ -1,7 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const REQUEST_URL = '/vurix-dms/api/v1';
+import { VURIX_DMS } from '../../routes/common';
+
+
 export interface IAdmin {
     type: undefined | 'create' | 'auth' | 'pw' 
     status: undefined | 'SUCCESS' | 'FAILURE' | 'DUPLICATE' | 'ERROR'
@@ -17,7 +19,7 @@ export const setupCreateID = createAsyncThunk( // init시 호출
     'admin/createAdminAccount',
     async() => {
         try {
-            const response = await axios.post(`${REQUEST_URL}/auth/setupCreateID`);
+            const response = await axios.post(`${VURIX_DMS}/auth/setupCreateID`);
             if (response.status === 200) {
                 return 'SUCCESS';
             }
@@ -36,7 +38,7 @@ export const setupResetRole = createAsyncThunk( // init시 호출
     'admin/setupResetRole',
     async() => {
         try {
-            const response = await axios.put(`${REQUEST_URL}/auth/setupResetRole`);
+            const response = await axios.put(`${VURIX_DMS}/auth/setupResetRole`);
             if (response.status === 200) {
                 return 'SUCCESS';
             }
@@ -51,7 +53,7 @@ export const setupResetPw = createAsyncThunk( // init시 호출
     'admin/setupResetPw',
     async() => {
         try {
-            const response = await axios.put(`${REQUEST_URL}/auth/setupResetPw`);
+            const response = await axios.put(`${VURIX_DMS}/auth/setupResetPw`);
             if (response.status === 200) {
                 return 'SUCCESS';
             }

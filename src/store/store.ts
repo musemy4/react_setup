@@ -11,15 +11,18 @@ import adminReducer, { IAdmin } from "./setup/admin";
 import loginReducer, { ILogin } from "./login";
 import fetchSetupReducer from "./setup/fetchSetup";
 import tmpSetupReducer from "./setup/tmpSetup";
-import { ISetupBody } from '../components/menu/setup/setup_interface';
+import templateReducer, { ITemplate } from './setup/template';
 
 // menu reducer
 import menuListReducer from './menu/getMenuList';
 import menuModeReducer from './menu/menuMode';
 import menuReducer from './menu/setMenu';
 import putMenuReducer from './menu/putMenu';
-import { IMenu, IMode, IPutMenu } from '../components/menu/menu/menu_interface';
+import putOrdering from './menu/putOrdering';
 
+// interface
+import { ISetupBody } from '../components/menu/setup/setup_interface';
+import { IMenu, IMode, IPutMenu, IPutOrdering } from '../components/menu/menu/menu_interface';
 
 interface rootState {
    admin: IAdmin | undefined;
@@ -30,6 +33,8 @@ interface rootState {
    menuMode: IMode | undefined;
    menu: IMenu | undefined;
    putMenu: IPutMenu | undefined;
+   template: ITemplate | undefined;
+   putOrdering: IPutOrdering | undefined;
 }
 
 
@@ -42,6 +47,8 @@ const reducers = {
     menuMode: menuModeReducer,
     menu: menuReducer,
     putMenu: putMenuReducer,
+    template: templateReducer,
+    putOrdering,
 };
 
 
